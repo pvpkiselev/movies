@@ -4,6 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/movies/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -16,6 +17,7 @@ export default defineConfig({
       '@reducers': path.resolve(__dirname, './src/reducers'),
       '@types': path.resolve(__dirname, './src/types'),
       '@utils': path.resolve(__dirname, './src/utils'),
+      '@public': path.resolve(__dirname, './public'),
     },
   },
   plugins: [react()],
