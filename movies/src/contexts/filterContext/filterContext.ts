@@ -1,5 +1,5 @@
 import { Dispatch, createContext, useContext } from 'react';
-import { Action, FiltersState } from '@/reducers/filterReducer.types';
+import { Action, FiltersState } from '@/reducers/reducer.types';
 import { ContextError } from '@/errors/contextError';
 
 export const FilterContext = createContext<FiltersState | null>(null);

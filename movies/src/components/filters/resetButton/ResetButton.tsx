@@ -1,21 +1,21 @@
-import Button from '@/components/common/buttons/button/Button';
 import { useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
-import { RESET_FILTERS } from '@/reducers/constants';
-import { X } from 'lucide-react';
+import { Close } from '@mui/icons-material';
+import { Button } from '@mui/material';
 
-export default function ResetButton() {
+function ResetButton() {
   const dispatch = useFilterDispatchContext();
 
   const handleResetFilters = () => {
     dispatch({
-      type: RESET_FILTERS,
+      type: 'reset_filters',
     });
   };
 
   return (
-    <Button size="medium" appearance="tertiary" onClick={handleResetFilters}>
-      <X />
-      Сбросить фильтры
+    <Button variant="outlined" startIcon={<Close />} onClick={handleResetFilters} disableElevation>
+      Reset filters
     </Button>
   );
 }
+
+export default ResetButton;

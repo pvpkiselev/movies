@@ -1,6 +1,6 @@
 import { ReactNode, useReducer } from 'react';
 import { filtersReducer } from '@/reducers/filtersReducer';
-import { initialFiltersState } from '@/reducers/initialStates';
+import { initialFiltersState } from '@/reducers/initialState';
 import { FilterContext, FilterDispatchContext } from './filterContext';
 
 interface FilterProviderProps {

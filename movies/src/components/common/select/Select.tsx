@@ -1,29 +1,45 @@
-import styles from './Select.module.scss';
+import { Box, FormControl, InputLabel, NativeSelect } from '@mui/material';
 
 interface SelectProps {
   label: string;
   name: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  id: string;
+  value: string;
   options: Option[];
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-interface Option {
+type Option = {
   id: number;
   value: string | number;
-}
+};
 
-export default function Select({ label, name, value, onChange, options }: SelectProps) {
+function Select(props: SelectProps) {
+  const { label, name, id, value, options, onChange } = props;
+
   return (
-    <div className={styles.selectBlock}>
-      <label className={styles.label}>{label}</label>
-      <select className={styles.button} name={name} value={value} onChange={onChange}>
-        {options.map((option) => (
-          <option key={option.id} value={option.value}>
-            {option.value}
-          </option>
-        ))}
-      </select>
-    </div>
+    <Box sx={{ minWidth: 120 }}>
+      <FormControl fullWidth>
+        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          {label}
+        </InputLabel>
+        <NativeSelect
+          value={value}
+          inputProps={{
+            name: name,
+            id: id,
+          }}
+          onChange={onChange}
+        >
+          {options.map((option) => (
+            <option key={option.id} value={option.value}>
+              {option.value}
+            </option>
+          ))}
+        </NativeSelect>
+      </FormControl>
+    </Box>
   );
 }
+
+export default Select;

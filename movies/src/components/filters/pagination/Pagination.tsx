@@ -1,36 +1,30 @@
-import React from 'react';
-import styles from './Pagination.module.scss';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import PaginationButton from './paginationButton/PaginationButton';
+import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
+import { Pagination } from '@mui/material';
 
-// interface PaginationProps {
-//   currentPage: number;
-//   totalPages: number;
-//   onPageChange: React.Dispatch<React.SetStateAction<number>>;
-// }
+function PaginationFilter() {
+  const filtersState = useFilterContext();
+  const dispatch = useFilterDispatchContext();
 
-export default function Pagination() {
-  const pages = [1, 2, 3, 4];
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    dispatch({
+      type: 'page_selected',
+      currentPage: page,
+    });
+  };
+
+  const currentPage = filtersState.currentPage;
+  const totalPages = 500;
 
   return (
-    <nav>
-      <ul className={styles.pagination}>
-        <li>
-          <PaginationButton>
-            <ChevronLeft />
-          </PaginationButton>
-        </li>
-        {pages.map((page) => (
-          <li key={page}>
-            <PaginationButton>{page}</PaginationButton>
-          </li>
-        ))}
-        <li>
-          <PaginationButton>
-            <ChevronRight />
-          </PaginationButton>
-        </li>
-      </ul>
-    </nav>
+    <Pagination
+      page={currentPage}
+      size="medium"
+      siblingCount={1}
+      count={totalPages}
+      onChange={handlePageChange}
+      color="primary"
+    />
   );
 }
+
+export default PaginationFilter;

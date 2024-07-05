@@ -1,39 +1,48 @@
-import {
-  CHANGED_SORT,
-  CHANGED_YEAR,
-  LOADED_GENRES,
-  RESET_FILTERS,
-  TOGGLED_GENRE,
-} from './constants';
-import { Action, FiltersState } from './filterReducer.types';
-import { initialFiltersState } from './initialStates';
+import { Action, FiltersState } from './reducer.types';
+import { initialFiltersState } from './initialState';
 
 export function filtersReducer(filtersState: FiltersState, action: Action) {
   switch (action.type) {
-    case LOADED_GENRES: {
+    case 'loaded_genres': {
       return { ...filtersState, genres: action.genres };
     }
-    case TOGGLED_GENRE: {
+    case 'toggled_genre': {
+      const selectedGenresSet = new Set(action.selectedGenres);
+      const updatedGenres = filtersState.genres.map((genre) => ({
+        ...genre,
+        checked: selectedGenresSet.has(genre.name),
+      }));
       return {
         ...filtersState,
-        genres: filtersState.genres.map((genre) =>
-          action.id === genre.id ? { ...genre, checked: !genre.checked } : genre
-        ),
+        genres: updatedGenres,
       };
     }
-    case CHANGED_SORT: {
+    case 'changed_sort': {
       return {
         ...filtersState,
         sort: action.sort,
       };
     }
-    case CHANGED_YEAR: {
+    case 'changed_year_range': {
       return {
         ...filtersState,
-        year: action.year,
+        yearRange: { ...filtersState.yearRange, range: action.range },
       };
     }
-    case RESET_FILTERS: {
+    case 'loaded_movies': {
+      return {
+        ...filtersState,
+        movies: action.movies,
+        currentPage: action.currentPage,
+      };
+    }
+    case 'page_selected': {
+      return {
+        ...filtersState,
+        currentPage: action.currentPage,
+      };
+    }
+    case 'reset_filters': {
       return {
         ...initialFiltersState,
         genres: filtersState.genres.map((genre) => {

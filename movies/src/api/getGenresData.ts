@@ -1,18 +1,11 @@
-import axios from 'axios';
 import { ResponseError } from '@/errors/responseError';
-import { API_URL, TOKEN } from './constants';
+import { MOVIES_REQUEST } from './requestOptions';
 
-const MOVIES_REQUEST = axios.create({
-  baseURL: API_URL,
-  headers: {
-    accept: 'application/json',
-    Authorization: `Bearer ${TOKEN}`,
-  },
-});
+const genresEndpoint = '/genre/movie/list?language=en';
 
 const getGenresData = async () => {
   try {
-    const response = await MOVIES_REQUEST.get('/genre/movie/list?language=ru');
+    const response = await MOVIES_REQUEST.get(genresEndpoint);
 
     const okResponseCode = 200;
 
