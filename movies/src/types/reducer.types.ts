@@ -1,6 +1,6 @@
-import { Genre } from '@/components/filters/genres/genres.types';
-import { Movie } from '@/components/movieList/movies.types';
-import { YearRange } from '@/components/filters/yearRangeSlider/yearRange.types';
+import { Genre } from '@/types/genres.types';
+import { YearRange } from '@/types/yearRange.types';
+import { Movie } from './movies.types';
 
 export type FiltersState = {
   genres: Genre[];

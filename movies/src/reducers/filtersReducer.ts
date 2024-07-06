@@ -1,4 +1,4 @@
-import { Action, FiltersState } from './reducer.types';
+import { Action, FiltersState } from '../types/reducer.types';
 import { initialFiltersState } from './initialState';
 
 export function filtersReducer(filtersState: FiltersState, action: Action) {

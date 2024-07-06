@@ -4,7 +4,7 @@ import MovieCard from './movieCard/MovieCard';
 import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
 import { imageUrl } from './constants';
 import getSortedMovies from '@/api/getSortedMovies';
-import { MoviesResponse } from './movies.types';
+import { MoviesResponse } from '../../types/movies.types';
 
 function MovieList() {
   const [isLoading, setIsLoading] = useState(false);
