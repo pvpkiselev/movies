@@ -25,7 +25,7 @@ const getSortedMovies = async (sortType: string, page: number = 1) => {
     const okResponseCode = 200;
 
     if (response.status !== okResponseCode) {
-      throw new ResponseError('Error fetching genres data');
+      throw new ResponseError('Error fetching movies data');
     }
 
     return response.data;

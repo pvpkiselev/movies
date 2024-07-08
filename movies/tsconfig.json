@@ -13,7 +13,7 @@
       "@components/*": ["src/components/*"],
       "@data/*": ["src/data/*"],
       "@errors/*": ["src/errors/*"],
-      "@pages/*": ["src/components/pages/*"],
+      "@pages/*": ["src/routes/*"],
       "@reducers/*": ["src/reducers/*"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],

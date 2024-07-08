@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
 import getGenresData from '@/api/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
-import { Genre } from '../../../types/genres.types';
+import { Genre } from '../../../types/filters/genres.types';
 
 function Genres() {
   const filtersState = useFilterContext();
