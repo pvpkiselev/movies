@@ -1,6 +1,7 @@
-import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { Card, CardActions, CardContent, CardMedia, IconButton, Typography } from '@mui/material';
 import { theme } from '@/theme/theme';
 import { Link } from 'react-router-dom';
+import { StarBorderOutlined } from '@mui/icons-material';
 
 interface MovieCardProps {
   linkId: number;
@@ -34,6 +35,11 @@ function MovieCard(props: MovieCardProps) {
             Rating {rating}
           </Typography>
         </CardContent>
+        <CardActions>
+          <IconButton>
+            <StarBorderOutlined />
+          </IconButton>
+        </CardActions>
       </Link>
     </Card>
   );

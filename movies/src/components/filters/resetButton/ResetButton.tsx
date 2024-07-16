@@ -1,9 +1,9 @@
-import { useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Close } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 function ResetButton() {
-  const dispatch = useFilterDispatchContext();
+  const dispatch = useFiltersDispatch();
 
   const handleResetFilters = () => {
     dispatch({

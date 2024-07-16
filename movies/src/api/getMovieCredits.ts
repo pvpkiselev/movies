@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import { MOVIES_REQUEST } from './requestOptions';
+import MOVIES_REQUEST from './requestOptions';
 import { MovieCreditsType } from '@/types/movies/movieCredits.types';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {

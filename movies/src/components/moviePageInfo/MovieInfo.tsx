@@ -1,16 +1,13 @@
 import { CardContent, Typography } from '@mui/material';
 import MovieCast from './MovieCast';
-import { MovieDetailsType } from '@/types/movies/movieDetails.types';
-import { Actor, CrewMember } from '@/types/movies/movieCredits.types';
 import MovieDetails from './movieDetails/MovieDetails';
+import { useLoaderData } from 'react-router-dom';
+import { MovieInfoLoaderData } from '@/types/movies/movieInfoLoader.types';
 
-interface MovieInfoProps {
-  details: MovieDetailsType;
-  cast: Actor[];
-  crew: CrewMember[];
-}
+function MovieInfo() {
+  const data = useLoaderData() as MovieInfoLoaderData;
+  const { details, credits } = data;
 
-function MovieInfo({ details, cast, crew }: MovieInfoProps) {
   return (
     <CardContent
       sx={{
@@ -31,8 +28,8 @@ function MovieInfo({ details, cast, crew }: MovieInfoProps) {
       <Typography variant="h3" component="h1">
         {details.title}
       </Typography>
-      <MovieCast cast={cast} />
-      <MovieDetails details={details} crew={crew} />
+      <MovieCast cast={credits.cast} />
+      <MovieDetails details={details} crew={credits.crew} />
     </CardContent>
   );
 }

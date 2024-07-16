@@ -8,6 +8,7 @@ import Root from '@/routes/Root';
 import Home from '@/routes/Home';
 import MoviePage from '@/routes/MoviePage';
 import { movieInfoLoader } from '@/loaders/movieInfoLoader';
+import { AuthProvider } from '@/contexts/authContext/AuthProvider';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

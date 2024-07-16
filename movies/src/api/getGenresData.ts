@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import { MOVIES_REQUEST } from './requestOptions';
+import MOVIES_REQUEST from './requestOptions';
 
 const genresEndpoint = '/genre/movie/list?language=en';
 
@@ -16,6 +16,7 @@ const getGenresData = async () => {
     return response.data;
   } catch (error) {
     console.error('Failed to fetch genres:', error);
+    throw error;
   }
 };
 

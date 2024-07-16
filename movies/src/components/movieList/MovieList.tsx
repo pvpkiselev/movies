@@ -1,43 +1,53 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
-import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
 import { imageUrl } from './constants';
-import getSortedMovies from '@/api/getSortedMovies';
 import { MoviesResponse } from '@/types/movies/movies.types';
+import { POPULAR_OPTION, TOP_RATED_OPTION } from '../filters/sortSelect/constants';
+import getPopularMovies from '@/api/getPopularMovies';
+import getTopRatedMovies from '@/api/getTopRatedMovies';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { useFilters } from '@/hooks/useFilters';
 
 function MovieList() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const filtersState = useFilterContext();
-  const dispatch = useFilterDispatchContext();
+  const filtersState = useFilters();
+  const dispatch = useFiltersDispatch();
 
   useEffect(() => {
-    let ignoreFetch = false;
+    const abortController = new AbortController();
 
     async function fetchMovies() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = (await getSortedMovies(
-          filtersState.sort,
-          filtersState.currentPage
-        )) as MoviesResponse;
+        const currentPage = filtersState.currentPage;
+        const currentSortBy = filtersState.sort;
 
-        if (!ignoreFetch) {
+        let response: MoviesResponse | undefined;
+
+        if (currentSortBy === POPULAR_OPTION) {
+          response = await getPopularMovies(currentPage, abortController.signal);
+        } else if (currentSortBy === TOP_RATED_OPTION) {
+          response = await getTopRatedMovies(currentPage, abortController.signal);
+        }
+
+        if (response) {
           dispatch({
             type: 'loaded_movies',
             movies: response.results,
             currentPage: response.page,
           });
         }
-      } catch (err) {
-        if (!ignoreFetch) {
+      } catch (error) {
+        if (!abortController.signal.aborted) {
           setError('Failed to fetch movies. Please try again later.');
+          console.error(error);
         }
       } finally {
-        if (!ignoreFetch) {
+        if (!abortController.signal.aborted) {
           setIsLoading(false);
         }
       }
@@ -46,7 +56,7 @@ function MovieList() {
     fetchMovies();
 
     return () => {
-      ignoreFetch = true;
+      abortController.abort();
     };
   }, [filtersState.sort, filtersState.currentPage, dispatch]);
 

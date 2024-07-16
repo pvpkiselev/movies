@@ -1,6 +1,7 @@
-import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
 import { POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import Select from '@/components/common/select/Select';
+import { useFilters } from '@/hooks/useFilters';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 
 const sortOptions = [
   { id: 0, value: POPULAR_OPTION },
@@ -8,8 +9,8 @@ const sortOptions = [
 ];
 
 function SortSelect() {
-  const filterState = useFilterContext();
-  const dispatch = useFilterDispatchContext();
+  const filtersState = useFilters();
+  const dispatch = useFiltersDispatch();
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch({
@@ -23,7 +24,7 @@ function SortSelect() {
       label="Sort by"
       name="sort"
       id="sort"
-      value={filterState.sort}
+      value={filtersState.sort}
       options={sortOptions}
       onChange={handleSortChange}
     />

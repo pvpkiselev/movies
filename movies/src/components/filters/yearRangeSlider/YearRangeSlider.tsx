@@ -1,9 +1,10 @@
 import RangeSlider from '@/components/common/rangeSlider/RangeSlider';
-import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
+import { useFilters } from '@/hooks/useFilters';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 
 function YearRangeSlider() {
-  const filterState = useFilterContext();
-  const dispatch = useFilterDispatchContext();
+  const filtersState = useFilters();
+  const dispatch = useFiltersDispatch();
 
   const handleYearRangeChange = (newRange: number[]) => {
     dispatch({
@@ -15,9 +16,9 @@ function YearRangeSlider() {
   return (
     <RangeSlider
       label="Year Range"
-      min={filterState.yearRange.min}
-      max={filterState.yearRange.max}
-      range={filterState.yearRange.range}
+      min={filtersState.yearRange.min}
+      max={filtersState.yearRange.max}
+      range={filtersState.yearRange.range}
       valueLabelDisplay="on"
       onChange={handleYearRangeChange}
     />

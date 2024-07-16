@@ -1,9 +1,10 @@
-import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
+import { useFilters } from '@/hooks/useFilters';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Pagination } from '@mui/material';
 
 function PaginationFilter() {
-  const filtersState = useFilterContext();
-  const dispatch = useFilterDispatchContext();
+  const filtersState = useFilters();
+  const dispatch = useFiltersDispatch();
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
     dispatch({

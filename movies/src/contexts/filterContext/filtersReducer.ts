@@ -1,5 +1,17 @@
-import { Action, FiltersState } from '../types/reducer.types';
-import { initialFiltersState } from './initialState';
+import { YearRange } from '@/types/filters/yearRange.types';
+import { Action, FiltersState } from '../../types/filters/reducer.types';
+import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
+
+export const initialSort = POPULAR_OPTION;
+export const initialYearRange: YearRange = { min: 1950, max: 2024, range: [1950, 2024] };
+
+export const initialFiltersState: FiltersState = {
+  genres: [],
+  sort: initialSort,
+  yearRange: initialYearRange,
+  movies: [],
+  currentPage: 1,
+};
 
 export function filtersReducer(filtersState: FiltersState, action: Action) {
   switch (action.type) {
@@ -18,10 +30,13 @@ export function filtersReducer(filtersState: FiltersState, action: Action) {
       };
     }
     case 'changed_sort': {
-      return {
-        ...filtersState,
-        sort: action.sort,
-      };
+      if (filtersState.sort !== action.sort) {
+        return {
+          ...filtersState,
+          sort: action.sort,
+        };
+      }
+      return filtersState;
     }
     case 'changed_year_range': {
       return {
@@ -37,10 +52,13 @@ export function filtersReducer(filtersState: FiltersState, action: Action) {
       };
     }
     case 'page_selected': {
-      return {
-        ...filtersState,
-        currentPage: action.currentPage,
-      };
+      if (filtersState.currentPage !== action.currentPage) {
+        return {
+          ...filtersState,
+          currentPage: action.currentPage,
+        };
+      }
+      return filtersState;
     }
     case 'reset_filters': {
       return {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import AuthModal from './modals/AuthModal';
+import AuthModal from './authModal/AuthModal';
 
 export default function Authorization() {
   const [isRegistered, setIsRegistered] = useState(false);

@@ -1,28 +1,33 @@
 import { useEffect } from 'react';
-import { useFilterContext, useFilterDispatchContext } from '@/contexts/filterContext/filterContext';
 import getGenresData from '@/api/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
-import { Genre } from '../../../types/filters/genres.types';
+import { useFilters } from '@/hooks/useFilters';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { Genre } from '@/types/filters/genres.types';
 
 function Genres() {
-  const filtersState = useFilterContext();
-  const dispatch = useFilterDispatchContext();
+  const filtersState = useFilters();
+  const dispatch = useFiltersDispatch();
 
   useEffect(() => {
     let ignoreFetch = false;
 
     async function fetchGenres() {
-      const response = await getGenresData();
-      const newGenres = response.genres.map((genre: Genre) => ({
-        ...genre,
-        checked: false,
-      })) as Genre[];
+      try {
+        const response = await getGenresData();
+        const newGenres = response.genres.map((genre: Genre) => ({
+          ...genre,
+          checked: false,
+        })) as Genre[];
 
-      if (!ignoreFetch) {
-        dispatch({
-          type: 'loaded_genres',
-          genres: newGenres,
-        });
+        if (!ignoreFetch) {
+          dispatch({
+            type: 'loaded_genres',
+            genres: newGenres,
+          });
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
 
