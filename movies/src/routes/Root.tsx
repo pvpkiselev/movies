@@ -1,16 +1,10 @@
 import { Box } from '@mui/material';
 import Header from '../components/header/Header';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useEffect, useState } from 'react';
 
 function Root() {
-  const { authToken } = useAuth();
-  const [isAuth, setIsAuth] = useState(false);
-
-  useEffect(() => {
-    setIsAuth(!!authToken);
-  }, [authToken]);
+  const { authState } = useAuth();
 
   return (
     <Box
@@ -23,7 +17,7 @@ function Root() {
       }}
     >
       <Header />
-      {isAuth && <Outlet />}
+      {authState.isAuth ? <Outlet /> : <Navigate to="/login" />}
     </Box>
   );
 }

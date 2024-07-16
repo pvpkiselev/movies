@@ -1,36 +1,54 @@
+import { createContext, ReactNode, useEffect, useReducer } from 'react';
+import { authInitialState, authReducer } from './authReducer';
+import { AuthState } from '@/types/auth/authReducer.types';
 import Cookies from 'js-cookie';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { setAxiosAuthToken } from '@/api/axiosConfig';
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 type AuthContextType = {
-  authToken: string | null;
-  setAuthToken: (token: string | null) => void;
+  authState: AuthState;
+  login: (token: string) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
-  authToken: null,
-  setAuthToken: () => {},
+  authState: authInitialState,
+  login: () => {},
+  logout: () => {},
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [authState, dispatch] = useReducer(authReducer, authInitialState);
 
   useEffect(() => {
     try {
-      const authToken = Cookies.get('token');
-      if (authToken) {
-        setAuthToken(authToken);
+      const token = Cookies.get('token');
+      if (token) {
+        dispatch({ type: 'login_success', token });
+        setAxiosAuthToken(token);
       }
     } catch (error) {
       console.error(`Storage get token error, ${error}`);
     }
   }, []);
 
+  const login = (token: string) => {
+    dispatch({ type: 'login_success', token });
+    setAxiosAuthToken(token);
+    Cookies.set('token', token);
+  };
+
+  const logout = () => {
+    dispatch({ type: 'logout' });
+    setAxiosAuthToken(null);
+    Cookies.remove('token');
+  };
+
   return (
-    <AuthContext.Provider value={{ authToken, setAuthToken }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ authState, login, logout }}>{children}</AuthContext.Provider>
   );
 };
 

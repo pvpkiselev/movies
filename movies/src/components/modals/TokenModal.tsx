@@ -1,6 +1,3 @@
-import { setAxiosAuthToken } from '@/api/axiosConfig';
-import getTokenVerification from '@/api/getTokenVerification';
-import { useAuth } from '@/hooks/useAuth';
 import {
   Button,
   Dialog,
@@ -10,49 +7,24 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import Cookies from 'js-cookie';
-import toast, { Toaster } from 'react-hot-toast';
 
 interface TokenModalProps {
   open: boolean;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
 }
 
-export default function TokenModal({ open, onClose }: TokenModalProps) {
-  const { setAuthToken } = useAuth();
-
-  const handleTokenSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const token = form.token.value;
-
-    try {
-      const tokenVerification = await getTokenVerification(token);
-
-      if (tokenVerification.success) {
-        Cookies.set('token', token);
-        setAuthToken(token);
-        setAxiosAuthToken(token);
-        onClose();
-      }
-    } catch (error) {
-      toast.error('Incorrect Token');
-      console.error(error);
-    } finally {
-      form.reset();
-    }
-  };
-
+export default function TokenModal({ open, onSubmit, onClose }: TokenModalProps) {
   return (
     <Dialog
       open={open}
       onClose={onClose}
       PaperProps={{
         component: 'form',
-        onSubmit: handleTokenSubmit,
+        onSubmit: onSubmit,
       }}
     >
-      <Toaster position="top-center" />
+      {/* <Toaster position="top-center" /> */}
       <DialogTitle>Enter Token</DialogTitle>
       <DialogContent>
         <DialogContentText>Please enter the token that was sent by email</DialogContentText>

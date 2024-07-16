@@ -25,7 +25,7 @@ function MovieCard(props: MovieCardProps) {
         flexDirection: 'column',
       }}
     >
-      <Link to={`movies/${linkId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link to={`/movies/${linkId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <CardMedia sx={{ height: 200 }} image={imageSrc} title={title} />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h5" component="div">

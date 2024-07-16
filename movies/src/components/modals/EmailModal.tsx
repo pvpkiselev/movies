@@ -7,23 +7,13 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import Cookies from 'js-cookie';
-
 interface EmailModalProps {
   open: boolean;
-  onChangeModal: () => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
 }
 
-export default function EmailModal({ open, onChangeModal, onClose }: EmailModalProps) {
-  const handleEmailSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const email = form.email.value;
-    Cookies.set('email', email);
-    onChangeModal();
-  };
-
+export default function EmailModal({ open, onSubmit, onClose }: EmailModalProps) {
   return (
     <div>
       <Dialog
@@ -31,7 +21,7 @@ export default function EmailModal({ open, onChangeModal, onClose }: EmailModalP
         onClose={onClose}
         PaperProps={{
           component: 'form',
-          onSubmit: handleEmailSubmit,
+          onSubmit: onSubmit,
         }}
       >
         <DialogTitle>Request Token</DialogTitle>

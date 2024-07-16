@@ -6,12 +6,16 @@ import { Box } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+type LoginModalType = 'email' | 'token' | null;
 
 function Login() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<LoginModalType>('email');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleEmailSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,7 +23,7 @@ function Login() {
     const email = form.email.value;
     Cookies.set('email', email);
     form.reset();
-    setStep(2);
+    setStep('token');
   };
 
   const handleTokenSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +37,8 @@ function Login() {
       if (tokenVerification.success) {
         Cookies.set('token', token);
         login(token);
-        navigate('/');
+        navigate(from, { replace: true });
+        setStep(null);
       }
     } catch (error) {
       toast.error('Incorrect Token');
@@ -43,14 +48,15 @@ function Login() {
     }
   };
 
+  const handleClose = () => {
+    setStep(null);
+  };
+
   return (
     <Box>
       <Toaster position="top-center" />
-      {step === 1 ? (
-        <EmailModal onSubmit={handleEmailSubmit} />
-      ) : (
-        <TokenModal onSubmit={handleTokenSubmit} />
-      )}
+      <EmailModal open={step === 'email'} onSubmit={handleEmailSubmit} onClose={handleClose} />
+      <TokenModal open={step === 'token'} onSubmit={handleTokenSubmit} onClose={handleClose} />
     </Box>
   );
 }
