@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import EmailModal from '../modals/EmailModal';
 import TokenModal from '../modals/TokenModal';
 import Cookies from 'js-cookie';
+import { setAxiosAuthToken } from '@/api/axiosConfig';
 
 const EMAIL_MODAL = 'emailModal';
 const TOKEN_MODAL = 'tokenModal';
@@ -21,6 +22,7 @@ export default function Header() {
 
   const handleLogout = () => {
     setAuthToken(null);
+    setAxiosAuthToken(null);
     Cookies.remove('token');
   };
 

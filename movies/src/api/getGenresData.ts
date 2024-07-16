@@ -1,11 +1,11 @@
 import { ResponseError } from '@/errors/responseError';
-import MOVIES_REQUEST from './requestOptions';
+import axiosInstance from './axiosConfig';
 
 const genresEndpoint = '/genre/movie/list?language=en';
 
 const getGenresData = async () => {
   try {
-    const response = await MOVIES_REQUEST.get(genresEndpoint);
+    const response = await axiosInstance.get(genresEndpoint);
 
     const okResponseCode = 200;
 

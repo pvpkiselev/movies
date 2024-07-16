@@ -18,8 +18,6 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
 
-  console.log(authToken);
-
   useEffect(() => {
     try {
       const authToken = Cookies.get('token');

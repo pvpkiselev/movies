@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import MOVIES_REQUEST from './requestOptions';
+import MOVIES_REQUEST from './axiosConfig';
 
 const topRatedEndpoint = '/movie/top_rated?language=en-US&page=';
 

@@ -1,11 +1,11 @@
 import { ResponseError } from '@/errors/responseError';
-import MOVIES_REQUEST from './requestOptions';
+import axiosInstance from './axiosConfig';
 
 const popularEndpoint = '/movie/popular?language=en-US&page=';
 
 const getPopularMovies = async (page: number = 1, signal: AbortSignal) => {
   try {
-    const response = await MOVIES_REQUEST.get(`${popularEndpoint}${page}`, { signal });
+    const response = await axiosInstance.get(`${popularEndpoint}${page}`, { signal });
     const okResponseCode = 200;
 
     if (response.status !== okResponseCode) {

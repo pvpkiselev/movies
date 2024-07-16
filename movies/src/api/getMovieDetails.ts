@@ -1,12 +1,12 @@
 import { ResponseError } from '@/errors/responseError';
-import MOVIES_REQUEST from './requestOptions';
 import { MovieDetailsType } from '@/types/movies/movieDetails.types';
+import axiosInstance from './axiosConfig';
 
 const getMovieDetails = async (id: string): Promise<MovieDetailsType> => {
   try {
     const detailsEndpoint = `/movie/${id}?language=en-US`;
 
-    const response = await MOVIES_REQUEST.get(detailsEndpoint);
+    const response = await axiosInstance.get(detailsEndpoint);
 
     const okResponseCode = 200;
 

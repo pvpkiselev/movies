@@ -1,3 +1,4 @@
+import { setAxiosAuthToken } from '@/api/axiosConfig';
 import getTokenVerification from '@/api/getTokenVerification';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -10,7 +11,6 @@ import {
   TextField,
 } from '@mui/material';
 import Cookies from 'js-cookie';
-import { useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 interface TokenModalProps {
@@ -32,6 +32,7 @@ export default function TokenModal({ open, onClose }: TokenModalProps) {
       if (tokenVerification.success) {
         Cookies.set('token', token);
         setAuthToken(token);
+        setAxiosAuthToken(token);
         onClose();
       }
     } catch (error) {
