@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useState } from 'react';
+import Cookies from 'js-cookie';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -16,6 +17,19 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
+
+  console.log(authToken);
+
+  useEffect(() => {
+    try {
+      const authToken = Cookies.get('token');
+      if (authToken) {
+        setAuthToken(authToken);
+      }
+    } catch (error) {
+      console.error(`Storage get token error, ${error}`);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ authToken, setAuthToken }}>{children}</AuthContext.Provider>

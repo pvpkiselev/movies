@@ -21,17 +21,6 @@ interface TokenModalProps {
 export default function TokenModal({ open, onClose }: TokenModalProps) {
   const { setAuthToken } = useAuth();
 
-  useEffect(() => {
-    try {
-      const authToken = Cookies.get('token');
-      if (authToken) {
-        setAuthToken(authToken);
-      }
-    } catch (error) {
-      console.error(`Storage get token error, ${error}`);
-    }
-  }, []);
-
   const handleTokenSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
