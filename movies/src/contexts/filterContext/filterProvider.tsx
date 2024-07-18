@@ -20,7 +20,7 @@ const initialFiltersState: FiltersState = {
   movies: [],
   currentPage: 1,
   favoriteMovies: [],
-  searchedMovies: [],
+  searchQuery: '',
 };
 
 function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
@@ -74,22 +74,23 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       return {
         ...filtersState,
         favoriteMovies: action.favoriteMovies,
+        currentPage: action.currentPage,
       };
     }
     case 'toggle_favorite_movie': {
-      const updatedFavoriteMovies = filtersState.favoriteMovies.includes(action.movieId)
-        ? filtersState.favoriteMovies.filter((id) => id !== action.movieId)
-        : [...filtersState.favoriteMovies, action.movieId];
+      const isFavorite = filtersState.favoriteMovies.some((movie) => movie.id === action.movie.id);
+      const updatedFavoriteMovies = isFavorite
+        ? filtersState.favoriteMovies.filter((movie) => movie.id !== action.movie.id)
+        : [...filtersState.favoriteMovies, action.movie];
       return {
         ...filtersState,
         favoriteMovies: updatedFavoriteMovies,
       };
     }
-    case 'loaded_searched_movies': {
+    case 'changed_search_query': {
       return {
         ...filtersState,
-        searchedMovies: action.searchedMovies,
-        currentPage: action.currentPage,
+        searchQuery: action.searchQuery,
       };
     }
     case 'reset_filters': {

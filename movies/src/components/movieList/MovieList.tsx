@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
-import { imageUrl } from './constants';
 import { POPULAR_OPTION, TOP_RATED_OPTION } from '../filters/sortSelect/constants';
 import getPopularMovies from '@/api/getPopularMovies';
 import getTopRatedMovies from '@/api/getTopRatedMovies';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
-import Cookies from 'js-cookie';
 import getFavoriteMoviesList from '@/api/getFavoriteMoviesList';
+import getSearchedMovies from '@/api/getSearchedMovies';
+import Cookies from 'js-cookie';
 
 function MovieList() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,29 +17,29 @@ function MovieList() {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const moviesListToShow =
-    filtersState.searchedMovies.length === 0 ? filtersState.movies : filtersState.searchedMovies;
-
-  console.log(moviesListToShow);
-  console.log('Movies', filtersState.movies);
-  console.log('Search', filtersState.searchedMovies);
+  const { currentPage, sort, searchQuery, movies, favoriteMovies } = filtersState;
 
   useEffect(() => {
-    const abortController = new AbortController();
-
     const fetchMovies = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const currentPage = filtersState.currentPage;
-        const currentSortBy = filtersState.sort;
-
         let response;
 
-        if (currentSortBy === POPULAR_OPTION) {
-          response = await getPopularMovies(currentPage, abortController.signal);
-        } else if (currentSortBy === TOP_RATED_OPTION) {
-          response = await getTopRatedMovies(currentPage, abortController.signal);
+        if (!filtersState.searchQuery) {
+          if (sort === POPULAR_OPTION) {
+            response = await getPopularMovies(currentPage);
+          } else if (sort === TOP_RATED_OPTION) {
+            response = await getTopRatedMovies(currentPage);
+          }
+        } else {
+          response = await getSearchedMovies(filtersState.searchQuery, currentPage);
+        }
+
+        const isEmptyResponseList = response?.results.length === 0;
+        if (isEmptyResponseList) {
+          setError('Movies Not Found');
+          return null;
         }
 
         if (response) {
@@ -50,35 +50,27 @@ function MovieList() {
           });
         }
       } catch (error) {
-        if (!abortController.signal.aborted) {
-          setError('Failed to fetch movies. Please try again later.');
-          console.error(error);
-        }
+        setError('Failed to fetch movies. Please try again later.');
+        console.error(error);
       } finally {
-        if (!abortController.signal.aborted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     fetchMovies();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [filtersState.sort, filtersState.currentPage, filtersDispatch]);
+  }, [sort, currentPage, searchQuery, filtersDispatch]);
 
   useEffect(() => {
     const loadFavorites = async () => {
       try {
         const userId = Cookies.get('userId');
         if (userId) {
-          const response = await getFavoriteMoviesList(userId);
-          const favoriteMovies = response.results.map((movie) => movie.id);
+          const response = await getFavoriteMoviesList(userId, currentPage);
 
           filtersDispatch({
             type: 'loaded_favorite_movies',
-            favoriteMovies,
+            favoriteMovies: response.results,
+            currentPage: response.page,
           });
         }
       } catch (error) {
@@ -87,7 +79,7 @@ function MovieList() {
     };
 
     loadFavorites();
-  }, [filtersDispatch]);
+  }, [currentPage, filtersDispatch]);
 
   return (
     <Box sx={{ flex: 1 }}>
@@ -104,7 +96,7 @@ function MovieList() {
         <Alert severity="error">{error}</Alert>
       ) : (
         <Grid container spacing={3} wrap="wrap">
-          {moviesListToShow.map((movie) => (
+          {movies.map((movie) => (
             <Grid
               item
               xs={12}
@@ -114,12 +106,7 @@ function MovieList() {
               key={movie.id}
               sx={{ display: 'flex', flexDirection: 'column' }}
             >
-              <MovieCard
-                linkId={movie.id}
-                title={movie.title}
-                imageSrc={`${imageUrl}${movie.backdrop_path}`}
-                rating={movie.vote_average.toFixed(1)}
-              />
+              <MovieCard movie={movie} />
             </Grid>
           ))}
         </Grid>

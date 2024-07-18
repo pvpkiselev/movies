@@ -3,14 +3,11 @@ import MOVIES_REQUEST from './axiosConfig';
 import { MoviesResponse } from '@/types/movies/movies.types';
 import { HttpStatusCode } from 'axios';
 
-const getTopRatedMovies = async (
-  page: number = 1,
-  signal: AbortSignal
-): Promise<MoviesResponse> => {
+const getTopRatedMovies = async (page: number = 1): Promise<MoviesResponse> => {
   try {
     const topRatedEndpoint = import.meta.env.VITE_TOP_RATED_ENDPOINT.replace('{page}', page);
 
-    const response = await MOVIES_REQUEST.get(topRatedEndpoint, { signal });
+    const response = await MOVIES_REQUEST.get(topRatedEndpoint);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

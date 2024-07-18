@@ -24,7 +24,6 @@ export default function TokenModal({ open, onSubmit, onClose }: TokenModalProps)
         onSubmit: onSubmit,
       }}
     >
-      {/* <Toaster position="top-center" /> */}
       <DialogTitle>Enter Token</DialogTitle>
       <DialogContent>
         <DialogContentText>Please enter the token that was sent by email</DialogContentText>

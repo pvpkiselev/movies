@@ -3,13 +3,12 @@ import axiosInstance from './axiosConfig';
 import { MoviesResponse } from '@/types/movies/movies.types';
 import { HttpStatusCode } from 'axios';
 
-const getFavoriteMoviesList = async (userId: string): Promise<MoviesResponse> => {
+const getFavoriteMoviesList = async (userId: string, page: number): Promise<MoviesResponse> => {
   try {
     const favoriteMoviesListEndpoint = import.meta.env.VITE_FAVORITE_MOVIES_LIST_ENDPOINT.replace(
       '{userId}',
       userId
-    );
-    // ).replace('{page}', page.toString());
+    ).replace('{page}', page.toString());
 
     const response = await axiosInstance.get(favoriteMoviesListEndpoint);
 

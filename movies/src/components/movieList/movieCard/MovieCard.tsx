@@ -7,30 +7,43 @@ import fetchFavoriteMovie from '@/api/fetchFavoriteMovie';
 import { useFilters } from '@/hooks/useFilters';
 import toast from 'react-hot-toast';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { Movie } from '@/types/movies/movies.types';
+import { imageUrl } from '../constants';
+
+// interface MovieCardProps {
+//   linkId: number;
+//   title: string;
+//   imageSrc: string;
+//   rating: string;
+// }
 
 interface MovieCardProps {
-  linkId: number;
-  title: string;
-  imageSrc: string;
-  rating: string;
+  movie: Movie;
 }
 
-function MovieCard(props: MovieCardProps) {
-  const { linkId, title, imageSrc, rating } = props;
+function MovieCard({ movie }: MovieCardProps) {
+  // const { linkId, title, imageSrc, rating } = movie;
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const isFavorite = filtersState.favoriteMovies.includes(linkId);
+  const { id, title, backdrop_path, vote_average } = movie;
+
+  const imageSrc = `${imageUrl}${backdrop_path}`;
+  const rating = vote_average.toFixed(1);
+
+  const { favoriteMovies } = filtersState;
+
+  const isFavorite = favoriteMovies.some((movie) => movie.id === id);
 
   const handleFavoriteToggle = async (favoriteStatus: boolean) => {
     try {
       const userId = Cookies.get('userId');
       if (userId) {
-        const response = await fetchFavoriteMovie(userId, linkId, !favoriteStatus);
+        const response = await fetchFavoriteMovie(userId, id, !favoriteStatus);
         if (response.success) {
           filtersDispatch({
             type: 'toggle_favorite_movie',
-            movieId: linkId,
+            movie: movie,
           });
           toast.success('Successfully toggled card');
         }
@@ -53,7 +66,7 @@ function MovieCard(props: MovieCardProps) {
         flexDirection: 'column',
       }}
     >
-      <Link to={`/movies/${linkId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link to={`/movies/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <CardMedia sx={{ height: 200 }} image={imageSrc} title={title} />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h5" component="div">
