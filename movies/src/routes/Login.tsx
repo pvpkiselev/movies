@@ -1,5 +1,5 @@
-import getTokenVerification from '@/api/getTokenVerification';
-import getUserId from '@/api/getUserId';
+import getTokenVerification from '@/api/auth/getTokenVerification';
+import getUserId from '@/api/auth/getUserId';
 import EmailModal from '@/components/modals/EmailModal';
 import TokenModal from '@/components/modals/TokenModal';
 import { useAuth } from '@/hooks/useAuth';

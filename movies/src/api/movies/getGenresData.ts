@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from './axiosConfig';
+import axiosInstance from '../axiosConfig';
 import { GenreResponse } from '@/types/filters/genres.types';
 import { HttpStatusCode } from 'axios';
 

@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from './axiosConfig';
+import axiosInstance from '../axiosConfig';
 import { User } from '@/types/auth/user.types';
 import { HttpStatusCode } from 'axios';
 

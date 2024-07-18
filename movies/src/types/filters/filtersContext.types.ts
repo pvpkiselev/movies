@@ -9,6 +9,7 @@ export type FiltersState = {
   movies: Movie[];
   currentPage: number;
   favoriteMovies: Movie[];
+  showFavorites: boolean;
   searchQuery: string;
 };
 
@@ -49,14 +50,19 @@ export type LOADED_FAVORITE_MOVIES = {
   currentPage: number;
 };
 
-export type CHANGED_SEARCH_QUERY = {
-  type: 'changed_search_query';
-  searchQuery: string;
-};
-
 export type TOGGLED_FAVORITE_MOVIE = {
   type: 'toggle_favorite_movie';
   movie: Movie;
+};
+
+export type SWITCHED_FAVORITES = {
+  type: 'switched_favorites';
+  showFavorites: boolean;
+};
+
+export type CHANGED_SEARCH_QUERY = {
+  type: 'changed_search_query';
+  searchQuery: string;
 };
 
 export type RESET_FILTERS_ACTION = {
@@ -73,5 +79,5 @@ export type FiltersAction =
   | RESET_FILTERS_ACTION
   | LOADED_FAVORITE_MOVIES
   | TOGGLED_FAVORITE_MOVIE
+  | SWITCHED_FAVORITES
   | CHANGED_SEARCH_QUERY;
-// | LOADED_SEARCHED_MOVIES;

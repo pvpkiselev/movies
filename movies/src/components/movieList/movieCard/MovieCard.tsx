@@ -3,32 +3,27 @@ import { theme } from '@/theme/theme';
 import { Link } from 'react-router-dom';
 import { Star, StarBorderOutlined } from '@mui/icons-material';
 import Cookies from 'js-cookie';
-import fetchFavoriteMovie from '@/api/fetchFavoriteMovie';
+import fetchFavoriteMovie from '@/api/favorites/fetchFavoriteMovie';
 import { useFilters } from '@/hooks/useFilters';
 import toast from 'react-hot-toast';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Movie } from '@/types/movies/movies.types';
-import { imageUrl } from '../constants';
-
-// interface MovieCardProps {
-//   linkId: number;
-//   title: string;
-//   imageSrc: string;
-//   rating: string;
-// }
+import { useState } from 'react';
+import { IMAGE_PATH, PLACEHOLDER_IMAGE_PATH } from '@/api/constants';
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 function MovieCard({ movie }: MovieCardProps) {
-  // const { linkId, title, imageSrc, rating } = movie;
+  const [imageError, setImageError] = useState(false);
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
   const { id, title, backdrop_path, vote_average } = movie;
 
-  const imageSrc = `${imageUrl}${backdrop_path}`;
+  const imageSrc =
+    imageError || !backdrop_path ? PLACEHOLDER_IMAGE_PATH : `${IMAGE_PATH}${backdrop_path}`;
   const rating = vote_average.toFixed(1);
 
   const { favoriteMovies } = filtersState;
@@ -45,7 +40,11 @@ function MovieCard({ movie }: MovieCardProps) {
             type: 'toggle_favorite_movie',
             movie: movie,
           });
-          toast.success('Successfully toggled card');
+          if (isFavorite) {
+            toast.success('Successfully removed card');
+          } else {
+            toast.success('Successfully added card');
+          }
         }
       }
     } catch (error) {
@@ -67,7 +66,12 @@ function MovieCard({ movie }: MovieCardProps) {
       }}
     >
       <Link to={`/movies/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <CardMedia sx={{ height: 200 }} image={imageSrc} title={title} />
+        <CardMedia
+          sx={{ height: 200 }}
+          image={imageSrc}
+          title={title}
+          onError={() => setImageError(true)}
+        />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h5" component="div">
             {title}

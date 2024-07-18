@@ -1,6 +1,6 @@
 import { ResponseError } from '@/errors/responseError';
 import { MovieCreditsType } from '@/types/movies/movieCredits.types';
-import axiosInstance from './axiosConfig';
+import axiosInstance from '../axiosConfig';
 import { HttpStatusCode } from 'axios';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {

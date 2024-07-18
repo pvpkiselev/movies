@@ -20,6 +20,7 @@ const initialFiltersState: FiltersState = {
   movies: [],
   currentPage: 1,
   favoriteMovies: [],
+  showFavorites: false,
   searchQuery: '',
 };
 
@@ -85,6 +86,12 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       return {
         ...filtersState,
         favoriteMovies: updatedFavoriteMovies,
+      };
+    }
+    case 'switched_favorites': {
+      return {
+        ...filtersState,
+        showFavorites: action.showFavorites,
       };
     }
     case 'changed_search_query': {

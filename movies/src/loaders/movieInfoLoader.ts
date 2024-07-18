@@ -1,6 +1,6 @@
 import { redirect, LoaderFunctionArgs } from 'react-router-dom';
-import getMovieDetails from '@/api/getMovieDetails';
-import getMovieCredits from '@/api/getMovieCredits';
+import getMovieDetails from '@/api/moviePage/getMovieDetails';
+import getMovieCredits from '@/api/moviePage/getMovieCredits';
 import { MovieInfoLoaderData } from '@/types/movies/movieInfoLoader.types';
 
 export async function movieInfoLoader({

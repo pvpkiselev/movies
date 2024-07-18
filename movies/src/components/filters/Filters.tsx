@@ -8,6 +8,7 @@ import ResetButton from './resetButton/ResetButton';
 import PaginationFilter from './pagination/Pagination';
 import { Close } from '@mui/icons-material';
 import Search from './search/Search';
+import FavoritesSwitch from './favoritesSwitch/FavoritesSwitch';
 
 function Filters() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -59,6 +60,7 @@ function Filters() {
             )}
           </Stack>
           <Search />
+          <FavoritesSwitch />
           <SortSelect />
           <YearRangeSlider />
           <Genres />

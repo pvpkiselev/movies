@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import getGenresData from '@/api/getGenresData';
+import getGenresData from '@/api/movies/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';

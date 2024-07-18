@@ -1,5 +1,5 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from './axiosConfig';
+import axiosInstance from '../axiosConfig';
 import { HttpStatusCode } from 'axios';
 import { MoviesResponse } from '@/types/movies/movies.types';
 

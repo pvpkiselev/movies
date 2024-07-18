@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { POPULAR_OPTION, TOP_RATED_OPTION } from '../filters/sortSelect/constants';
-import getPopularMovies from '@/api/getPopularMovies';
-import getTopRatedMovies from '@/api/getTopRatedMovies';
+import getPopularMovies from '@/api/movies/getPopularMovies';
+import getTopRatedMovies from '@/api/movies/getTopRatedMovies';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
-import getFavoriteMoviesList from '@/api/getFavoriteMoviesList';
-import getSearchedMovies from '@/api/getSearchedMovies';
+import getFavoriteMoviesList from '@/api/favorites/getFavoriteMoviesList';
+import getSearchedMovies from '@/api/movies/getSearchedMovies';
 import Cookies from 'js-cookie';
 
 function MovieList() {
@@ -17,7 +17,9 @@ function MovieList() {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const { currentPage, sort, searchQuery, movies, favoriteMovies } = filtersState;
+  const { currentPage, sort, searchQuery, movies, favoriteMovies, showFavorites } = filtersState;
+
+  const moviesListToShow = showFavorites ? favoriteMovies : movies;
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -96,7 +98,7 @@ function MovieList() {
         <Alert severity="error">{error}</Alert>
       ) : (
         <Grid container spacing={3} wrap="wrap">
-          {movies.map((movie) => (
+          {moviesListToShow.map((movie) => (
             <Grid
               item
               xs={12}
