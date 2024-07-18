@@ -1,18 +1,22 @@
 import { ResponseError } from '@/errors/responseError';
 import MOVIES_REQUEST from './axiosConfig';
+import { MoviesResponse } from '@/types/movies/movies.types';
+import { HttpStatusCode } from 'axios';
 
-const topRatedEndpoint = '/movie/top_rated?language=en-US&page=';
-
-const getTopRatedMovies = async (page: number = 1, signal: AbortSignal) => {
+const getTopRatedMovies = async (
+  page: number = 1,
+  signal: AbortSignal
+): Promise<MoviesResponse> => {
   try {
-    const response = await MOVIES_REQUEST.get(`${topRatedEndpoint}${page}`, { signal });
-    const okResponseCode = 200;
+    const topRatedEndpoint = import.meta.env.VITE_TOP_RATED_ENDPOINT;
 
-    if (response.status !== okResponseCode) {
+    const response = await MOVIES_REQUEST.get(`${topRatedEndpoint}${page}`, { signal });
+
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data;
+    } else {
       throw new ResponseError('Error fetching top rated movies data');
     }
-
-    return response.data;
   } catch (error) {
     console.error(`Failed to fetch top rated movies:`, error);
     throw error;

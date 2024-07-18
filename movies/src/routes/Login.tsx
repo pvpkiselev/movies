@@ -1,4 +1,5 @@
 import getTokenVerification from '@/api/getTokenVerification';
+import getUserId from '@/api/getUserId';
 import EmailModal from '@/components/modals/EmailModal';
 import TokenModal from '@/components/modals/TokenModal';
 import { useAuth } from '@/hooks/useAuth';
@@ -37,6 +38,10 @@ function Login() {
       if (tokenVerification.success) {
         Cookies.set('token', token);
         login(token);
+
+        const userIdResponse = await getUserId();
+        Cookies.set('userId', userIdResponse.id.toString());
+
         navigate(from, { replace: true });
         setStep(null);
       }
@@ -50,6 +55,7 @@ function Login() {
 
   const handleClose = () => {
     setStep(null);
+    navigate(from, { replace: true });
   };
 
   return (

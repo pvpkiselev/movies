@@ -1,7 +1,12 @@
 import { Card, CardActions, CardContent, CardMedia, IconButton, Typography } from '@mui/material';
 import { theme } from '@/theme/theme';
 import { Link } from 'react-router-dom';
-import { StarBorderOutlined } from '@mui/icons-material';
+import { Star, StarBorderOutlined } from '@mui/icons-material';
+import Cookies from 'js-cookie';
+import fetchFavoriteMovie from '@/api/fetchFavoriteMovie';
+import { useFilters } from '@/hooks/useFilters';
+import toast from 'react-hot-toast';
+import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 
 interface MovieCardProps {
   linkId: number;
@@ -12,6 +17,29 @@ interface MovieCardProps {
 
 function MovieCard(props: MovieCardProps) {
   const { linkId, title, imageSrc, rating } = props;
+  const filtersState = useFilters();
+  const filtersDispatch = useFiltersDispatch();
+
+  const isFavorite = filtersState.favoriteMovies.includes(linkId);
+
+  const handleFavoriteToggle = async (favoriteStatus: boolean) => {
+    try {
+      const userId = Cookies.get('userId');
+      if (userId) {
+        const response = await fetchFavoriteMovie(userId, linkId, !favoriteStatus);
+        if (response.success) {
+          filtersDispatch({
+            type: 'toggle_favorite_movie',
+            movieId: linkId,
+          });
+          toast.success('Successfully toggled card');
+        }
+      }
+    } catch (error) {
+      toast.error('Failed toggle card');
+      console.error('Failed to update Favorite Movie:', error);
+    }
+  };
 
   return (
     <Card
@@ -35,12 +63,12 @@ function MovieCard(props: MovieCardProps) {
             Rating {rating}
           </Typography>
         </CardContent>
-        <CardActions>
-          <IconButton>
-            <StarBorderOutlined />
-          </IconButton>
-        </CardActions>
       </Link>
+      <CardActions>
+        <IconButton onClick={() => handleFavoriteToggle(isFavorite)}>
+          {isFavorite ? <Star /> : <StarBorderOutlined />}
+        </IconButton>
+      </CardActions>
     </Card>
   );
 }

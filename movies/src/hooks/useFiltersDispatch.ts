@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { FilterDispatchContext } from '@/contexts/filterContext/filterProvider';
 import { ContextError } from '@/errors/contextError';
+import { FilterDispatchContext } from '@/contexts/filterContext/FilterProvider';
 
 export const useFiltersDispatch = () => {
   const filterDispatchContext = useContext(FilterDispatchContext);

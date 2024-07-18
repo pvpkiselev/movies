@@ -3,3 +3,7 @@ export type Genre = {
   name: string;
   checked: boolean;
 };
+
+export interface GenreResponse {
+  genres: Genre[];
+}

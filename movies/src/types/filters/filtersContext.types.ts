@@ -8,6 +8,7 @@ export type FiltersState = {
   yearRange: YearRange;
   movies: Movie[];
   currentPage: number;
+  favoriteMovies: number[];
 };
 
 export type LOADED_GENRES_ACTION = {
@@ -41,6 +42,16 @@ export type PAGE_SELECTED_ACTION = {
   currentPage: number;
 };
 
+export type LOADED_FAVORITE_MOVIES = {
+  type: 'loaded_favorite_movies';
+  favoriteMovies: number[];
+};
+
+export type TOGGLED_FAVORITE_MOVIE = {
+  type: 'toggle_favorite_movie';
+  movieId: number;
+};
+
 export type RESET_FILTERS_ACTION = {
   type: 'reset_filters';
 };
@@ -52,4 +63,6 @@ export type FiltersAction =
   | CHANGED_YEAR_RANGE_ACTION
   | LOADED_MOVIES_ACTION
   | PAGE_SELECTED_ACTION
-  | RESET_FILTERS_ACTION;
+  | RESET_FILTERS_ACTION
+  | LOADED_FAVORITE_MOVIES
+  | TOGGLED_FAVORITE_MOVIE;

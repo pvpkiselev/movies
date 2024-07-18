@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useEffect, useReducer } from 'react';
-import { authInitialState, authReducer } from './authReducer';
-import { AuthState } from '@/types/auth/authReducer.types';
+import { AuthAction, AuthState } from '@/types/auth/authContext.types';
 import Cookies from 'js-cookie';
 import { setAxiosAuthToken } from '@/api/axiosConfig';
 
@@ -13,6 +12,32 @@ type AuthContextType = {
   login: (token: string) => void;
   logout: () => void;
 };
+
+const authInitialState: AuthState = {
+  isAuth: false,
+  token: null,
+};
+
+function authReducer(authState: AuthState, action: AuthAction) {
+  switch (action.type) {
+    case 'login_success': {
+      return {
+        ...authState,
+        isAuth: true,
+        token: action.token,
+      };
+    }
+    case 'logout': {
+      return {
+        ...authState,
+        isAuth: false,
+        token: null,
+      };
+    }
+    default:
+      return authState;
+  }
+}
 
 const AuthContext = createContext<AuthContextType>({
   authState: authInitialState,

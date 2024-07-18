@@ -43,12 +43,6 @@ export default function Header() {
             </IconButton>
           </Link>
         )}
-        {/* <EmailModal
-          open={activeModal === EMAIL_MODAL}
-          onChangeModal={() => handleOpenModal(TOKEN_MODAL)}
-          onClose={handleCloseModal}
-        />
-        <TokenModal open={activeModal === TOKEN_MODAL} onClose={handleCloseModal} /> */}
       </Toolbar>
     </AppBar>
   );

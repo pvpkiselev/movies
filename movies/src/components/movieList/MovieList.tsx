@@ -2,31 +2,32 @@ import { useEffect, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { imageUrl } from './constants';
-import { MoviesResponse } from '@/types/movies/movies.types';
 import { POPULAR_OPTION, TOP_RATED_OPTION } from '../filters/sortSelect/constants';
 import getPopularMovies from '@/api/getPopularMovies';
 import getTopRatedMovies from '@/api/getTopRatedMovies';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
+import Cookies from 'js-cookie';
+import getFavoriteMoviesList from '@/api/getFavoriteMoviesList';
 
 function MovieList() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const filtersState = useFilters();
-  const dispatch = useFiltersDispatch();
+  const filtersDispatch = useFiltersDispatch();
 
   useEffect(() => {
     const abortController = new AbortController();
 
-    async function fetchMovies() {
+    const fetchMovies = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const currentPage = filtersState.currentPage;
         const currentSortBy = filtersState.sort;
 
-        let response: MoviesResponse | undefined;
+        let response;
 
         if (currentSortBy === POPULAR_OPTION) {
           response = await getPopularMovies(currentPage, abortController.signal);
@@ -35,7 +36,7 @@ function MovieList() {
         }
 
         if (response) {
-          dispatch({
+          filtersDispatch({
             type: 'loaded_movies',
             movies: response.results,
             currentPage: response.page,
@@ -51,14 +52,35 @@ function MovieList() {
           setIsLoading(false);
         }
       }
-    }
+    };
 
     fetchMovies();
 
     return () => {
       abortController.abort();
     };
-  }, [filtersState.sort, filtersState.currentPage, dispatch]);
+  }, [filtersState.sort, filtersState.currentPage, filtersDispatch]);
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const userId = Cookies.get('userId');
+        if (userId) {
+          const response = await getFavoriteMoviesList(userId);
+          const favoriteMovies = response.results.map((movie) => movie.id);
+
+          filtersDispatch({
+            type: 'loaded_favorite_movies',
+            favoriteMovies,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch Favorite Movies List:', error);
+      }
+    };
+
+    loadFavorites();
+  }, [filtersDispatch]);
 
   return (
     <Box sx={{ flex: 1 }}>
@@ -74,7 +96,7 @@ function MovieList() {
       ) : error ? (
         <Alert severity="error">{error}</Alert>
       ) : (
-        <Grid container spacing={3} sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Grid container spacing={3} wrap="wrap">
           {filtersState.movies.map((movie) => (
             <Grid
               item

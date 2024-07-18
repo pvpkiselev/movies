@@ -1,11 +1,12 @@
 import { ResponseError } from '@/errors/responseError';
-import axios from 'axios';
-import { API_URL } from './constants';
+import { HttpStatusCode } from 'axios';
+import { ResponseStatusData } from '@/types/response/response.types';
+import axiosInstance from './axiosConfig';
 
-const tokenVerificationEndpoint = '/authentication';
-
-const getTokenVerification = async (token: string) => {
+const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
   try {
+    const tokenVerificationEndpoint = import.meta.env.VITE_TOKEN_VERIFICATION_ENDPOINT;
+
     const options = {
       headers: {
         accept: 'application/json',
@@ -13,15 +14,14 @@ const getTokenVerification = async (token: string) => {
       },
     };
 
-    const response = await axios.get(`${API_URL}${tokenVerificationEndpoint}`, options);
+    const response = await axiosInstance.get(tokenVerificationEndpoint, options);
 
-    const okResponseCode = 200;
-
-    if (response.status !== okResponseCode) {
+    if (response.status === HttpStatusCode.Ok) {
+      console.log(response.data);
+      return response.data;
+    } else {
       throw new ResponseError('Error Token Verification data');
     }
-
-    return response.data;
   } catch (error) {
     console.error('Error Token Verification data:', error);
     throw error;

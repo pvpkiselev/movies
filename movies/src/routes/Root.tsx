@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
 import Header from '../components/header/Header';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { Toaster } from 'react-hot-toast';
 
 function Root() {
   const { authState } = useAuth();
@@ -17,7 +18,8 @@ function Root() {
       }}
     >
       <Header />
-      {authState.isAuth ? <Outlet /> : <Navigate to="/login" />}
+      <Toaster position="top-center" />
+      {authState.isAuth && <Outlet />}
     </Box>
   );
 }

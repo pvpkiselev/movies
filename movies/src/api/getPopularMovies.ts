@@ -1,18 +1,19 @@
 import { ResponseError } from '@/errors/responseError';
 import axiosInstance from './axiosConfig';
+import { MoviesResponse } from '@/types/movies/movies.types';
+import { HttpStatusCode } from 'axios';
 
-const popularEndpoint = '/movie/popular?language=en-US&page=';
-
-const getPopularMovies = async (page: number = 1, signal: AbortSignal) => {
+const getPopularMovies = async (page: number = 1, signal: AbortSignal): Promise<MoviesResponse> => {
   try {
-    const response = await axiosInstance.get(`${popularEndpoint}${page}`, { signal });
-    const okResponseCode = 200;
+    const popularEndpoint = import.meta.env.VITE_POPULAR_ENDPOINT;
 
-    if (response.status !== okResponseCode) {
+    const response = await axiosInstance.get(`${popularEndpoint}${page}`, { signal });
+
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data;
+    } else {
       throw new ResponseError('Error fetching popular movies data');
     }
-
-    return response.data;
   } catch (error) {
     console.error('Failed to fetch popular movies:', error);
     throw error;

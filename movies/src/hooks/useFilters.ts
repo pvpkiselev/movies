@@ -1,4 +1,4 @@
-import { FilterContext } from '@/contexts/filterContext/filterProvider';
+import { FilterContext } from '@/contexts/filterContext/FilterProvider';
 import { ContextError } from '@/errors/contextError';
 import { useContext } from 'react';
 

@@ -1,20 +1,19 @@
 import { ResponseError } from '@/errors/responseError';
 import { MovieCreditsType } from '@/types/movies/movieCredits.types';
 import axiosInstance from './axiosConfig';
+import { HttpStatusCode } from 'axios';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {
   try {
-    const detailsEndpoint = `/movie/${id}/credits?language=en-US`;
+    const creditsEndpoint = import.meta.env.VITE_GET_MOVIE_CREDITS.replace('{id}', id);
 
-    const response = await axiosInstance.get(detailsEndpoint);
+    const response = await axiosInstance.get(creditsEndpoint);
 
-    const okResponseCode = 200;
-
-    if (response.status !== okResponseCode) {
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data;
+    } else {
       throw new ResponseError('Error fetching movies credits data');
     }
-
-    return response.data;
   } catch (error) {
     console.error(`Failed to fetch movies credits:`, error);
     throw error;

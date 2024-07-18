@@ -9,6 +9,7 @@ import { movieInfoLoader } from '@/loaders/movieInfoLoader';
 import { AuthProvider } from '@/contexts/authContext/AuthProvider';
 import Login from './routes/Login';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { FilterProvider } from './contexts/filterContext/FilterProvider';
 
 const router = createBrowserRouter([
   {
@@ -39,8 +40,10 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        {/* <Header /> */}
-        <RouterProvider router={router} />
+        <FilterProvider>
+          {/* <Header /> */}
+          <RouterProvider router={router} />
+        </FilterProvider>
       </AuthProvider>
     </ThemeProvider>
   );

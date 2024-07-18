@@ -15,7 +15,7 @@ function Genres() {
     async function fetchGenres() {
       try {
         const response = await getGenresData();
-        const newGenres = response.genres.map((genre: Genre) => ({
+        const genres = response.genres.map((genre: Genre) => ({
           ...genre,
           checked: false,
         })) as Genre[];
@@ -23,7 +23,7 @@ function Genres() {
         if (!ignoreFetch) {
           dispatch({
             type: 'loaded_genres',
-            genres: newGenres,
+            genres,
           });
         }
       } catch (error) {

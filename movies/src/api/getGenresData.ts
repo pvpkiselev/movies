@@ -1,19 +1,19 @@
 import { ResponseError } from '@/errors/responseError';
 import axiosInstance from './axiosConfig';
+import { GenreResponse } from '@/types/filters/genres.types';
+import { HttpStatusCode } from 'axios';
 
-const genresEndpoint = '/genre/movie/list?language=en';
-
-const getGenresData = async () => {
+const getGenresData = async (): Promise<GenreResponse> => {
   try {
+    const genresEndpoint = import.meta.env.VITE_GENRES_ENDPOINT;
+
     const response = await axiosInstance.get(genresEndpoint);
 
-    const okResponseCode = 200;
-
-    if (response.status !== okResponseCode) {
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data;
+    } else {
       throw new ResponseError('Error fetching genres data');
     }
-
-    return response.data;
   } catch (error) {
     console.error('Failed to fetch genres:', error);
     throw error;
