@@ -17,6 +17,13 @@ function MovieList() {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
+  const moviesListToShow =
+    filtersState.searchedMovies.length === 0 ? filtersState.movies : filtersState.searchedMovies;
+
+  console.log(moviesListToShow);
+  console.log('Movies', filtersState.movies);
+  console.log('Search', filtersState.searchedMovies);
+
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -97,7 +104,7 @@ function MovieList() {
         <Alert severity="error">{error}</Alert>
       ) : (
         <Grid container spacing={3} wrap="wrap">
-          {filtersState.movies.map((movie) => (
+          {moviesListToShow.map((movie) => (
             <Grid
               item
               xs={12}

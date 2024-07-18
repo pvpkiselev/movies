@@ -5,9 +5,9 @@ import { HttpStatusCode } from 'axios';
 
 const getPopularMovies = async (page: number = 1, signal: AbortSignal): Promise<MoviesResponse> => {
   try {
-    const popularEndpoint = import.meta.env.VITE_POPULAR_ENDPOINT;
+    const popularEndpoint = import.meta.env.VITE_POPULAR_ENDPOINT.replace('{page}', page);
 
-    const response = await axiosInstance.get(`${popularEndpoint}${page}`, { signal });
+    const response = await axiosInstance.get(popularEndpoint, { signal });
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

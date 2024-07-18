@@ -9,7 +9,7 @@ const fetchFavoriteMovie = async (
   isFavorite: boolean
 ): Promise<ResponseStatusData> => {
   try {
-    const fetchFavoriteMovieEndpoint = import.meta.env.VITE_FETCH_FAVORITE_MOVIE.replace(
+    const fetchFavoriteMovieEndpoint = import.meta.env.VITE_FETCH_FAVORITE_ENDPOINT.replace(
       '{userId}',
       userId
     );

@@ -5,7 +5,7 @@ import { HttpStatusCode } from 'axios';
 
 const getFavoriteMoviesList = async (userId: string): Promise<MoviesResponse> => {
   try {
-    const favoriteMoviesListEndpoint = import.meta.env.VITE_GET_FAVORITE_MOVIES_LIST.replace(
+    const favoriteMoviesListEndpoint = import.meta.env.VITE_FAVORITE_MOVIES_LIST_ENDPOINT.replace(
       '{userId}',
       userId
     );

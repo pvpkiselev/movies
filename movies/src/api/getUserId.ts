@@ -10,7 +10,6 @@ const getUserId = async (): Promise<User> => {
     const response = await axiosInstance.get(userIdEndpoint);
 
     if (response.status === HttpStatusCode.Ok) {
-      console.log(response.data);
       return response.data;
     } else {
       throw new ResponseError('Error fetching user ID data');

@@ -8,9 +8,9 @@ const getTopRatedMovies = async (
   signal: AbortSignal
 ): Promise<MoviesResponse> => {
   try {
-    const topRatedEndpoint = import.meta.env.VITE_TOP_RATED_ENDPOINT;
+    const topRatedEndpoint = import.meta.env.VITE_TOP_RATED_ENDPOINT.replace('{page}', page);
 
-    const response = await MOVIES_REQUEST.get(`${topRatedEndpoint}${page}`, { signal });
+    const response = await MOVIES_REQUEST.get(topRatedEndpoint, { signal });
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

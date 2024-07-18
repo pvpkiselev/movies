@@ -5,7 +5,7 @@ import axiosInstance from './axiosConfig';
 
 const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
   try {
-    const tokenVerificationEndpoint = import.meta.env.VITE_TOKEN_VERIFICATION_ENDPOINT;
+    const tokenVerificationEndpoint = import.meta.env.VITE_VERIFICATION_ENDPOINT;
 
     const options = {
       headers: {

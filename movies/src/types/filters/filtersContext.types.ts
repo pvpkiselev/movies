@@ -9,6 +9,7 @@ export type FiltersState = {
   movies: Movie[];
   currentPage: number;
   favoriteMovies: number[];
+  searchedMovies: Movie[];
 };
 
 export type LOADED_GENRES_ACTION = {
@@ -52,6 +53,12 @@ export type TOGGLED_FAVORITE_MOVIE = {
   movieId: number;
 };
 
+export type LOADED_SEARCHED_MOVIES = {
+  type: 'loaded_searched_movies';
+  searchedMovies: Movie[];
+  currentPage: number;
+};
+
 export type RESET_FILTERS_ACTION = {
   type: 'reset_filters';
 };
@@ -65,4 +72,5 @@ export type FiltersAction =
   | PAGE_SELECTED_ACTION
   | RESET_FILTERS_ACTION
   | LOADED_FAVORITE_MOVIES
-  | TOGGLED_FAVORITE_MOVIE;
+  | TOGGLED_FAVORITE_MOVIE
+  | LOADED_SEARCHED_MOVIES;

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { theme } from '@/theme/theme';
-import { Close } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, Stack, Typography, useMediaQuery } from '@mui/material';
 import SortSelect from './sortSelect/SortSelect';
 import YearRangeSlider from './yearRangeSlider/YearRangeSlider';
 import Genres from './genres/Genres';
 import ResetButton from './resetButton/ResetButton';
 import PaginationFilter from './pagination/Pagination';
+import { Close } from '@mui/icons-material';
+import Search from './search/Search';
 
 function Filters() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -57,6 +58,7 @@ function Filters() {
               </IconButton>
             )}
           </Stack>
+          <Search />
           <SortSelect />
           <YearRangeSlider />
           <Genres />

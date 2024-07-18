@@ -5,7 +5,7 @@ import { HttpStatusCode } from 'axios';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {
   try {
-    const creditsEndpoint = import.meta.env.VITE_GET_MOVIE_CREDITS.replace('{id}', id);
+    const creditsEndpoint = import.meta.env.VITE_MOVIE_CREDITS_ENDPOINT.replace('{movie_id}', id);
 
     const response = await axiosInstance.get(creditsEndpoint);
 
