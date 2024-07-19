@@ -1,27 +1,33 @@
-import RangeSlider from '@/components/common/rangeSlider/RangeSlider';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { Box, Slider, Typography } from '@mui/material';
 
 function YearRangeSlider() {
   const filtersState = useFilters();
-  const dispatch = useFiltersDispatch();
+  const filtersDispatch = useFiltersDispatch();
 
-  const handleYearRangeChange = (newRange: number[]) => {
-    dispatch({
-      type: 'changed_year_range',
-      range: newRange,
-    });
+  const { min, max, range } = filtersState.yearRange;
+
+  const handleYearRangeChange = (_event: Event, range: number | number[]) => {
+    if (Array.isArray(range)) {
+      filtersDispatch({
+        type: 'changed_year_range',
+        range: range,
+      });
+    }
   };
 
   return (
-    <RangeSlider
-      label="Year Range"
-      min={filtersState.yearRange.min}
-      max={filtersState.yearRange.max}
-      range={filtersState.yearRange.range}
-      valueLabelDisplay="on"
-      onChange={handleYearRangeChange}
-    />
+    <Box width="100%">
+      <Typography gutterBottom>Year Range</Typography>
+      <Slider
+        min={min}
+        max={max}
+        value={range}
+        onChange={handleYearRangeChange}
+        valueLabelDisplay="on"
+      />
+    </Box>
   );
 }
 

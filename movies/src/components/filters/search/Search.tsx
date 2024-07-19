@@ -1,33 +1,25 @@
-import { useState } from 'react';
 import { FormControl, InputAdornment, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
-import { useDebouncedCallback } from 'use-debounce';
+import { useFilters } from '@/hooks/useFilters';
 
 function Search() {
+  const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
-  const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSetSearchQuery = useDebouncedCallback((query) => {
-    setSearchQuery(query);
-    filtersDispatch({
-      type: 'changed_search_query',
-      searchQuery: query,
-    });
-  }, 400);
 
-  const isEmptyQuery = searchQuery === '';
+  const isEmptyQuery = filtersState.searchQuery === '';
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentSearchQuery = event.currentTarget.value;
-    setSearchQuery(currentSearchQuery);
 
-    debouncedSetSearchQuery(currentSearchQuery);
+    filtersDispatch({
+      type: 'changed_search_query',
+      searchQuery: currentSearchQuery,
+    });
   };
 
   const handleResetClick = () => {
-    setSearchQuery('');
-
     filtersDispatch({
       type: 'changed_search_query',
       searchQuery: '',
@@ -40,7 +32,7 @@ function Search() {
         size="medium"
         variant="standard"
         onChange={handleQueryChange}
-        value={searchQuery}
+        value={filtersState.searchQuery}
         placeholder="Search movies"
         InputProps={{
           startAdornment: (

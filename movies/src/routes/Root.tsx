@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Toaster } from 'react-hot-toast';
 
 function Root() {
-  const { authState } = useAuth();
+  const authState = useAuth();
 
   return (
     <Box

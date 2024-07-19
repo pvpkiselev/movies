@@ -3,14 +3,18 @@ import axiosInstance from '../axiosConfig';
 import { HttpStatusCode } from 'axios';
 import { MoviesResponse } from '@/types/movies/movies.types';
 
-const getSearchedMovies = async (query: string, page: number): Promise<MoviesResponse> => {
+const getSearchedMovies = async (
+  query: string,
+  page: number,
+  signal: AbortSignal
+): Promise<MoviesResponse> => {
   try {
     const searchEndpoint = import.meta.env.VITE_SEARCHED_MOVIES_ENDPOINT.replace(
       '{query}',
       query
     ).replace('{page}', page);
 
-    const response = await axiosInstance.get(searchEndpoint);
+    const response = await axiosInstance.get(searchEndpoint, { signal });
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

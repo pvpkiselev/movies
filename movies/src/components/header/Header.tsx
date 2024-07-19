@@ -2,12 +2,19 @@ import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
 import { useAuth } from '@/hooks/useAuth';
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
+import { setAxiosAuthToken } from '@/api/axiosConfig';
+import Cookies from 'js-cookie';
 
 export default function Header() {
-  const { authState, logout } = useAuth();
+  const authState = useAuth();
+  const authDispatch = useAuthDispatch();
 
   const handleLogout = () => {
-    logout();
+    authDispatch({ type: 'logout' });
+    setAxiosAuthToken(null);
+    Cookies.remove('token');
+    Cookies.remove('userId');
   };
 
   return (

@@ -1,4 +1,3 @@
-import { YearRange } from '@/types/filters/yearRange.types';
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { createContext, Dispatch, ReactNode, useReducer } from 'react';
 import { FiltersAction, FiltersState } from '@/types/filters/filtersContext.types';
@@ -11,7 +10,7 @@ type FilterContextType = FiltersState | null;
 type FilterDispatchContextType = Dispatch<FiltersAction> | null;
 
 const initialSort = POPULAR_OPTION;
-const initialYearRange: YearRange = { min: 1950, max: 2024, range: [1950, 2024] };
+const initialYearRange = { min: 1950, max: 2024, range: [1950, 2024] };
 
 const initialFiltersState: FiltersState = {
   genres: [],
@@ -19,7 +18,10 @@ const initialFiltersState: FiltersState = {
   yearRange: initialYearRange,
   movies: [],
   currentPage: 1,
+  maxPages: 1,
   favoriteMovies: [],
+  currentFavPage: 1,
+  maxFavPages: 1,
   showFavorites: false,
   searchQuery: '',
 };
@@ -60,6 +62,7 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
         ...filtersState,
         movies: action.movies,
         currentPage: action.currentPage,
+        maxPages: action.maxPages,
       };
     }
     case 'page_selected': {
@@ -75,17 +78,8 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       return {
         ...filtersState,
         favoriteMovies: action.favoriteMovies,
-        currentPage: action.currentPage,
-      };
-    }
-    case 'toggle_favorite_movie': {
-      const isFavorite = filtersState.favoriteMovies.some((movie) => movie.id === action.movie.id);
-      const updatedFavoriteMovies = isFavorite
-        ? filtersState.favoriteMovies.filter((movie) => movie.id !== action.movie.id)
-        : [...filtersState.favoriteMovies, action.movie];
-      return {
-        ...filtersState,
-        favoriteMovies: updatedFavoriteMovies,
+        currentFavPage: action.currentFavPage,
+        maxFavPages: action.maxFavPages,
       };
     }
     case 'switched_favorites': {

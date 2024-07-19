@@ -1,8 +1,9 @@
 import getTokenVerification from '@/api/auth/getTokenVerification';
 import getUserId from '@/api/auth/getUserId';
+import { setAxiosAuthToken } from '@/api/axiosConfig';
 import EmailModal from '@/components/modals/EmailModal';
 import TokenModal from '@/components/modals/TokenModal';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { Box } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
@@ -13,7 +14,7 @@ type LoginModalType = 'email' | 'token' | null;
 
 function Login() {
   const [step, setStep] = useState<LoginModalType>('email');
-  const { login } = useAuth();
+  const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -36,12 +37,13 @@ function Login() {
       const tokenVerification = await getTokenVerification(token);
 
       if (tokenVerification.success) {
-        Cookies.set('token', token);
-        login(token);
-
+        setAxiosAuthToken(token);
         const userIdResponse = await getUserId();
-        Cookies.set('userId', userIdResponse.id.toString());
+        const userId = userIdResponse.id.toString();
 
+        authDispatch({ type: 'login_success', token, userId });
+        Cookies.set('token', token);
+        Cookies.set('userId', userId);
         navigate(from, { replace: true });
         setStep(null);
       }

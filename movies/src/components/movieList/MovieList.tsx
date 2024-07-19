@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { POPULAR_OPTION, TOP_RATED_OPTION } from '../filters/sortSelect/constants';
@@ -8,34 +8,38 @@ import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
 import getFavoriteMoviesList from '@/api/favorites/getFavoriteMoviesList';
 import getSearchedMovies from '@/api/movies/getSearchedMovies';
-import Cookies from 'js-cookie';
+import { useAuth } from '@/hooks/useAuth';
+import { useDebouncedCallback } from 'use-debounce';
 
 function MovieList() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const authState = useAuth();
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
   const { currentPage, sort, searchQuery, movies, favoriteMovies, showFavorites } = filtersState;
-
+  const { userId } = authState;
   const moviesListToShow = showFavorites ? favoriteMovies : movies;
 
-  useEffect(() => {
-    const fetchMovies = async () => {
+  const activeRequest = useRef<AbortController | null>(null);
+
+  const fetchMovies = useCallback(
+    async (abortController: AbortController) => {
       setIsLoading(true);
       setError(null);
       try {
         let response;
 
-        if (!filtersState.searchQuery) {
+        if (!searchQuery) {
           if (sort === POPULAR_OPTION) {
-            response = await getPopularMovies(currentPage);
+            response = await getPopularMovies(currentPage, abortController.signal);
           } else if (sort === TOP_RATED_OPTION) {
-            response = await getTopRatedMovies(currentPage);
+            response = await getTopRatedMovies(currentPage, abortController.signal);
           }
         } else {
-          response = await getSearchedMovies(filtersState.searchQuery, currentPage);
+          response = await getSearchedMovies(searchQuery, currentPage, abortController.signal);
         }
 
         const isEmptyResponseList = response?.results.length === 0;
@@ -49,30 +53,48 @@ function MovieList() {
             type: 'loaded_movies',
             movies: response.results,
             currentPage: response.page,
+            maxPages: response.total_pages,
           });
         }
       } catch (error) {
-        setError('Failed to fetch movies. Please try again later.');
-        console.error(error);
+        if (!abortController.signal.aborted) {
+          setError('Failed to fetch movies. Please try again later.');
+          console.error(error);
+        }
       } finally {
-        setIsLoading(false);
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
       }
-    };
+    },
+    [sort, currentPage, searchQuery, filtersDispatch]
+  );
 
-    fetchMovies();
-  }, [sort, currentPage, searchQuery, filtersDispatch]);
+  const debouncedFetchMovies = useDebouncedCallback(fetchMovies, 300);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    activeRequest.current = abortController;
+
+    debouncedFetchMovies(abortController);
+
+    return () => {
+      abortController.abort();
+      activeRequest.current = null;
+    };
+  }, [debouncedFetchMovies, sort, currentPage, searchQuery]);
 
   useEffect(() => {
     const loadFavorites = async () => {
       try {
-        const userId = Cookies.get('userId');
         if (userId) {
-          const response = await getFavoriteMoviesList(userId, currentPage);
+          const response = await getFavoriteMoviesList(userId);
 
           filtersDispatch({
             type: 'loaded_favorite_movies',
             favoriteMovies: response.results,
-            currentPage: response.page,
+            currentFavPage: response.page,
+            maxFavPages: response.total_pages,
           });
         }
       } catch (error) {

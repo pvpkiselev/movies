@@ -1,4 +1,4 @@
-import AuthContext from '@/contexts/authContext/AuthProvider';
+import { AuthContext } from '@/contexts/authContext/AuthProvider';
 import { ContextError } from '@/errors/contextError';
 import { useContext } from 'react';
 

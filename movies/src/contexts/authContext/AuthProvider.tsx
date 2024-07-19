@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useReducer } from 'react';
+import { createContext, Dispatch, ReactNode, useEffect, useReducer } from 'react';
 import { AuthAction, AuthState } from '@/types/auth/authContext.types';
 import Cookies from 'js-cookie';
 import { setAxiosAuthToken } from '@/api/axiosConfig';
@@ -7,15 +7,13 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-type AuthContextType = {
-  authState: AuthState;
-  login: (token: string) => void;
-  logout: () => void;
-};
+type AuthContextType = AuthState | null;
+type AuthDispatchContextType = Dispatch<AuthAction> | null;
 
 const authInitialState: AuthState = {
   isAuth: false,
   token: null,
+  userId: null,
 };
 
 function authReducer(authState: AuthState, action: AuthAction) {
@@ -25,6 +23,7 @@ function authReducer(authState: AuthState, action: AuthAction) {
         ...authState,
         isAuth: true,
         token: action.token,
+        userId: action.userId,
       };
     }
     case 'logout': {
@@ -32,6 +31,7 @@ function authReducer(authState: AuthState, action: AuthAction) {
         ...authState,
         isAuth: false,
         token: null,
+        userId: null,
       };
     }
     default:
@@ -39,11 +39,8 @@ function authReducer(authState: AuthState, action: AuthAction) {
   }
 }
 
-const AuthContext = createContext<AuthContextType>({
-  authState: authInitialState,
-  login: () => {},
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType>(null);
+const AuthDispatchContext = createContext<AuthDispatchContextType>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, dispatch] = useReducer(authReducer, authInitialState);
@@ -51,8 +48,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     try {
       const token = Cookies.get('token');
-      if (token) {
-        dispatch({ type: 'login_success', token });
+      const userId = Cookies.get('userId');
+      if (token && userId) {
+        dispatch({ type: 'login_success', token, userId });
         setAxiosAuthToken(token);
       }
     } catch (error) {
@@ -60,21 +58,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  const login = (token: string) => {
-    dispatch({ type: 'login_success', token });
-    setAxiosAuthToken(token);
-    Cookies.set('token', token);
-  };
-
-  const logout = () => {
-    dispatch({ type: 'logout' });
-    setAxiosAuthToken(null);
-    Cookies.remove('token');
-  };
-
   return (
-    <AuthContext.Provider value={{ authState, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={authState}>
+      <AuthDispatchContext.Provider value={dispatch}>{children}</AuthDispatchContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export default AuthContext;
+export { AuthContext, AuthDispatchContext };

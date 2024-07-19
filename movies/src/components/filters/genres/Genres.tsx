@@ -3,7 +3,6 @@ import getGenresData from '@/api/movies/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
-import { Genre } from '@/types/filters/genres.types';
 
 function Genres() {
   const filtersState = useFilters();
@@ -15,10 +14,10 @@ function Genres() {
     async function fetchGenres() {
       try {
         const response = await getGenresData();
-        const genres = response.genres.map((genre: Genre) => ({
+        const genres = response.genres.map((genre) => ({
           ...genre,
           checked: false,
-        })) as Genre[];
+        }));
 
         if (!ignoreFetch) {
           dispatch({

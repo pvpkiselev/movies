@@ -6,6 +6,14 @@ function PaginationFilter() {
   const filtersState = useFilters();
   const dispatch = useFiltersDispatch();
 
+  const { currentPage, currentFavPage, maxPages, maxFavPages, showFavorites } = filtersState;
+
+  const currentPageNumber = showFavorites ? currentFavPage : currentPage;
+
+  const POSSIBLE_PAGES = 500;
+
+  const totalPages = Math.min(showFavorites ? maxFavPages : maxPages, POSSIBLE_PAGES);
+
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
     dispatch({
       type: 'page_selected',
@@ -13,12 +21,9 @@ function PaginationFilter() {
     });
   };
 
-  const currentPage = filtersState.currentPage;
-  const totalPages = 500;
-
   return (
     <Pagination
-      page={currentPage}
+      page={currentPageNumber}
       size="medium"
       siblingCount={1}
       count={totalPages}
