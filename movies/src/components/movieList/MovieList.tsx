@@ -12,6 +12,7 @@ import MovieListSkeleton from './MovieListSkeleton';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
+  console.log('Render');
 
   const authState = useAuth();
   const filtersState = useFilters();
