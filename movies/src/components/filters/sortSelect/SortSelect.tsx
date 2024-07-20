@@ -28,7 +28,7 @@ function SortSelect() {
         name="sort"
         id="sort"
         labelId="sort"
-        defaultValue={filtersState.sort}
+        value={filtersState.sort}
         onChange={handleSortChange}
       >
         {sortOptions.map((option) => (

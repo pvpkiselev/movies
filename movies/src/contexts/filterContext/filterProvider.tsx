@@ -10,7 +10,7 @@ type FilterContextType = FiltersState | null;
 type FilterDispatchContextType = Dispatch<FiltersAction> | null;
 
 const initialSort = POPULAR_OPTION;
-const initialYearRange = { min: 1950, max: 2024, range: [1950, 2024] };
+const initialYearRange = { min: 1970, max: 2024, range: [1970, 2024] };
 
 const initialFiltersState: FiltersState = {
   genres: [],
@@ -96,7 +96,8 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
     }
     case 'reset_filters': {
       return {
-        ...initialFiltersState,
+        ...filtersState,
+        currentPage: 1,
         genres: filtersState.genres.map((genre) => {
           return { ...genre, checked: false };
         }),

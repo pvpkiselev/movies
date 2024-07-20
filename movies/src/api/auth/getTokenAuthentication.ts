@@ -1,20 +1,21 @@
 import { ResponseError } from '@/errors/responseError';
 import { HttpStatusCode } from 'axios';
 import { ResponseStatusData } from '@/types/response/response.types';
-import axiosInstance from '../axiosConfig';
+import { resources } from '../resources';
+import { axiosGetInstance } from '../axiosConfig';
 
-const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
+const getTokenAuthentication = async (token: string): Promise<ResponseStatusData> => {
   try {
-    const tokenVerificationEndpoint = import.meta.env.VITE_VERIFICATION_ENDPOINT;
+    const resource = resources.authentication;
 
-    const options = {
+    const config = {
       headers: {
-        accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
+      url: resource,
     };
 
-    const response = await axiosInstance.get(tokenVerificationEndpoint, options);
+    const response = await axiosGetInstance(config);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;
@@ -27,4 +28,4 @@ const getTokenVerification = async (token: string): Promise<ResponseStatusData> 
   }
 };
 
-export default getTokenVerification;
+export default getTokenAuthentication;

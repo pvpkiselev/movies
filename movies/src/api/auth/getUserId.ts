@@ -1,13 +1,19 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from '../axiosConfig';
 import { User } from '@/types/auth/user.types';
 import { HttpStatusCode } from 'axios';
+import { axiosGetInstance } from '../axiosConfig';
+import { resources } from '../resources';
 
 const getUserId = async (): Promise<User> => {
   try {
-    const userIdEndpoint = import.meta.env.VITE_USER_ID_ENDPOINT;
+    const { account, account_id } = resources;
+    const resource = account + '/' + account_id;
 
-    const response = await axiosInstance.get(userIdEndpoint);
+    const config = {
+      url: resource,
+    };
+
+    const response = await axiosGetInstance(config);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

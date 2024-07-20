@@ -1,8 +1,17 @@
 import axios from 'axios';
 import { API_URL } from './constants';
 
-const axiosInstance = axios.create({
+const axiosGetInstance = axios.create({
   baseURL: API_URL,
+  method: 'get',
+  headers: {
+    accept: 'application/json',
+  },
+});
+
+const axiosPostInstance = axios.create({
+  baseURL: API_URL,
+  method: 'post',
   headers: {
     accept: 'application/json',
     'Content-Type': 'application/json',
@@ -11,10 +20,12 @@ const axiosInstance = axios.create({
 
 export const setAxiosAuthToken = (token: string | null) => {
   if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axiosGetInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axiosPostInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
-    delete axiosInstance.defaults.headers.common['Authorization'];
+    delete axiosGetInstance.defaults.headers.common['Authorization'];
+    delete axiosPostInstance.defaults.headers.common['Authorization'];
   }
 };
 
-export default axiosInstance;
+export { axiosGetInstance, axiosPostInstance };

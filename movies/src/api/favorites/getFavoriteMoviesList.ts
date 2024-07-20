@@ -1,16 +1,22 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from '../axiosConfig';
+import { axiosGetInstance } from '../axiosConfig';
 import { MoviesResponse } from '@/types/movies/movies.types';
 import { HttpStatusCode } from 'axios';
+import { resources } from '../resources';
 
 const getFavoriteMoviesList = async (userId: string): Promise<MoviesResponse> => {
   try {
-    const favoriteMoviesListEndpoint = import.meta.env.VITE_FAVORITE_MOVIES_LIST_ENDPOINT.replace(
-      '{userId}',
-      userId
-    );
+    const { account, favorite, movies } = resources;
+    const resource = `${account}/${userId}/${favorite}/${movies}`;
 
-    const response = await axiosInstance.get(favoriteMoviesListEndpoint);
+    const config = {
+      url: resource,
+      params: {
+        language: 'en',
+      },
+    };
+
+    const response = await axiosGetInstance(config);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

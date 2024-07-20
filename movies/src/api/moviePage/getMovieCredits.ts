@@ -1,13 +1,22 @@
 import { ResponseError } from '@/errors/responseError';
 import { MovieCreditsType } from '@/types/movies/movieCredits.types';
-import axiosInstance from '../axiosConfig';
 import { HttpStatusCode } from 'axios';
+import { axiosGetInstance } from '../axiosConfig';
+import { resources } from '../resources';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {
   try {
-    const creditsEndpoint = import.meta.env.VITE_MOVIE_CREDITS_ENDPOINT.replace('{movie_id}', id);
+    const { movie, credits } = resources;
+    const resource = `${movie}/${id}/${credits}`;
 
-    const response = await axiosInstance.get(creditsEndpoint);
+    const config = {
+      url: resource,
+      params: {
+        language: 'en',
+      },
+    };
+
+    const response = await axiosGetInstance(config);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;

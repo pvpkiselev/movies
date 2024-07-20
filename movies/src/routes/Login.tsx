@@ -1,4 +1,4 @@
-import getTokenVerification from '@/api/auth/getTokenVerification';
+import getTokenAuthentication from '@/api/auth/getTokenAuthentication';
 import getUserId from '@/api/auth/getUserId';
 import { setAxiosAuthToken } from '@/api/axiosConfig';
 import EmailModal from '@/components/modals/EmailModal';
@@ -34,7 +34,7 @@ function Login() {
     const token = form.token.value;
 
     try {
-      const tokenVerification = await getTokenVerification(token);
+      const tokenVerification = await getTokenAuthentication(token);
 
       if (tokenVerification.success) {
         setAxiosAuthToken(token);

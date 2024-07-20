@@ -1,13 +1,22 @@
 import { ResponseError } from '@/errors/responseError';
-import axiosInstance from '../axiosConfig';
 import { GenreResponse } from '@/types/filters/genres.types';
 import { HttpStatusCode } from 'axios';
+import { resources } from '../resources';
+import { axiosGetInstance } from '../axiosConfig';
 
 const getGenresData = async (): Promise<GenreResponse> => {
   try {
-    const genresEndpoint = import.meta.env.VITE_GENRES_ENDPOINT;
+    const { genre, movie, list } = resources;
+    const resource = `${genre}/${movie}/${list}`;
 
-    const response = await axiosInstance.get(genresEndpoint);
+    const config = {
+      url: resource,
+      params: {
+        language: 'en',
+      },
+    };
+
+    const response = await axiosGetInstance(config);
 
     if (response.status === HttpStatusCode.Ok) {
       return response.data;
