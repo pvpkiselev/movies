@@ -100,10 +100,10 @@ function MovieList() {
       <Typography variant="h3" component="h1" sx={{ paddingBottom: 4 }}>
         Movie List
       </Typography>
-      {moviesListToShow.length === 0 ? (
-        <MovieListSkeleton />
-      ) : error ? (
+      {error ? (
         <Alert severity="error">{error}</Alert>
+      ) : moviesListToShow.length === 0 ? (
+        <MovieListSkeleton />
       ) : (
         <Grid container spacing={3} wrap="wrap">
           {moviesListToShow.map((movie) => (

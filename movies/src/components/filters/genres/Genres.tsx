@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import getGenresData from '@/api/movies/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
 import { useFilters } from '@/hooks/useFilters';
@@ -8,10 +8,8 @@ function Genres() {
   const filtersState = useFilters();
   const dispatch = useFiltersDispatch();
 
-  useEffect(() => {
-    let ignoreFetch = false;
-
-    async function fetchGenres() {
+  const fetchGenres = useCallback(
+    async (ignoreFetch: boolean) => {
       try {
         const response = await getGenresData();
         const genres = response.genres.map((genre) => ({
@@ -28,14 +26,17 @@ function Genres() {
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+    [dispatch]
+  );
 
-    fetchGenres();
-
+  useEffect(() => {
+    let ignoreFetch = false;
+    fetchGenres(ignoreFetch);
     return () => {
       ignoreFetch = true;
     };
-  }, []);
+  }, [fetchGenres]);
 
   const handleGenreToggle = (event: React.SyntheticEvent, value: string[]) => {
     dispatch({

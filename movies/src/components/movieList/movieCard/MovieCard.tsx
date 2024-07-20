@@ -1,8 +1,8 @@
+import React, { useState } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import { theme } from '@/theme/theme';
 import { Link } from 'react-router-dom';
 import { Movie } from '@/types/movies/movies.types';
-import { useState } from 'react';
 import { IMAGE_PATH, PLACEHOLDER_IMAGE_PATH } from '@/api/constants';
 import FavoriteButton from '@/components/common/favoriteButton/FavoriteButton';
 
@@ -10,7 +10,7 @@ interface MovieCardProps {
   movie: Movie;
 }
 
-function MovieCard({ movie }: MovieCardProps) {
+const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie }) => {
   const [imageError, setImageError] = useState(false);
 
   const { id, title, backdrop_path, vote_average } = movie;
@@ -52,6 +52,6 @@ function MovieCard({ movie }: MovieCardProps) {
       </CardActions>
     </Card>
   );
-}
+});
 
 export default MovieCard;

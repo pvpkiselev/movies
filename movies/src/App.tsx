@@ -34,14 +34,12 @@ const router = createBrowserRouter([
   },
 ]);
 
-//TODO Реализовать доступность Header из любой части приложения
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
         <FilterProvider>
-          {/* <Header /> */}
           <RouterProvider router={router} />
         </FilterProvider>
       </AuthProvider>
