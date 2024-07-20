@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Box, Typography, Grid, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
@@ -8,9 +8,9 @@ import getSearchedMovies from '@/api/movies/getSearchedMovies';
 import { useAuth } from '@/hooks/useAuth';
 import { useDebouncedCallback } from 'use-debounce';
 import getSortedMovies from '@/api/movies/getSortedMovies';
+import MovieListSkeleton from './MovieListSkeleton';
 
 function MovieList() {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const authState = useAuth();
@@ -29,10 +29,10 @@ function MovieList() {
   } = filtersState;
   const [minYear, maxYear] = yearRange.range;
   const { userId } = authState;
+
   const moviesListToShow = showFavorites ? favoriteMovies : movies;
 
   const fetchMovies = useCallback(async () => {
-    setIsLoading(true);
     setError(null);
     try {
       let response;
@@ -65,8 +65,6 @@ function MovieList() {
     } catch (error) {
       setError('Failed to fetch movies. Please try again later.');
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   }, [sort, currentPage, searchQuery, yearRange, genres, filtersDispatch]);
 
@@ -76,24 +74,24 @@ function MovieList() {
     debouncedFetchMovies();
   }, [debouncedFetchMovies, sort, currentPage, searchQuery, yearRange, genres]);
 
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        if (userId) {
-          const response = await getFavoriteMoviesList(userId);
+  const loadFavorites = useCallback(async () => {
+    try {
+      if (userId) {
+        const response = await getFavoriteMoviesList(userId);
 
-          filtersDispatch({
-            type: 'loaded_favorite_movies',
-            favoriteMovies: response.results,
-            currentFavPage: response.page,
-            maxFavPages: response.total_pages,
-          });
-        }
-      } catch (error) {
-        console.error('Failed to fetch Favorite Movies List:', error);
+        filtersDispatch({
+          type: 'loaded_favorite_movies',
+          favoriteMovies: response.results,
+          currentFavPage: response.page,
+          maxFavPages: response.total_pages,
+        });
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch Favorite Movies List:', error);
+    }
+  }, []);
 
+  useEffect(() => {
     loadFavorites();
   }, [currentPage, filtersDispatch]);
 
@@ -102,10 +100,8 @@ function MovieList() {
       <Typography variant="h3" component="h1" sx={{ paddingBottom: 4 }}>
         Movie List
       </Typography>
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-          <CircularProgress />
-        </Box>
+      {moviesListToShow.length === 0 ? (
+        <MovieListSkeleton />
       ) : error ? (
         <Alert severity="error">{error}</Alert>
       ) : (

@@ -56,7 +56,7 @@ function FavoriteButton({ id }: FavoriteButtonProps) {
       toast.error('Failed to toggle favorite');
       console.error('Failed to update Favorite Movie:', error);
     }
-  }, [userId, id, isFavorite, filtersDispatch, currentPage]);
+  }, [id, isFavorite, currentPage, filtersDispatch]);
 
   return (
     <IconButton aria-label="favorite" onClick={handleFavoriteToggle}>

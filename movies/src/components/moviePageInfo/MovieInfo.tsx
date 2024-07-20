@@ -1,19 +1,29 @@
-import { CardContent, Typography } from '@mui/material';
+import { Button, CardContent, Stack, Typography } from '@mui/material';
 import MovieCast from './MovieCast';
 import MovieDetails from './movieDetails/MovieDetails';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { MovieInfoLoaderData } from '@/types/movies/movieInfoLoader.types';
+import FavoriteButton from '../common/favoriteButton/FavoriteButton';
+import { ArrowBack } from '@mui/icons-material';
 
-function MovieInfo() {
+interface MovieInfoProps {
+  movieId: string | undefined;
+}
+
+function MovieInfo({ movieId }: MovieInfoProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const data = useLoaderData() as MovieInfoLoaderData;
   const { details, credits } = data;
+
+  const handleBack = () => {
+    navigate(from, { replace: true });
+  };
 
   return (
     <CardContent
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        rowGap: 10,
         paddingInline: {
           xs: 0,
           md: 6,
@@ -25,11 +35,19 @@ function MovieInfo() {
         width: '100%',
       }}
     >
-      <Typography variant="h3" component="h1">
-        {details.title}
-      </Typography>
-      <MovieCast cast={credits.cast} />
-      <MovieDetails details={details} crew={credits.crew} />
+      <Stack gap={8}>
+        <Stack direction="row" alignItems="center">
+          <Typography variant="h3" component="h1">
+            {details.title}
+          </Typography>
+          <FavoriteButton id={Number(movieId)} />
+        </Stack>
+        <Button variant="outlined" startIcon={<ArrowBack />} onClick={handleBack}>
+          Move back
+        </Button>
+        <MovieCast cast={credits.cast} />
+        <MovieDetails details={details} crew={credits.crew} />
+      </Stack>
     </CardContent>
   );
 }
