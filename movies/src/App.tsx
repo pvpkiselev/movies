@@ -8,7 +8,7 @@ import MoviePage from '@/routes/MoviePage';
 import { movieInfoLoader } from '@/loaders/movieInfoLoader';
 import { AuthProvider } from '@/contexts/authContext/AuthProvider';
 import Login from './routes/Login';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { FilterProvider } from './contexts/filterContext/FilterProvider';
 
 const router = createBrowserRouter([
@@ -18,7 +18,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
+        index: true,
+        element: <Navigate to="/movies" replace />,
+      },
+      {
+        path: 'movies',
         element: <Home />,
       },
       {

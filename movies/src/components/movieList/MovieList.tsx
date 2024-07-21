@@ -56,7 +56,6 @@ function MovieList() {
       }
 
       if (responseType === 'sorted') {
-        console.log(response.page, response.total_pages);
         filtersDispatch({
           type: 'loaded_movies',
           movies: response.results,
@@ -64,7 +63,6 @@ function MovieList() {
           maxPages: response.total_pages,
         });
       } else if (responseType === 'favorites') {
-        console.log(response.page, response.total_pages);
         filtersDispatch({
           type: 'loaded_favorite_movies',
           favorites: response.results,
