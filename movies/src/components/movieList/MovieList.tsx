@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Box, Typography, Grid, Alert } from '@mui/material';
+import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
@@ -9,56 +9,65 @@ import { useAuth } from '@/hooks/useAuth';
 import { useDebouncedCallback } from 'use-debounce';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
+import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
-  console.log('Render');
 
   const authState = useAuth();
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const {
-    currentPage,
-    sort,
-    searchQuery,
-    movies,
-    favoriteMovies,
-    showFavorites,
-    yearRange,
-    genres,
-  } = filtersState;
+  const { currentPage, sort, searchQuery, movies, yearRange, genres } = filtersState;
+  const { sorted, favorites } = movies;
   const [minYear, maxYear] = yearRange.range;
   const { userId } = authState;
 
-  const moviesListToShow = showFavorites ? favoriteMovies : movies;
+  const isFavorites = sort === FAVORITES_OPTION;
+  const moviesListToShow = isFavorites ? favorites : sorted;
 
   const fetchMovies = useCallback(async () => {
     setError(null);
+    if (!userId) {
+      return null;
+    }
     try {
       let response;
+      let responseType: 'sorted' | 'favorites' = 'sorted';
 
       const filteredGenres = genres.filter((genre) => genre.checked);
       const genresIds = filteredGenres.map((genre) => genre.id).join(',');
 
       const sortedOptions = { currentPage, minYear, maxYear, sort, genresIds };
 
-      if (!searchQuery) {
+      if (!searchQuery && !isFavorites) {
         response = await getSortedMovies(sortedOptions);
+      } else if (isFavorites) {
+        response = await getFavoriteMoviesList(userId, currentPage);
+        responseType = 'favorites';
       } else {
         response = await getSearchedMovies(searchQuery, currentPage);
       }
 
-      const isEmptyResponseList = response?.results.length === 0;
+      const isEmptyResponseList = !response || !response.results;
       if (isEmptyResponseList) {
         setError('Movies Not Found');
         return null;
       }
 
-      if (response) {
+      if (responseType === 'sorted') {
+        console.log(response.page, response.total_pages);
         filtersDispatch({
           type: 'loaded_movies',
           movies: response.results,
+          currentPage: response.page,
+          maxPages: response.total_pages,
+        });
+      } else if (responseType === 'favorites') {
+        console.log(response.page, response.total_pages);
+        filtersDispatch({
+          type: 'loaded_favorite_movies',
+          favorites: response.results,
           currentPage: response.page,
           maxPages: response.total_pages,
         });
@@ -73,34 +82,29 @@ function MovieList() {
 
   useEffect(() => {
     debouncedFetchMovies();
-  }, [debouncedFetchMovies, sort, currentPage, searchQuery, yearRange, genres]);
+  }, [debouncedFetchMovies, sort, currentPage, searchQuery, yearRange, genres, filtersDispatch]);
 
-  const loadFavorites = useCallback(async () => {
+  const loadFavorites = async () => {
     try {
       if (userId) {
-        const response = await getFavoriteMoviesList(userId);
+        const response = await getFavoriteMoviesList(userId, currentPage);
 
         filtersDispatch({
           type: 'loaded_favorite_movies',
-          favoriteMovies: response.results,
-          currentFavPage: response.page,
-          maxFavPages: response.total_pages,
+          favorites: response.results,
         });
       }
     } catch (error) {
       console.error('Failed to fetch Favorite Movies List:', error);
     }
-  }, []);
+  };
 
   useEffect(() => {
     loadFavorites();
-  }, [currentPage, filtersDispatch]);
+  }, []);
 
   return (
     <Box flex="1">
-      <Typography variant="h3" component="h1" sx={{ paddingBottom: 4 }}>
-        Movie List
-      </Typography>
       {error ? (
         <Alert severity="error">{error}</Alert>
       ) : moviesListToShow.length === 0 ? (

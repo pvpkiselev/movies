@@ -16,13 +16,12 @@ const initialFiltersState: FiltersState = {
   genres: [],
   sort: initialSort,
   yearRange: initialYearRange,
-  movies: [],
+  movies: {
+    sorted: [],
+    favorites: [],
+  },
   currentPage: 1,
   maxPages: 1,
-  favoriteMovies: [],
-  currentFavPage: 1,
-  maxFavPages: 1,
-  showFavorites: false,
   searchQuery: '',
 };
 
@@ -60,7 +59,10 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
     case 'loaded_movies': {
       return {
         ...filtersState,
-        movies: action.movies,
+        movies: {
+          ...filtersState.movies,
+          sorted: action.movies,
+        },
         currentPage: action.currentPage,
         maxPages: action.maxPages,
       };
@@ -77,9 +79,12 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
     case 'loaded_favorite_movies': {
       return {
         ...filtersState,
-        favoriteMovies: action.favoriteMovies,
-        currentFavPage: action.currentFavPage,
-        maxFavPages: action.maxFavPages,
+        movies: {
+          ...filtersState.movies,
+          favorites: action.favorites,
+        },
+        ...(action.currentPage !== undefined && { currentPage: action.currentPage }),
+        ...(action.maxPages !== undefined && { maxPages: action.maxPages }),
       };
     }
     case 'switched_favorites': {
@@ -114,7 +119,6 @@ const FilterDispatchContext = createContext<FilterDispatchContextType>(null);
 
 export function FilterProvider({ children }: FilterProviderProps) {
   const [filtersState, dispatch] = useReducer(filtersReducer, initialFiltersState);
-
   return (
     <FilterContext.Provider value={filtersState}>
       <FilterDispatchContext.Provider value={dispatch}>{children}</FilterDispatchContext.Provider>

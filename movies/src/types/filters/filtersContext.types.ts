@@ -6,13 +6,12 @@ export type FiltersState = {
   genres: Genre[];
   sort: string;
   yearRange: YearRange;
-  movies: Movie[];
+  movies: {
+    sorted: Movie[];
+    favorites: Movie[];
+  };
   currentPage: number;
   maxPages: number;
-  favoriteMovies: Movie[];
-  currentFavPage: number;
-  maxFavPages: number;
-  showFavorites: boolean;
   searchQuery: string;
 };
 
@@ -50,9 +49,9 @@ export type PAGE_SELECTED_ACTION = {
 
 export type LOADED_FAVORITE_MOVIES = {
   type: 'loaded_favorite_movies';
-  favoriteMovies: Movie[];
-  currentFavPage: number;
-  maxFavPages: number;
+  favorites: Movie[];
+  currentPage?: number;
+  maxPages?: number;
 };
 
 export type SWITCHED_FAVORITES = {

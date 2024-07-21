@@ -4,16 +4,30 @@ import { MoviesResponse } from '@/types/movies/movies.types';
 import { HttpStatusCode } from 'axios';
 import { resources } from '../resources';
 
-const getFavoriteMoviesList = async (userId: string): Promise<MoviesResponse> => {
+interface FavoriteMoviesParams {
+  language: string;
+  page?: number;
+}
+
+const getFavoriteMoviesList = async (
+  userId: string,
+  currentPage?: number
+): Promise<MoviesResponse> => {
   try {
     const { account, favorite, movies } = resources;
     const resource = `${account}/${userId}/${favorite}/${movies}`;
 
+    const params: FavoriteMoviesParams = {
+      language: 'en',
+    };
+
+    if (currentPage) {
+      params.page = currentPage;
+    }
+
     const config = {
       url: resource,
-      params: {
-        language: 'en',
-      },
+      params: params,
     };
 
     const response = await axiosGetInstance(config);

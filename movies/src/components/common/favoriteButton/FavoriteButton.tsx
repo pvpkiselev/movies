@@ -5,7 +5,7 @@ import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Favorite } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 
 interface FavoriteButtonProps {
@@ -17,15 +17,20 @@ function FavoriteButton({ id }: FavoriteButtonProps) {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const { favoriteMovies, currentPage } = filtersState;
+  const { favorites } = filtersState.movies;
   const { userId } = authState;
 
-  const isFavoriteInContext = favoriteMovies.some((movie) => movie.id === id);
+  const isFavoriteInContext = favorites.some((movie) => movie.id === id);
   const [isFavorite, setIsFavorite] = useState(isFavoriteInContext);
 
-  useEffect(() => {
-    setIsFavorite(favoriteMovies.some((movie) => movie.id === id));
-  }, [favoriteMovies, id]);
+  const updateFavoriteMoviesList = async () => {
+    if (!userId) return;
+    const updatedFavorites = await getFavoriteMoviesList(userId);
+    filtersDispatch({
+      type: 'loaded_favorite_movies',
+      favorites: updatedFavorites.results,
+    });
+  };
 
   const handleFavoriteToggle = useCallback(async () => {
     try {
@@ -34,18 +39,11 @@ function FavoriteButton({ id }: FavoriteButtonProps) {
         const toggleFavoriteResponse = await fetchFavoriteMovie(userId, id, newFavoriteStatus);
 
         if (toggleFavoriteResponse.success) {
-          const favoriteListResponse = await getFavoriteMoviesList(userId);
-
-          filtersDispatch({
-            type: 'loaded_favorite_movies',
-            favoriteMovies: favoriteListResponse.results,
-            currentFavPage: favoriteListResponse.page,
-            maxFavPages: favoriteListResponse.total_pages,
-          });
-
           setIsFavorite(newFavoriteStatus);
-
-          toast.success(isFavorite ? 'Successfully removed card' : 'Successfully added card');
+          await updateFavoriteMoviesList();
+          toast.success(
+            newFavoriteStatus ? 'Successfully added card' : 'Successfully removed card'
+          );
         } else {
           throw new Error('Failed to toggle favorite');
         }
@@ -53,10 +51,11 @@ function FavoriteButton({ id }: FavoriteButtonProps) {
         throw new Error('User not authenticated');
       }
     } catch (error) {
+      setIsFavorite(!isFavorite);
       toast.error('Failed to toggle favorite');
       console.error('Failed to update Favorite Movie:', error);
     }
-  }, [id, isFavorite, currentPage, filtersDispatch]);
+  }, [id, isFavorite, userId]);
 
   return (
     <IconButton aria-label="favorite" onClick={handleFavoriteToggle}>

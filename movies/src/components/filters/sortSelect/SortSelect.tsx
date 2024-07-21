@@ -1,4 +1,4 @@
-import { POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
+import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
@@ -6,6 +6,7 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 const sortOptions = [
   { id: 0, value: POPULAR_OPTION },
   { id: 1, value: TOP_RATED_OPTION },
+  { id: 2, value: FAVORITES_OPTION },
 ];
 
 function SortSelect() {

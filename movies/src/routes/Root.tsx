@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Header from '../components/header/Header';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,7 +19,15 @@ function Root() {
     >
       <Header />
       <Toaster position="top-center" />
-      {authState.isAuth && <Outlet />}
+      {authState.isAuth ? (
+        <Outlet />
+      ) : (
+        <Box>
+          <Typography variant="h3" textAlign="center">
+            Please login first
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }
