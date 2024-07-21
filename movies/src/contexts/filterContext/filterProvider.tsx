@@ -103,6 +103,9 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       return {
         ...filtersState,
         currentPage: 1,
+        sort: initialSort,
+        yearRange: initialYearRange,
+        searchQuery: '',
         genres: filtersState.genres.map((genre) => {
           return { ...genre, checked: false };
         }),
