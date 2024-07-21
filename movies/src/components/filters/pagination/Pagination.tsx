@@ -12,7 +12,7 @@ function PaginationFilter() {
 
   const totalPages = Math.min(maxPages, POSSIBLE_PAGES);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
     dispatch({
       type: 'page_selected',
       currentPage: page,

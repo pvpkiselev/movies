@@ -38,7 +38,7 @@ function Genres() {
     };
   }, [fetchGenres]);
 
-  const handleGenreToggle = (event: React.SyntheticEvent, value: string[]) => {
+  const handleGenreToggle = (_event: React.SyntheticEvent, value: string[]) => {
     dispatch({
       type: 'toggled_genre',
       selectedGenres: value,
