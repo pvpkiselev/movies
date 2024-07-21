@@ -1,28 +1,18 @@
-import { Genre } from '@/types/filters/genres.types';
 import { YearRange } from '@/types/filters/yearRange.types';
-import { Movie } from '../movies/movies.types';
 
 export type FiltersState = {
-  genres: Genre[];
+  genreIds: number[];
   sort: string;
   yearRange: YearRange;
-  movies: {
-    sorted: Movie[];
-    favorites: Movie[];
-  };
+  favMoviesIds: number[];
   currentPage: number;
   maxPages: number;
   searchQuery: string;
 };
 
-export type LOADED_GENRES_ACTION = {
-  type: 'loaded_genres';
-  genres: Genre[];
-};
-
 export type TOGGLED_GENRE_ACTION = {
-  type: 'toggled_genre';
-  selectedGenres: string[];
+  type: 'toggled_genres';
+  toggledGenresIds: number[];
 };
 
 export type CHANGED_SORT_ACTION = {
@@ -35,10 +25,8 @@ export type CHANGED_YEAR_RANGE_ACTION = {
   range: number[];
 };
 
-export type LOADED_MOVIES_ACTION = {
-  type: 'loaded_movies';
-  movies: Movie[];
-  currentPage: number;
+export type CHANGED_MAX_PAGES_ACTION = {
+  type: 'changed_max_pages';
   maxPages: number;
 };
 
@@ -47,16 +35,9 @@ export type PAGE_SELECTED_ACTION = {
   currentPage: number;
 };
 
-export type LOADED_FAVORITE_MOVIES = {
-  type: 'loaded_favorite_movies';
-  favorites: Movie[];
-  currentPage?: number;
-  maxPages?: number;
-};
-
-export type SWITCHED_FAVORITES = {
-  type: 'switched_favorites';
-  showFavorites: boolean;
+export type LOADED_FAVORITE_MOVIES_IDS = {
+  type: 'loaded_fav_movies_ids';
+  favMoviesIds: number[];
 };
 
 export type CHANGED_SEARCH_QUERY = {
@@ -69,13 +50,11 @@ export type RESET_FILTERS_ACTION = {
 };
 
 export type FiltersAction =
-  | LOADED_GENRES_ACTION
   | TOGGLED_GENRE_ACTION
   | CHANGED_SORT_ACTION
   | CHANGED_YEAR_RANGE_ACTION
-  | LOADED_MOVIES_ACTION
+  | CHANGED_MAX_PAGES_ACTION
   | PAGE_SELECTED_ACTION
   | RESET_FILTERS_ACTION
-  | LOADED_FAVORITE_MOVIES
-  | SWITCHED_FAVORITES
+  | LOADED_FAVORITE_MOVIES_IDS
   | CHANGED_SEARCH_QUERY;

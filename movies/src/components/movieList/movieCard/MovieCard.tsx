@@ -10,7 +10,7 @@ interface MovieCardProps {
   movie: Movie;
 }
 
-const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie }) => {
+function MovieCard({ movie }: MovieCardProps) {
   const [imageError, setImageError] = useState(false);
 
   const { id, title, backdrop_path, vote_average } = movie;
@@ -52,6 +52,6 @@ const MovieCard: React.FC<MovieCardProps> = React.memo(({ movie }) => {
       </CardActions>
     </Card>
   );
-});
+}
 
 export default MovieCard;

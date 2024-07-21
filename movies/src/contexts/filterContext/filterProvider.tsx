@@ -13,32 +13,22 @@ const initialSort = POPULAR_OPTION;
 const initialYearRange = { min: 1970, max: 2024, range: [1970, 2024] };
 
 const initialFiltersState: FiltersState = {
-  genres: [],
+  genreIds: [],
   sort: initialSort,
   yearRange: initialYearRange,
-  movies: {
-    sorted: [],
-    favorites: [],
-  },
+  favMoviesIds: [],
   currentPage: 1,
-  maxPages: 1,
+  maxPages: 500,
   searchQuery: '',
 };
 
 function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
   switch (action.type) {
-    case 'loaded_genres': {
-      return { ...filtersState, genres: action.genres };
-    }
-    case 'toggled_genre': {
-      const selectedGenresSet = new Set(action.selectedGenres);
-      const updatedGenres = filtersState.genres.map((genre) => ({
-        ...genre,
-        checked: selectedGenresSet.has(genre.name),
-      }));
+    case 'toggled_genres': {
       return {
         ...filtersState,
-        genres: updatedGenres,
+        genreIds: action.toggledGenresIds,
+        currentPage: initialFiltersState.currentPage,
       };
     }
     case 'changed_sort': {
@@ -46,6 +36,7 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
         return {
           ...filtersState,
           sort: action.sort,
+          currentPage: initialFiltersState.currentPage,
         };
       }
       return filtersState;
@@ -54,16 +45,12 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       return {
         ...filtersState,
         yearRange: { ...filtersState.yearRange, range: action.range },
+        currentPage: initialFiltersState.currentPage,
       };
     }
-    case 'loaded_movies': {
+    case 'changed_max_pages': {
       return {
         ...filtersState,
-        movies: {
-          ...filtersState.movies,
-          sorted: action.movies,
-        },
-        currentPage: action.currentPage,
         maxPages: action.maxPages,
       };
     }
@@ -76,40 +63,21 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
       }
       return filtersState;
     }
-    case 'loaded_favorite_movies': {
+    case 'loaded_fav_movies_ids': {
       return {
         ...filtersState,
-        movies: {
-          ...filtersState.movies,
-          favorites: action.favorites,
-        },
-        ...(action.currentPage !== undefined && { currentPage: action.currentPage }),
-        ...(action.maxPages !== undefined && { maxPages: action.maxPages }),
-      };
-    }
-    case 'switched_favorites': {
-      return {
-        ...filtersState,
-        showFavorites: action.showFavorites,
+        favMoviesIds: action.favMoviesIds,
       };
     }
     case 'changed_search_query': {
       return {
         ...filtersState,
         searchQuery: action.searchQuery,
+        currentPage: initialFiltersState.currentPage,
       };
     }
     case 'reset_filters': {
-      return {
-        ...filtersState,
-        currentPage: 1,
-        sort: initialSort,
-        yearRange: initialYearRange,
-        searchQuery: '',
-        genres: filtersState.genres.map((genre) => {
-          return { ...genre, checked: false };
-        }),
-      };
+      return initialFiltersState;
     }
     default: {
       return filtersState;

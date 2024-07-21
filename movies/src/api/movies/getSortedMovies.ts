@@ -51,9 +51,7 @@ const getSortedMovies = async (props: GetSortedMovies): Promise<MoviesResponse> 
       sort_by: sortType,
     };
 
-    if (genresIds) {
-      params.with_genres = encodeURIComponent(genresIds);
-    }
+    params.with_genres = encodeURIComponent(genresIds);
 
     const config = {
       url: resource,

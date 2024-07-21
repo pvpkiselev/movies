@@ -17,18 +17,19 @@ function FavoriteButton({ id }: FavoriteButtonProps) {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const { favorites } = filtersState.movies;
+  const { favMoviesIds } = filtersState;
   const { userId } = authState;
 
-  const isFavoriteInContext = favorites.some((movie) => movie.id === id);
+  const isFavoriteInContext = favMoviesIds.includes(id);
   const [isFavorite, setIsFavorite] = useState(isFavoriteInContext);
 
   const updateFavoriteMoviesList = async () => {
     if (!userId) return;
     const updatedFavorites = await getFavoriteMoviesList(userId);
+    const favIds = updatedFavorites.results.map((movie) => movie.id);
     filtersDispatch({
-      type: 'loaded_favorite_movies',
-      favorites: updatedFavorites.results,
+      type: 'loaded_fav_movies_ids',
+      favMoviesIds: favIds,
     });
   };
 

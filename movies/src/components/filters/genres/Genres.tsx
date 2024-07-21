@@ -1,10 +1,12 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import getGenresData from '@/api/movies/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { Genre } from '@/types/filters/genres.types';
 
 function Genres() {
+  const [genres, setGenres] = useState<Genre[]>([]);
   const filtersState = useFilters();
   const dispatch = useFiltersDispatch();
 
@@ -12,16 +14,10 @@ function Genres() {
     async (ignoreFetch: boolean) => {
       try {
         const response = await getGenresData();
-        const genres = response.genres.map((genre) => ({
-          ...genre,
-          checked: false,
-        }));
+        const genres = response.genres;
 
         if (!ignoreFetch) {
-          dispatch({
-            type: 'loaded_genres',
-            genres,
-          });
+          setGenres(genres);
         }
       } catch (error) {
         console.error(error);
@@ -38,17 +34,22 @@ function Genres() {
     };
   }, [fetchGenres]);
 
-  const handleGenreToggle = (_event: React.SyntheticEvent, value: string[]) => {
+  const handleGenreToggle = (_event: React.SyntheticEvent, value: number[]) => {
     dispatch({
-      type: 'toggled_genre',
-      selectedGenres: value,
+      type: 'toggled_genres',
+      toggledGenresIds: value,
     });
   };
 
-  const optionNames = filtersState.genres.map((genre) => genre.name);
-  const selectedNames = filtersState.genres
-    .filter((genre) => genre.checked)
-    .map((genre) => genre.name);
+  const optionIds = genres.map((genre) => genre.id);
+  const selectedGenres = genres
+    .filter((genre) => filtersState.genreIds.includes(genre.id))
+    .map((genre) => genre.id);
+
+  function getOptionLabel(option: Genre['id']): string {
+    const genreName = genres.find((genre) => genre.id === option);
+    return genreName ? genreName.name : '';
+  }
 
   return (
     <Autocomplete
@@ -56,9 +57,9 @@ function Genres() {
       limitTags={2}
       disableCloseOnSelect
       id="genres"
-      options={optionNames}
-      getOptionLabel={(option) => option}
-      value={selectedNames}
+      options={optionIds}
+      getOptionLabel={getOptionLabel}
+      value={selectedGenres}
       onChange={handleGenreToggle}
       renderInput={(params) => <TextField {...params} variant="standard" label="Genres" />}
       sx={{ width: '100%' }}

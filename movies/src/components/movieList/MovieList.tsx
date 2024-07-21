@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
@@ -10,21 +10,22 @@ import { useDebouncedCallback } from 'use-debounce';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
+import { Movie } from '@/types/movies/movies.types';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const authState = useAuth();
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
-  const { currentPage, sort, searchQuery, movies, yearRange, genres } = filtersState;
-  const { sorted, favorites } = movies;
+  const { currentPage, sort, searchQuery, yearRange, genreIds } = filtersState;
+
   const [minYear, maxYear] = yearRange.range;
   const { userId } = authState;
 
   const isFavorites = sort === FAVORITES_OPTION;
-  const moviesListToShow = isFavorites ? favorites : sorted;
 
   const fetchMovies = useCallback(async () => {
     setError(null);
@@ -33,10 +34,8 @@ function MovieList() {
     }
     try {
       let response;
-      let responseType: 'sorted' | 'favorites' = 'sorted';
 
-      const filteredGenres = genres.filter((genre) => genre.checked);
-      const genresIds = filteredGenres.map((genre) => genre.id).join(',');
+      const genresIds = genreIds.map((genre) => genre).join(',');
 
       const sortedOptions = { currentPage, minYear, maxYear, sort, genresIds };
 
@@ -44,7 +43,6 @@ function MovieList() {
         response = await getSortedMovies(sortedOptions);
       } else if (isFavorites) {
         response = await getFavoriteMoviesList(userId, currentPage);
-        responseType = 'favorites';
       } else {
         response = await getSearchedMovies(searchQuery, currentPage);
       }
@@ -55,41 +53,32 @@ function MovieList() {
         return null;
       }
 
-      if (responseType === 'sorted') {
-        filtersDispatch({
-          type: 'loaded_movies',
-          movies: response.results,
-          currentPage: response.page,
-          maxPages: response.total_pages,
-        });
-      } else if (responseType === 'favorites') {
-        filtersDispatch({
-          type: 'loaded_favorite_movies',
-          favorites: response.results,
-          currentPage: response.page,
-          maxPages: response.total_pages,
-        });
-      }
+      setMovies(response.results);
+      filtersDispatch({
+        type: 'changed_max_pages',
+        maxPages: response.total_pages,
+      });
     } catch (error) {
       setError('Failed to fetch movies. Please try again later.');
       console.error(error);
     }
-  }, [sort, currentPage, searchQuery, yearRange, genres, filtersDispatch]);
+  }, [sort, currentPage, searchQuery, isFavorites, yearRange, genreIds, filtersDispatch]);
 
   const debouncedFetchMovies = useDebouncedCallback(fetchMovies, 300);
 
   useEffect(() => {
     debouncedFetchMovies();
-  }, [debouncedFetchMovies, sort, currentPage, searchQuery, yearRange, genres, filtersDispatch]);
+  }, [debouncedFetchMovies, sort, currentPage, searchQuery, yearRange, genreIds, filtersDispatch]);
 
   const loadFavorites = async () => {
     try {
       if (userId) {
         const response = await getFavoriteMoviesList(userId, currentPage);
+        const favIds = response.results.map((movie) => movie.id);
 
         filtersDispatch({
-          type: 'loaded_favorite_movies',
-          favorites: response.results,
+          type: 'loaded_fav_movies_ids',
+          favMoviesIds: favIds,
         });
       }
     } catch (error) {
@@ -101,19 +90,25 @@ function MovieList() {
     loadFavorites();
   }, []);
 
+  const memoMovieCards = useMemo(
+    () =>
+      movies.map((movie) => (
+        <Grid item xs={12} md={6} lg={3} key={movie.id} display="flex" flexDirection="column">
+          <MovieCard movie={movie} />
+        </Grid>
+      )),
+    [movies]
+  );
+
   return (
     <Box flex="1">
       {error ? (
         <Alert severity="error">{error}</Alert>
-      ) : moviesListToShow.length === 0 ? (
+      ) : movies.length === 0 ? (
         <MovieListSkeleton />
       ) : (
         <Grid container spacing={3} wrap="wrap">
-          {moviesListToShow.map((movie) => (
-            <Grid item xs={12} md={6} lg={3} key={movie.id} display="flex" flexDirection="column">
-              <MovieCard movie={movie} />
-            </Grid>
-          ))}
+          {memoMovieCards}
         </Grid>
       )}
     </Box>
