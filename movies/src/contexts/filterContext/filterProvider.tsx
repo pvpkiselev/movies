@@ -69,6 +69,15 @@ function filtersReducer(filtersState: FiltersState, action: FiltersAction) {
         favMoviesIds: action.favMoviesIds,
       };
     }
+    case 'toggled_fav': {
+      const newFavMoviesIds = filtersState.favMoviesIds.includes(action.favId)
+        ? filtersState.favMoviesIds.filter((id) => id !== action.favId)
+        : [...filtersState.favMoviesIds, action.favId];
+      return {
+        ...filtersState,
+        favMoviesIds: newFavMoviesIds,
+      };
+    }
     case 'changed_search_query': {
       return {
         ...filtersState,

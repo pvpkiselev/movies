@@ -10,7 +10,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
-import { Movie } from '@/types/movies/movies.types';
+import { Movie, MoviesResponse } from '@/types/movies/movies.types';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
@@ -33,22 +33,25 @@ function MovieList() {
       return null;
     }
     try {
-      let response;
-
-      const genresIds = genreIds.map((genre) => genre).join(',');
-
+      let response: MoviesResponse | undefined;
+      const genresIds = genreIds.join(',');
       const sortedOptions = { currentPage, minYear, maxYear, sort, genresIds };
 
-      if (!searchQuery && !isFavorites) {
-        response = await getSortedMovies(sortedOptions);
-      } else if (isFavorites) {
-        response = await getFavoriteMoviesList(userId, currentPage);
-      } else {
-        response = await getSearchedMovies(searchQuery, currentPage);
+      switch (true) {
+        case !searchQuery && !isFavorites:
+          response = await getSortedMovies(sortedOptions);
+          break;
+        case isFavorites:
+          response = await getFavoriteMoviesList(userId, currentPage);
+          break;
+        case !!searchQuery:
+          response = await getSearchedMovies(searchQuery, currentPage);
+          break;
+        default:
+          response = undefined;
       }
 
-      const isEmptyResponseList = !response || !response.results;
-      if (isEmptyResponseList) {
+      if (!response || !response.results) {
         setError('Movies Not Found');
         return null;
       }

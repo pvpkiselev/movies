@@ -40,6 +40,11 @@ export type LOADED_FAVORITE_MOVIES_IDS = {
   favMoviesIds: number[];
 };
 
+export type CHANGED_FAV = {
+  type: 'toggled_fav';
+  favId: number;
+};
+
 export type CHANGED_SEARCH_QUERY = {
   type: 'changed_search_query';
   searchQuery: string;
@@ -57,4 +62,5 @@ export type FiltersAction =
   | PAGE_SELECTED_ACTION
   | RESET_FILTERS_ACTION
   | LOADED_FAVORITE_MOVIES_IDS
+  | CHANGED_FAV
   | CHANGED_SEARCH_QUERY;

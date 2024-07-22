@@ -13,6 +13,8 @@ function SortSelect() {
   const filtersState = useFilters();
   const dispatch = useFiltersDispatch();
 
+  const isDisabled = Boolean(filtersState.searchQuery);
+
   const handleSortChange = (event: SelectChangeEvent) => {
     dispatch({
       type: 'changed_sort',
@@ -21,24 +23,26 @@ function SortSelect() {
   };
 
   return (
-    <FormControl variant="standard" fullWidth>
-      <InputLabel variant="standard" htmlFor="sort">
-        Sort by
-      </InputLabel>
-      <Select
-        name="sort"
-        id="sort"
-        labelId="sort"
-        value={filtersState.sort}
-        onChange={handleSortChange}
-      >
-        {sortOptions.map((option) => (
-          <MenuItem key={option.id} value={option.value}>
-            {option.value}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    !isDisabled && (
+      <FormControl variant="standard" fullWidth>
+        <InputLabel variant="standard" htmlFor="sort">
+          Sort by
+        </InputLabel>
+        <Select
+          name="sort"
+          id="sort"
+          labelId="sort"
+          value={filtersState.sort}
+          onChange={handleSortChange}
+        >
+          {sortOptions.map((option) => (
+            <MenuItem key={option.id} value={option.value}>
+              {option.value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    )
   );
 }
 

@@ -1,0 +1,25 @@
+.input {
+  color: var(--text-body-01);
+  font-size: clamp(16px, calc(18 / 1440 * 100vw), 18px);
+  resize: none;
+  height: 56px;
+  width: 100%;
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  overflow: hidden;
+  text-align: left;
+  border: none;
+  border-radius: var(--radius-m);
+  background-color: var(--tertiary-default);
+
+  &:focus-within {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--blue-bg);
+  }
+
+  &::placeholder {
+    color: var(--text-body-02);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

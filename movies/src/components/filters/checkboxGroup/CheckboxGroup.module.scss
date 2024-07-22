@@ -1,0 +1,13 @@
+.checkboxGroup {
+  .title {
+    margin-bottom: var(--spacing-12);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--spacing-4);
+    max-height: 200px;
+    overflow: auto;
+  }
+}

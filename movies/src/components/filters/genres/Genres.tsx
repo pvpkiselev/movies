@@ -4,11 +4,15 @@ import { Autocomplete, TextField } from '@mui/material';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Genre } from '@/types/filters/genres.types';
+import { FAVORITES_OPTION } from '../sortSelect/constants';
 
 function Genres() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const filtersState = useFilters();
   const dispatch = useFiltersDispatch();
+
+  const { searchQuery, sort } = filtersState;
+  const isDisabled = Boolean(searchQuery || sort === FAVORITES_OPTION);
 
   const fetchGenres = useCallback(
     async (ignoreFetch: boolean) => {
@@ -52,18 +56,20 @@ function Genres() {
   }
 
   return (
-    <Autocomplete
-      multiple
-      limitTags={2}
-      disableCloseOnSelect
-      id="genres"
-      options={optionIds}
-      getOptionLabel={getOptionLabel}
-      value={selectedGenres}
-      onChange={handleGenreToggle}
-      renderInput={(params) => <TextField {...params} variant="standard" label="Genres" />}
-      sx={{ width: '100%' }}
-    />
+    !isDisabled && (
+      <Autocomplete
+        multiple
+        limitTags={2}
+        disableCloseOnSelect
+        id="genres"
+        options={optionIds}
+        getOptionLabel={getOptionLabel}
+        value={selectedGenres}
+        onChange={handleGenreToggle}
+        renderInput={(params) => <TextField {...params} variant="standard" label="Genres" />}
+        sx={{ width: '100%' }}
+      />
+    )
   );
 }
 

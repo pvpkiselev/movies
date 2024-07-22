@@ -3,10 +3,14 @@ import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { useFilters } from '@/hooks/useFilters';
+import { FAVORITES_OPTION } from '../sortSelect/constants';
 
 function Search() {
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
+
+  const { sort } = filtersState;
+  const isDisabled = sort === FAVORITES_OPTION;
 
   const isEmptyQuery = filtersState.searchQuery === '';
 
@@ -27,27 +31,29 @@ function Search() {
   };
 
   return (
-    <FormControl>
-      <TextField
-        size="medium"
-        variant="standard"
-        onChange={handleQueryChange}
-        value={filtersState.searchQuery}
-        placeholder="Search movies"
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end" onClick={handleResetClick}>
-              {!isEmptyQuery && <Close />}
-            </InputAdornment>
-          ),
-        }}
-      />
-    </FormControl>
+    !isDisabled && (
+      <FormControl>
+        <TextField
+          size="medium"
+          variant="standard"
+          onChange={handleQueryChange}
+          value={filtersState.searchQuery}
+          placeholder="Search movies"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end" onClick={handleResetClick}>
+                {!isEmptyQuery && <Close />}
+              </InputAdornment>
+            ),
+          }}
+        />
+      </FormControl>
+    )
   );
 }
 

@@ -12,6 +12,8 @@ function PaginationFilter() {
 
   const totalPages = Math.min(maxPages, POSSIBLE_PAGES);
 
+  const isDisabled = totalPages < 2;
+
   const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
     dispatch({
       type: 'page_selected',
@@ -20,14 +22,16 @@ function PaginationFilter() {
   };
 
   return (
-    <Pagination
-      page={currentPage}
-      size="medium"
-      siblingCount={1}
-      count={totalPages}
-      onChange={handlePageChange}
-      color="primary"
-    />
+    !isDisabled && (
+      <Pagination
+        page={currentPage}
+        size="medium"
+        siblingCount={1}
+        count={totalPages}
+        onChange={handlePageChange}
+        color="primary"
+      />
+    )
   );
 }
 
