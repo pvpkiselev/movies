@@ -9,12 +9,7 @@ interface CheckboxProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Checkbox({
-  value,
-  checked,
-  onChange,
-  children,
-}: CheckboxProps) {
+export default function Checkbox({ value, checked, onChange, children }: CheckboxProps) {
   return (
     <label className={styles.checkbox}>
       <input
