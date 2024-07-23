@@ -3,10 +3,9 @@ import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import getFavoriteMoviesList from '@/api/favorites/getFavoriteMoviesList';
 import getSearchedMovies from '@/api/movies/getSearchedMovies';
-import { useDebouncedCallback } from 'use-debounce';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
-import { Movie, MoviesResponse } from '@/types/movies/movies.types';
+import { Movie } from '@/types/movies/movies.types';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { changeMaxPages, loadFavoriteMoviesIds } from '@/store/filters/filtersActions';
 import {
@@ -29,13 +28,10 @@ function MovieList() {
   const currentPage = useAppSelector(selectCurrentPage);
   const sortType = useAppSelector(selectSortType);
   const searchQuery = useAppSelector(selectSearchQuery);
-  const yearRange = useAppSelector(selectYearRange);
+  const [minYear, maxYear] = useAppSelector(selectYearRange);
   const genreIdsString = useAppSelector(selectGenreIdsString);
 
   const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
-
-  const [minYear, maxYear] = yearRange.range;
-
   console.log('Render List');
 
   const fetchMovies = useCallback(async () => {
@@ -43,25 +39,21 @@ function MovieList() {
     if (!userId) {
       return null;
     }
-    try {
-      let response: MoviesResponse | undefined;
-      const sortedOptions = { currentPage, minYear, maxYear, sortType, genreIdsString };
 
-      switch (true) {
-        case !searchQuery && !isFavorites:
-          response = await getSortedMovies(sortedOptions);
-          break;
-        case isFavorites:
-          response = await getFavoriteMoviesList(userId, currentPage);
-          break;
-        case !!searchQuery:
-          response = await getSearchedMovies(searchQuery, currentPage);
-          break;
-        default:
-          response = undefined;
+    const sortedOptions = { currentPage, minYear, maxYear, sortType, genreIdsString };
+
+    try {
+      let response;
+
+      if (!searchQuery && !isFavorites) {
+        response = await getSortedMovies(sortedOptions);
+      } else if (isFavorites) {
+        response = await getFavoriteMoviesList(userId, currentPage);
+      } else if (searchQuery) {
+        response = await getSearchedMovies(searchQuery, currentPage);
       }
 
-      if (!response || !response.results) {
+      if (!response) {
         setError('Movies Not Found');
         return null;
       }
@@ -72,23 +64,13 @@ function MovieList() {
       setError('Failed to fetch movies. Please try again later.');
       console.error(error);
     }
-  }, [sortType, currentPage, searchQuery, isFavorites, yearRange, genreIdsString, dispatch]);
-
-  const debouncedFetchMovies = useDebouncedCallback(fetchMovies, 300);
+  }, [sortType, currentPage, searchQuery, isFavorites, minYear, maxYear, genreIdsString, dispatch]);
 
   useEffect(() => {
-    debouncedFetchMovies();
-  }, [
-    debouncedFetchMovies,
-    sortType,
-    currentPage,
-    searchQuery,
-    yearRange,
-    genreIdsString,
-    dispatch,
-  ]);
+    fetchMovies();
+  }, [fetchMovies]);
 
-  const loadFavorites = useCallback(async () => {
+  const loadFavorites = async () => {
     try {
       if (userId) {
         const response = await getFavoriteMoviesList(userId, currentPage);
@@ -99,11 +81,11 @@ function MovieList() {
     } catch (error) {
       console.error('Failed to fetch Favorite Movies List:', error);
     }
-  }, [userId, currentPage, dispatch]);
+  };
 
   useEffect(() => {
     loadFavorites();
-  }, [loadFavorites]);
+  }, []);
 
   const memoMovieCards = useMemo(
     () =>

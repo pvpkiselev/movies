@@ -12,16 +12,10 @@ import {
   TOGGLED_GENRES,
 } from './filtersActions';
 
-export type YearRange = {
-  min: number;
-  max: number;
-  range: number[];
-};
-
 type FiltersState = {
   genreIds: number[];
   sortType: string;
-  yearRange: YearRange;
+  yearRange: number[];
   favMoviesIds: number[];
   currentPage: number;
   maxPages: number;
@@ -29,7 +23,7 @@ type FiltersState = {
 };
 
 const initialSort = POPULAR_OPTION;
-const initialYearRange = { min: 1970, max: 2024, range: [1970, 2024] };
+const initialYearRange = [1970, 2024];
 
 const filtersInitialState: FiltersState = {
   genreIds: [],
@@ -66,7 +60,7 @@ export function filtersReducer(
     case CHANGED_YEAR_RANGE: {
       return {
         ...filtersState,
-        yearRange: { ...filtersState.yearRange, range: action.range },
+        yearRange: action.range,
         currentPage: filtersInitialState.currentPage,
       };
     }

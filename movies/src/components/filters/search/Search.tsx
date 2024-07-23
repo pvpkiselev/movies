@@ -1,27 +1,34 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { FormControl, InputAdornment, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { selectSearchQuery, selectSortType } from '@/store/filters/filtersSelectors';
+import { selectSortType } from '@/store/filters/filtersSelectors';
 import { changeSearchQuery } from '@/store/filters/filtersActions';
+import { useDebouncedCallback } from 'use-debounce';
 
 function Search() {
   const dispatch = useAppDispatch();
   const sortType = useAppSelector(selectSortType);
-  const searchQuery = useAppSelector(selectSearchQuery);
+  const [localQuery, setLocalQuery] = useState('');
 
   const isDisabled = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
 
-  const isEmptyQuery = useMemo(() => searchQuery === '', [searchQuery]);
+  const isEmptyQuery = useMemo(() => localQuery === '', [localQuery]);
+
+  const handleSearchQueryDispatch = useDebouncedCallback((query: string) => {
+    dispatch(changeSearchQuery(query));
+  }, 300);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentSearchQuery = event.currentTarget.value;
-    dispatch(changeSearchQuery(currentSearchQuery));
+    setLocalQuery(currentSearchQuery);
+    handleSearchQueryDispatch(currentSearchQuery);
   };
 
   const handleResetClick = () => {
+    setLocalQuery('');
     dispatch(changeSearchQuery(''));
   };
 
@@ -32,7 +39,7 @@ function Search() {
           size="medium"
           variant="standard"
           onChange={handleQueryChange}
-          value={searchQuery}
+          value={localQuery}
           placeholder="Search movies"
           InputProps={{
             startAdornment: (

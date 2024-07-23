@@ -28,7 +28,6 @@ function login(token: string, userId: string): LOGIN_TYPE_ACTION {
 }
 
 function logout(): LOGOUT_TYPE_ACTION {
-  Cookies.remove('email');
   Cookies.remove('token');
   Cookies.remove('userId');
   setAxiosAuthToken(null);
