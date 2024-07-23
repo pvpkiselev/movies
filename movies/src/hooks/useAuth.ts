@@ -1,11 +1,7 @@
-import { AuthContext } from '@/contexts/authContext/AuthProvider';
-import { ContextError } from '@/errors/contextError';
-import { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { MoviesAppDispatch, MoviesAppState } from '@/store/store';
 
-export const useAuth = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new ContextError('authContext error');
-  }
-  return authContext;
-};
+export const useAuthSelector = <TSelected>(selector: (state: MoviesAppState) => TSelected) =>
+  useSelector(selector);
+
+export const useAuthDispatch = useDispatch.withTypes<MoviesAppDispatch>();

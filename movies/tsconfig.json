@@ -14,10 +14,11 @@
       "@data/*": ["src/data/*"],
       "@errors/*": ["src/errors/*"],
       "@pages/*": ["src/routes/*"],
-      "@reducers/*": ["src/reducers/*"],
+      "@reducers/*": ["src/store/reducers/*"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@store/*": ["store/*"]
     },
 
     /* Bundler mode */

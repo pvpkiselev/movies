@@ -1,20 +1,16 @@
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthSelector } from '@/hooks/useAuth';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
-import { setAxiosAuthToken } from '@/api/axiosConfig';
-import Cookies from 'js-cookie';
+import { logout } from '@/store/actions/authorization/authActions';
 
 export default function Header() {
-  const authState = useAuth();
+  const { isAuth } = useAuthSelector((state) => state.authReducer);
   const authDispatch = useAuthDispatch();
 
   const handleLogout = () => {
-    authDispatch({ type: 'logout' });
-    setAxiosAuthToken(null);
-    Cookies.remove('token');
-    Cookies.remove('userId');
+    authDispatch(logout());
   };
 
   return (
@@ -26,7 +22,7 @@ export default function Header() {
           </Link>
         </Typography>
 
-        {authState.isAuth ? (
+        {isAuth ? (
           <Button
             size="large"
             aria-label="account of current user"

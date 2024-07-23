@@ -1,5 +1,5 @@
 import fetchFavoriteMovie from '@/api/favorites/fetchFavoriteMovie';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthSelector } from '@/hooks/useAuth';
 import { useFilters } from '@/hooks/useFilters';
 import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { Favorite } from '@mui/icons-material';
@@ -12,12 +12,11 @@ interface FavoriteButtonProps {
 }
 
 export default function FavoriteButton({ id }: FavoriteButtonProps) {
-  const authState = useAuth();
+  const { userId } = useAuthSelector((state) => state.authReducer);
   const filtersState = useFilters();
   const filtersDispatch = useFiltersDispatch();
 
   const { favMoviesIds } = filtersState;
-  const { userId } = authState;
 
   const isFavorite = favMoviesIds.includes(id);
 

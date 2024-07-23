@@ -18,6 +18,7 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/types'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@public': path.resolve(__dirname, './public'),
+      '@store': path.resolve(__dirname, './store'),
     },
   },
   plugins: [react()],

@@ -1,18 +1,17 @@
 import getTokenAuthentication from '@/api/auth/getTokenAuthentication';
 import getUserId from '@/api/auth/getUserId';
-import { setAxiosAuthToken } from '@/api/axiosConfig';
 import EmailModal from '@/components/modals/EmailModal';
 import TokenModal from '@/components/modals/TokenModal';
-import { useAuthDispatch } from '@/hooks/useAuthDispatch';
+import { useAuthDispatch } from '@/hooks/useAuth';
+import { login } from '@/store/actions/authorization/authActions';
 import { Box } from '@mui/material';
-import Cookies from 'js-cookie';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 type LoginModalType = 'email' | 'token' | null;
 
-function Login() {
+const Login = () => {
   const [step, setStep] = useState<LoginModalType>('email');
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
@@ -21,10 +20,6 @@ function Login() {
 
   const handleEmailSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const email = form.email.value;
-    Cookies.set('email', email);
-    form.reset();
     setStep('token');
   };
 
@@ -37,13 +32,10 @@ function Login() {
       const tokenVerification = await getTokenAuthentication(token);
 
       if (tokenVerification.success) {
-        setAxiosAuthToken(token);
-        const userIdResponse = await getUserId();
+        const userIdResponse = await getUserId(token);
         const userId = userIdResponse.id.toString();
 
-        authDispatch({ type: 'login_success', token, userId });
-        Cookies.set('token', token);
-        Cookies.set('userId', userId);
+        authDispatch(login(token, userId));
         navigate(from, { replace: true });
         setStep(null);
       }
@@ -67,6 +59,6 @@ function Login() {
       <TokenModal open={step === 'token'} onSubmit={handleTokenSubmit} onClose={handleClose} />
     </Box>
   );
-}
+};
 
 export default Login;

@@ -6,10 +6,11 @@ import Root from '@/routes/Root';
 import Home from '@/routes/Home';
 import MoviePage from '@/routes/MoviePage';
 import { movieInfoLoader } from '@/loaders/movieInfoLoader';
-import { AuthProvider } from '@/contexts/authContext/AuthProvider';
 import Login from './routes/Login';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { FilterProvider } from './contexts/filterContext/FilterProvider';
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 const router = createBrowserRouter([
   {
@@ -42,11 +43,13 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
+      {/* <AuthProvider> */}
+      <Provider store={store}>
         <FilterProvider>
           <RouterProvider router={router} />
         </FilterProvider>
-      </AuthProvider>
+      </Provider>
+      {/* </AuthProvider> */}
     </ThemeProvider>
   );
 }

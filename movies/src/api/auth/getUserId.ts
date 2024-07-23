@@ -4,12 +4,15 @@ import { HttpStatusCode } from 'axios';
 import { axiosGetInstance } from '../axiosConfig';
 import { resources } from '../resources';
 
-const getUserId = async (): Promise<User> => {
+const getUserId = async (token: string): Promise<User> => {
   try {
     const { account, account_id } = resources;
     const resource = account + '/' + account_id;
 
     const config = {
+      headers: {
+        ['Authorization']: `Bearer ${token}`,
+      },
       url: resource,
     };
 
