@@ -3,25 +3,25 @@ import { Box, Typography } from '@mui/material';
 import Header from '../components/header/Header';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAuthDispatch, useAuthSelector } from '@/hooks/useAuth';
 import Cookies from 'js-cookie';
-import { login } from '@/store/actions/authorization/authActions';
+import { login } from '@/store/auth/authActions';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 
 function Root() {
-  const { isAuth } = useAuthSelector((state) => state.authReducer);
-  const authDispatch = useAuthDispatch();
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     try {
       const token = Cookies.get('token');
       const userId = Cookies.get('userId');
       if (token && userId) {
-        authDispatch(login(token, userId));
+        dispatch(login(token, userId));
       }
     } catch (error) {
       console.error(`Storage get token error, ${error}`);
     }
-  }, [authDispatch]);
+  }, [dispatch]);
 
   return (
     <Box

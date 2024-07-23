@@ -10,8 +10,8 @@ interface GetSortedMovies {
   currentPage: number;
   minYear: number;
   maxYear: number;
-  sort: string;
-  genresIds: string;
+  sortType: string;
+  genreIdsString: string;
 }
 
 interface MovieParams {
@@ -27,14 +27,14 @@ interface MovieParams {
 
 const getSortedMovies = async (props: GetSortedMovies): Promise<MoviesResponse> => {
   try {
-    const { currentPage, minYear, maxYear, sort, genresIds } = props;
+    const { currentPage, minYear, maxYear, sortType, genreIdsString } = props;
 
     const startDate = `${minYear}-01-01`;
     const endDate = `${maxYear}-12-31`;
 
-    const sortType = sort === POPULAR_OPTION ? POPULAR_PATH : TOP_RATED_PATH;
-    if (genresIds) {
-      const encodedGenres = encodeURIComponent(genresIds);
+    const sortPath = sortType === POPULAR_OPTION ? POPULAR_PATH : TOP_RATED_PATH;
+    if (genreIdsString) {
+      const encodedGenres = encodeURIComponent(genreIdsString);
       encodedGenres;
     }
 
@@ -48,10 +48,10 @@ const getSortedMovies = async (props: GetSortedMovies): Promise<MoviesResponse> 
       page: currentPage,
       'release_date.gte': startDate,
       'release_date.lte': endDate,
-      sort_by: sortType,
+      sort_by: sortPath,
     };
 
-    params.with_genres = encodeURIComponent(genresIds);
+    params.with_genres = encodeURIComponent(genreIdsString);
 
     const config = {
       url: resource,

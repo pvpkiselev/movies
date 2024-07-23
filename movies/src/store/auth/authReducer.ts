@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from '@/store/actions/authorization/authActions';
+import { AUTH_ACTION, LOGIN, LOGOUT } from './authActions';
 
 type AuthState = {
   isAuth: boolean;
@@ -6,18 +6,6 @@ type AuthState = {
   token: string | null;
   userId: string | null;
 };
-
-type REDUCER_LOGIN_TYPE = {
-  type: typeof LOGIN;
-  token: string;
-  userId: string;
-};
-
-type REDUCER_LOGOUT_TYPE = {
-  type: typeof LOGOUT;
-};
-
-export type AUTH_ACTION = REDUCER_LOGIN_TYPE | REDUCER_LOGOUT_TYPE;
 
 const authInitialState: AuthState = {
   isAuth: false,

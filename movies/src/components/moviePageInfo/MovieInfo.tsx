@@ -1,16 +1,13 @@
 import { Button, CardContent, Stack, Typography } from '@mui/material';
 import MovieCast from './MovieCast';
 import MovieDetails from './movieDetails/MovieDetails';
-import { useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MovieInfoLoaderData } from '@/types/movies/movieInfoLoader.types';
 import FavoriteButton from '../common/favoriteButton/FavoriteButton';
 import { ArrowBack } from '@mui/icons-material';
 
-interface MovieInfoProps {
-  movieId: string | undefined;
-}
-
-function MovieInfo({ movieId }: MovieInfoProps) {
+function MovieInfo() {
+  const { movieId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';

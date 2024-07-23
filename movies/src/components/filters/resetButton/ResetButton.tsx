@@ -1,14 +1,13 @@
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { resetFilters } from '@/store/filters/filtersActions';
+import { useAppDispatch } from '@/store/store';
 import { Close } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 function ResetButton() {
-  const dispatch = useFiltersDispatch();
+  const dispatch = useAppDispatch();
 
   const handleResetFilters = () => {
-    dispatch({
-      type: 'reset_filters',
-    });
+    dispatch(resetFilters());
   };
 
   return (

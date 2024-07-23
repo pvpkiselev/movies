@@ -1,16 +1,15 @@
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
-import { useAuthSelector } from '@/hooks/useAuth';
-import { useAuthDispatch } from '@/hooks/useAuthDispatch';
-import { logout } from '@/store/actions/authorization/authActions';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { logout } from '@/store/auth/authActions';
 
 export default function Header() {
-  const { isAuth } = useAuthSelector((state) => state.authReducer);
-  const authDispatch = useAuthDispatch();
+  const { isAuth } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    authDispatch(logout());
+    dispatch(logout());
   };
 
   return (

@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
-import { useFilters } from '@/hooks/useFilters';
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { selectSearchQuery, selectSortType } from '@/store/filters/filtersSelectors';
+import { changeSortType } from '@/store/filters/filtersActions';
 
 const sortOptions = [
   { id: 0, value: POPULAR_OPTION },
@@ -10,16 +12,15 @@ const sortOptions = [
 ];
 
 function SortSelect() {
-  const filtersState = useFilters();
-  const dispatch = useFiltersDispatch();
+  const dispatch = useAppDispatch();
+  const sortType = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
 
-  const isDisabled = Boolean(filtersState.searchQuery);
+  const isDisabled = useMemo(() => Boolean(searchQuery), [searchQuery]);
 
   const handleSortChange = (event: SelectChangeEvent) => {
-    dispatch({
-      type: 'changed_sort',
-      sort: event.target.value,
-    });
+    const sortType = event.target.value;
+    dispatch(changeSortType(sortType));
   };
 
   return (
@@ -28,13 +29,7 @@ function SortSelect() {
         <InputLabel variant="standard" htmlFor="sort">
           Sort by
         </InputLabel>
-        <Select
-          name="sort"
-          id="sort"
-          labelId="sort"
-          value={filtersState.sort}
-          onChange={handleSortChange}
-        >
+        <Select name="sort" id="sort" labelId="sort" value={sortType} onChange={handleSortChange}>
           {sortOptions.map((option) => (
             <MenuItem key={option.id} value={option.value}>
               {option.value}

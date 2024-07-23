@@ -1,24 +1,18 @@
-import { useFilters } from '@/hooks/useFilters';
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { useMemo } from 'react';
+import { selectCurrentPage, selectTotalPages } from '@/store/filters/filtersSelectors';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Pagination } from '@mui/material';
+import { changeSelectedPage } from '@/store/filters/filtersActions';
 
 function PaginationFilter() {
-  const filtersState = useFilters();
-  const dispatch = useFiltersDispatch();
+  const dispatch = useAppDispatch();
+  const currentPage = useAppSelector(selectCurrentPage);
+  const totalPages = useAppSelector(selectTotalPages);
 
-  const { currentPage, maxPages } = filtersState;
-
-  const POSSIBLE_PAGES = 500;
-
-  const totalPages = Math.min(maxPages, POSSIBLE_PAGES);
-
-  const isDisabled = totalPages < 2;
+  const isDisabled = useMemo(() => totalPages < 2, [totalPages]);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
-    dispatch({
-      type: 'page_selected',
-      currentPage: page,
-    });
+    dispatch(changeSelectedPage(page));
   };
 
   return (

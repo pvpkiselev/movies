@@ -2,8 +2,8 @@ import getTokenAuthentication from '@/api/auth/getTokenAuthentication';
 import getUserId from '@/api/auth/getUserId';
 import EmailModal from '@/components/modals/EmailModal';
 import TokenModal from '@/components/modals/TokenModal';
-import { useAuthDispatch } from '@/hooks/useAuth';
-import { login } from '@/store/actions/authorization/authActions';
+import { login } from '@/store/auth/authActions';
+import { useAppDispatch } from '@/store/store';
 import { Box } from '@mui/material';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,8 +12,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 type LoginModalType = 'email' | 'token' | null;
 
 const Login = () => {
+  const dispatch = useAppDispatch();
   const [step, setStep] = useState<LoginModalType>('email');
-  const authDispatch = useAuthDispatch();
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -35,7 +36,7 @@ const Login = () => {
         const userIdResponse = await getUserId(token);
         const userId = userIdResponse.id.toString();
 
-        authDispatch(login(token, userId));
+        dispatch(login(token, userId));
         navigate(from, { replace: true });
         setStep(null);
       }

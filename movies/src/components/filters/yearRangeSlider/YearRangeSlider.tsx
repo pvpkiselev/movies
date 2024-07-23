@@ -1,23 +1,30 @@
-import { useFilters } from '@/hooks/useFilters';
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { useMemo } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  selectSearchQuery,
+  selectSortType,
+  selectYearRange,
+} from '@/store/filters/filtersSelectors';
+import { changeYearRange } from '@/store/filters/filtersActions';
 
 function YearRangeSlider() {
-  const filtersState = useFilters();
-  const filtersDispatch = useFiltersDispatch();
+  const dispatch = useAppDispatch();
+  const sort = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
+  const yearRange = useAppSelector(selectYearRange);
 
-  const { searchQuery, sort } = filtersState;
-  const isDisabled = Boolean(searchQuery || sort === FAVORITES_OPTION);
+  const isDisabled = useMemo(
+    () => Boolean(searchQuery || sort === FAVORITES_OPTION),
+    [searchQuery, sort]
+  );
 
-  const { min, max, range } = filtersState.yearRange;
+  const { min, max, range } = yearRange;
 
   const handleYearRangeChange = (_event: Event, range: number | number[]) => {
     if (Array.isArray(range)) {
-      filtersDispatch({
-        type: 'changed_year_range',
-        range: range,
-      });
+      dispatch(changeYearRange(range));
     }
   };
 

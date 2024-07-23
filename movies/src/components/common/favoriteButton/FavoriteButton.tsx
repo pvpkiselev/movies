@@ -1,10 +1,11 @@
 import fetchFavoriteMovie from '@/api/favorites/fetchFavoriteMovie';
-import { useAuthSelector } from '@/hooks/useAuth';
-import { useFilters } from '@/hooks/useFilters';
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
+import { selectUserId } from '@/store/auth/authSelectors';
+import { toggleFavorite } from '@/store/filters/filtersActions';
+import { selectFavMoviesIds } from '@/store/filters/filtersSelectors';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Favorite } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import toast from 'react-hot-toast';
 
 interface FavoriteButtonProps {
@@ -12,13 +13,11 @@ interface FavoriteButtonProps {
 }
 
 export default function FavoriteButton({ id }: FavoriteButtonProps) {
-  const { userId } = useAuthSelector((state) => state.authReducer);
-  const filtersState = useFilters();
-  const filtersDispatch = useFiltersDispatch();
+  const userId = useAppSelector(selectUserId);
+  const dispatch = useAppDispatch();
+  const favMoviesIds = useAppSelector(selectFavMoviesIds);
 
-  const { favMoviesIds } = filtersState;
-
-  const isFavorite = favMoviesIds.includes(id);
+  const isFavorite = useMemo(() => favMoviesIds.includes(id), [favMoviesIds]);
 
   const handleFavoriteToggle = useCallback(async () => {
     try {
@@ -26,10 +25,7 @@ export default function FavoriteButton({ id }: FavoriteButtonProps) {
         const toggleFavoriteResponse = await fetchFavoriteMovie(userId, id, !isFavorite);
 
         if (toggleFavoriteResponse.success) {
-          filtersDispatch({
-            type: 'toggled_fav',
-            favId: id,
-          });
+          dispatch(toggleFavorite(id));
           toast.success(!isFavorite ? 'Successfully added card' : 'Successfully removed card');
         } else {
           throw new Error('Failed to toggle favorite');

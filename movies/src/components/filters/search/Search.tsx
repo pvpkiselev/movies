@@ -1,33 +1,28 @@
+import { useMemo } from 'react';
 import { FormControl, InputAdornment, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useFiltersDispatch } from '@/hooks/useFiltersDispatch';
-import { useFilters } from '@/hooks/useFilters';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { selectSearchQuery, selectSortType } from '@/store/filters/filtersSelectors';
+import { changeSearchQuery } from '@/store/filters/filtersActions';
 
 function Search() {
-  const filtersState = useFilters();
-  const filtersDispatch = useFiltersDispatch();
+  const dispatch = useAppDispatch();
+  const sortType = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
 
-  const { sort } = filtersState;
-  const isDisabled = sort === FAVORITES_OPTION;
+  const isDisabled = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
 
-  const isEmptyQuery = filtersState.searchQuery === '';
+  const isEmptyQuery = useMemo(() => searchQuery === '', [searchQuery]);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentSearchQuery = event.currentTarget.value;
-
-    filtersDispatch({
-      type: 'changed_search_query',
-      searchQuery: currentSearchQuery,
-    });
+    dispatch(changeSearchQuery(currentSearchQuery));
   };
 
   const handleResetClick = () => {
-    filtersDispatch({
-      type: 'changed_search_query',
-      searchQuery: '',
-    });
+    dispatch(changeSearchQuery(''));
   };
 
   return (
@@ -37,7 +32,7 @@ function Search() {
           size="medium"
           variant="standard"
           onChange={handleQueryChange}
-          value={filtersState.searchQuery}
+          value={searchQuery}
           placeholder="Search movies"
           InputProps={{
             startAdornment: (
