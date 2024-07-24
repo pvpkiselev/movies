@@ -1,8 +1,8 @@
 import { CardMedia } from '@mui/material';
-import { MovieInfoLoaderData } from '@/types/movies/movieInfoLoader.types';
 import { useLoaderData } from 'react-router-dom';
 import { useState } from 'react';
 import { IMAGE_ORIGINAL, PLACEHOLDER_IMAGE_PATH } from '@/api/constants';
+import { MovieInfoLoaderData } from '@/loaders/types/movieInfoLoader.types';
 
 function MoviePoster() {
   const [imageError, setImageError] = useState(false);

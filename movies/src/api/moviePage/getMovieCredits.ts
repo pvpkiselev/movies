@@ -1,6 +1,6 @@
-import { MovieCreditsType } from '@/types/movies/movieCredits.types';
 import { resources } from '../resources';
 import { ApiRequest, apiRequest } from '../axiosConfig';
+import { MovieCreditsType } from '@/components/moviePageInfo/types/movieCredits.types';
 
 const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {
   const { movie, credits } = resources;

@@ -5,12 +5,12 @@ import getFavoriteMoviesList from '@/api/favorites/getFavoriteMoviesList';
 import getSearchedMovies from '@/api/movies/getSearchedMovies';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
-import { Movie } from '@/types/movies/movies.types';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { changeMaxPages, loadFavoriteMoviesIds } from '@/store/filters/filtersActions';
 import { selectMoviesValues } from '@/store/filters/filtersSelectors';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
+import { Movie } from './types/movies.types';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);

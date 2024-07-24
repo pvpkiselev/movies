@@ -1,5 +1,5 @@
+import { MoviesResponse } from '@/components/movieList/types/movies.types';
 import { ApiRequest, apiRequest } from '../axiosConfig';
-import { MoviesResponse } from '@/types/movies/movies.types';
 import { resources } from '../resources';
 
 const getFavoriteMoviesList = async (

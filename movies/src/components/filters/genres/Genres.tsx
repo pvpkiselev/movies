@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import getGenresData from '@/api/movies/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
-import { Genre } from '@/types/filters/genres.types';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { selectGenresValues } from '@/store/filters/filtersSelectors';
 import { toggleGenres } from '@/store/filters/filtersActions';
+import { Genre } from './types/genres.types';
 
 function Genres() {
   const dispatch = useAppDispatch();

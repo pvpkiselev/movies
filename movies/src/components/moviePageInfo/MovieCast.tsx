@@ -1,5 +1,5 @@
-import { Actor } from '@/types/movies/movieCredits.types';
 import { Typography, List } from '@mui/material';
+import { Actor } from './types/movieCredits.types';
 
 interface MovieCastProps {
   cast: Actor[];

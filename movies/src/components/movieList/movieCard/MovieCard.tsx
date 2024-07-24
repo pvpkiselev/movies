@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import { theme } from '@/theme/theme';
 import { Link } from 'react-router-dom';
-import { Movie } from '@/types/movies/movies.types';
 import { IMAGE_PATH, PLACEHOLDER_IMAGE_PATH } from '@/api/constants';
 import FavoriteButton from '@/components/common/favoriteButton/FavoriteButton';
+import { Movie } from '../types/movies.types';
 
 interface MovieCardProps {
   movie: Movie;

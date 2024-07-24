@@ -1,6 +1,6 @@
-import { User } from '@/types/auth/user.types';
 import { resources } from '../resources';
 import { apiRequest, ApiRequest } from '../axiosConfig';
+import { User } from '../types/user.types';
 
 const getUserId = async (token: string): Promise<User> => {
   const { account, account_id } = resources;

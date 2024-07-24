@@ -1,6 +1,6 @@
-import { MoviesResponse } from '@/types/movies/movies.types';
 import { resources } from '../resources';
 import { ApiRequest, apiRequest } from '../axiosConfig';
+import { MoviesResponse } from '@/components/movieList/types/movies.types';
 
 const getSearchedMovies = async (query: string, page: number): Promise<MoviesResponse> => {
   const { search, movie } = resources;

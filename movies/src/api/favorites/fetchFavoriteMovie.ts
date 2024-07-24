@@ -1,6 +1,6 @@
 import { resources } from '../resources';
 import { ApiRequest, apiRequest } from '../axiosConfig';
-import { ResponseStatusData } from '../response.types';
+import { ResponseStatusData } from '../types/response.types';
 
 const fetchFavoriteMovie = async (
   userId: string,

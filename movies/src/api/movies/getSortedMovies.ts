@@ -1,8 +1,8 @@
 import { ApiRequest, apiRequest } from '../axiosConfig';
-import { MoviesResponse } from '@/types/movies/movies.types';
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { POPULAR_PATH, TOP_RATED_PATH } from '../constants';
 import { resources } from '../resources';
+import { MoviesResponse } from '@/components/movieList/types/movies.types';
 
 interface GetSortedMovies {
   currentPage: number;

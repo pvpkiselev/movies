@@ -1,6 +1,6 @@
 import { resources } from '../resources';
 import { apiRequest, ApiRequest } from '../axiosConfig';
-import { ResponseStatusData } from '../response.types';
+import { ResponseStatusData } from '../types/response.types';
 
 const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
   const resource = resources.authentication;

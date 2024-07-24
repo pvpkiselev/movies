@@ -1,6 +1,6 @@
-import { GenreResponse } from '@/types/filters/genres.types';
 import { resources } from '../resources';
 import { ApiRequest, apiRequest } from '../axiosConfig';
+import { GenreResponse } from '@/components/filters/genres/types/genres.types';
 
 const getGenresData = async (): Promise<GenreResponse> => {
   const { genre, movie, list } = resources;
