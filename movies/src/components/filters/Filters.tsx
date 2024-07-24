@@ -22,7 +22,7 @@ function Filters() {
   };
 
   return (
-    <Box sx={{ flexBasis: isMobile ? '100%' : '360px', flexGrow: 0, flexShrink: 0 }}>
+    <Box flexBasis={{ sm: '100%', md: '360px' }} flexGrow={0} flexShrink={0}>
       {isMobile && (
         <Box>
           <Button variant="contained" disableElevation onClick={handleMobileOpen}>

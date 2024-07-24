@@ -7,13 +7,23 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-interface EmailModalProps {
+
+interface AuthModalProps {
   open: boolean;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
+  title: string;
+  description: string;
+  id: string;
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'password';
+  buttonText: string;
 }
 
-export default function EmailModal({ open, onSubmit, onClose }: EmailModalProps) {
+export default function AuthModal(props: AuthModalProps) {
+  const { open, onSubmit, onClose, title, description, id, name, label, type, buttonText } = props;
+
   return (
     <div>
       <Dialog
@@ -24,26 +34,24 @@ export default function EmailModal({ open, onSubmit, onClose }: EmailModalProps)
           onSubmit: onSubmit,
         }}
       >
-        <DialogTitle>Request Token</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please enter your email to which we will send a login token
-          </DialogContentText>
+          <DialogContentText>{description}</DialogContentText>
           <TextField
             autoFocus
             required
             margin="dense"
-            id="email"
-            name="email"
-            label="Email Address"
-            type="email"
+            id={id}
+            name={name}
+            label={label}
+            type={type}
             fullWidth
             variant="standard"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit">Request Token</Button>
+          <Button type="submit">{buttonText}</Button>
         </DialogActions>
       </Dialog>
     </div>

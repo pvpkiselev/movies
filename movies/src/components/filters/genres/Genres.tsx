@@ -4,18 +4,12 @@ import { Autocomplete, TextField } from '@mui/material';
 import { Genre } from '@/types/filters/genres.types';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import {
-  selectGenreIds,
-  selectSearchQuery,
-  selectSortType,
-} from '@/store/filters/filtersSelectors';
+import { selectGenresValues } from '@/store/filters/filtersSelectors';
 import { toggleGenres } from '@/store/filters/filtersActions';
 
 function Genres() {
   const dispatch = useAppDispatch();
-  const sortType = useAppSelector(selectSortType);
-  const searchQuery = useAppSelector(selectSearchQuery);
-  const genreIds = useAppSelector(selectGenreIds);
+  const { sortType, searchQuery, genreIds } = useAppSelector(selectGenresValues);
   const [genres, setGenres] = useState<Genre[]>([]);
 
   const isDisabled = useMemo(
@@ -23,45 +17,40 @@ function Genres() {
     [searchQuery, sortType]
   );
 
-  const fetchGenres = useCallback(
-    async (ignoreFetch: boolean) => {
-      try {
-        const response = await getGenresData();
-        const genres = response.genres;
+  const fetchGenres = useCallback(async () => {
+    try {
+      const response = await getGenresData();
+      const genres = response.genres;
 
-        if (!ignoreFetch) {
-          setGenres(genres);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    [dispatch]
-  );
+      setGenres(genres);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   useEffect(() => {
-    let ignoreFetch = false;
-    fetchGenres(ignoreFetch);
-    return () => {
-      ignoreFetch = true;
-    };
+    fetchGenres();
   }, [fetchGenres]);
 
   const handleGenreToggle = (_event: React.SyntheticEvent, value: number[]) => {
     dispatch(toggleGenres(value));
   };
 
-  const optionIds = genres.map((genre) => genre.id);
+  const optionIds = useMemo(() => {
+    return genres.map((genre) => genre.id);
+  }, [genres]);
 
-  const selectedGenres = useMemo(
-    () => genres.filter((genre) => genreIds.includes(genre.id)).map((genre) => genre.id),
-    [genreIds]
+  const selectedGenres = useMemo(() => {
+    return genres.filter((genre) => genreIds.includes(genre.id)).map((genre) => genre.id);
+  }, [genreIds, genres]);
+
+  const getOptionLabel = useCallback(
+    (option: Genre['id']): string => {
+      const genre = genres.find((genre) => genre.id === option);
+      return genre ? genre.name : '';
+    },
+    [genres]
   );
-
-  const getOptionLabel = (option: Genre['id']): string => {
-    const genre = genres.find((genre) => genre.id === option);
-    return genre ? genre.name : '';
-  };
 
   return (
     !isDisabled && (
@@ -75,7 +64,7 @@ function Genres() {
         value={selectedGenres}
         onChange={handleGenreToggle}
         renderInput={(params) => <TextField {...params} variant="standard" label="Genres" />}
-        sx={{ width: '100%' }}
+        fullWidth
       />
     )
   );

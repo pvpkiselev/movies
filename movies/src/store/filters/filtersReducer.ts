@@ -102,7 +102,7 @@ export function filtersReducer(
       };
     }
     case RESET_FILTERS: {
-      return filtersInitialState;
+      return { ...filtersInitialState, favMoviesIds: filtersState.favMoviesIds };
     }
     default: {
       return filtersState;

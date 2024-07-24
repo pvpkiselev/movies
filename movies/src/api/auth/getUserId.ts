@@ -1,32 +1,20 @@
-import { ResponseError } from '@/errors/responseError';
 import { User } from '@/types/auth/user.types';
-import { HttpStatusCode } from 'axios';
-import { axiosGetInstance } from '../axiosConfig';
 import { resources } from '../resources';
+import { apiRequest, ApiRequest } from '../axiosConfig';
 
 const getUserId = async (token: string): Promise<User> => {
-  try {
-    const { account, account_id } = resources;
-    const resource = account + '/' + account_id;
+  const { account, account_id } = resources;
+  const resource = `${account}/${account_id}`;
 
-    const config = {
-      headers: {
-        ['Authorization']: `Bearer ${token}`,
-      },
-      url: resource,
-    };
+  const requestConfig: ApiRequest = {
+    method: 'GET',
+    url: resource,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    const response = await axiosGetInstance(config);
-
-    if (response.status === HttpStatusCode.Ok) {
-      return response.data;
-    } else {
-      throw new ResponseError('Error fetching user ID data');
-    }
-  } catch (error) {
-    console.error('Failed to fetch user ID data:', error);
-    throw error;
-  }
+  return apiRequest<User>(requestConfig);
 };
 
 export default getUserId;

@@ -1,32 +1,19 @@
-import { ResponseError } from '@/errors/responseError';
 import { GenreResponse } from '@/types/filters/genres.types';
-import { HttpStatusCode } from 'axios';
 import { resources } from '../resources';
-import { axiosGetInstance } from '../axiosConfig';
+import { ApiRequest, apiRequest } from '../axiosConfig';
 
 const getGenresData = async (): Promise<GenreResponse> => {
-  try {
-    const { genre, movie, list } = resources;
-    const resource = `${genre}/${movie}/${list}`;
+  const { genre, movie, list } = resources;
+  const url = `${genre}/${movie}/${list}`;
+  const params = { language: 'en' };
 
-    const config = {
-      url: resource,
-      params: {
-        language: 'en',
-      },
-    };
+  const requestConfig: ApiRequest = {
+    method: 'GET',
+    url,
+    params,
+  };
 
-    const response = await axiosGetInstance(config);
-
-    if (response.status === HttpStatusCode.Ok) {
-      return response.data;
-    } else {
-      throw new ResponseError('Error fetching genres data');
-    }
-  } catch (error) {
-    console.error('Failed to fetch genres:', error);
-    throw error;
-  }
+  return apiRequest<GenreResponse>(requestConfig);
 };
 
 export default getGenresData;

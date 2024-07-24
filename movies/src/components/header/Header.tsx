@@ -1,16 +1,12 @@
-import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { AccountCircle } from '@mui/icons-material';
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { logout } from '@/store/auth/authActions';
+import { useAppSelector } from '@/store/store';
+import { selectIsAuth } from '@/store/auth/authSelectors';
+import LogoutButton from './buttons/LogoutButton';
+import LoginButton from './buttons/LoginButton';
 
 export default function Header() {
-  const { isAuth } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
-  const handleLogout = () => {
-    dispatch(logout());
-  };
+  const isAuth = useAppSelector(selectIsAuth);
 
   return (
     <AppBar position="static" sx={{ boxShadow: 'none', paddingInline: 4 }}>
@@ -21,30 +17,7 @@ export default function Header() {
           </Link>
         </Typography>
 
-        {isAuth ? (
-          <Button
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            color="inherit"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        ) : (
-          <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Link>
-        )}
+        {isAuth ? <LogoutButton /> : <LoginButton />}
       </Toolbar>
     </AppBar>
   );

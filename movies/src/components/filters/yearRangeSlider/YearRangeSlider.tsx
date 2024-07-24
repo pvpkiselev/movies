@@ -2,22 +2,21 @@ import { useMemo, useState } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { selectSearchQuery, selectSortType } from '@/store/filters/filtersSelectors';
 import { changeYearRange } from '@/store/filters/filtersActions';
 import { useDebouncedCallback } from 'use-debounce';
+import { selectSortAndSearchValues } from '@/store/filters/filtersSelectors';
 
 const yearRangeMin = 1970;
 const yearRangeMax = 2024;
 
 function YearRangeSlider() {
   const dispatch = useAppDispatch();
-  const sort = useAppSelector(selectSortType);
-  const searchQuery = useAppSelector(selectSearchQuery);
+  const { sortType, searchQuery } = useAppSelector(selectSortAndSearchValues);
   const [localRange, setLocalRange] = useState<number | number[]>([yearRangeMin, yearRangeMax]);
 
   const isDisabled = useMemo(
-    () => Boolean(searchQuery || sort === FAVORITES_OPTION),
-    [searchQuery, sort]
+    () => Boolean(searchQuery || sortType === FAVORITES_OPTION),
+    [searchQuery, sortType]
   );
 
   const handleRangeDispatch = useDebouncedCallback((range: number[]) => {

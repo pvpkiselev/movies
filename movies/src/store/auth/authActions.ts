@@ -1,6 +1,3 @@
-import { setAxiosAuthToken } from '@/api/axiosConfig';
-import Cookies from 'js-cookie';
-
 const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
 
@@ -17,9 +14,6 @@ type LOGOUT_TYPE_ACTION = {
 export type AUTH_ACTION = LOGIN_TYPE_ACTION | LOGOUT_TYPE_ACTION;
 
 function login(token: string, userId: string): LOGIN_TYPE_ACTION {
-  Cookies.set('token', token);
-  Cookies.set('userId', userId);
-  setAxiosAuthToken(token);
   return {
     type: LOGIN,
     token,
@@ -28,9 +22,6 @@ function login(token: string, userId: string): LOGIN_TYPE_ACTION {
 }
 
 function logout(): LOGOUT_TYPE_ACTION {
-  Cookies.remove('token');
-  Cookies.remove('userId');
-  setAxiosAuthToken(null);
   return {
     type: LOGOUT,
   };

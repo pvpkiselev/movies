@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
-import { selectCurrentPage, selectTotalPages } from '@/store/filters/filtersSelectors';
+import { selectPaginationValues } from '@/store/filters/filtersSelectors';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Pagination } from '@mui/material';
 import { changeSelectedPage } from '@/store/filters/filtersActions';
 
 function PaginationFilter() {
   const dispatch = useAppDispatch();
-  const currentPage = useAppSelector(selectCurrentPage);
-  const totalPages = useAppSelector(selectTotalPages);
+  const { currentPage, totalPages } = useAppSelector(selectPaginationValues);
 
   const isDisabled = useMemo(() => totalPages < 2, [totalPages]);
 

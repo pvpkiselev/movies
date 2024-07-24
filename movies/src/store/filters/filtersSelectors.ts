@@ -9,18 +9,47 @@ const selectYearRange = (state: MoviesAppState) => state.filters.yearRange;
 const selectGenreIds = (state: MoviesAppState) => state.filters.genreIds;
 const selectFavMoviesIds = (state: MoviesAppState) => state.filters.favMoviesIds;
 
-const selectGenreIdsString = createAppSelector([selectGenreIds], (genreIds) => genreIds.join(','));
-const selectTotalPages = createAppSelector([selectMaxPages], (maxPages) =>
-  Math.min(maxPages, POSSIBLE_PAGES)
+const selectMoviesValues = createAppSelector(
+  [selectCurrentPage, selectSortType, selectSearchQuery, selectYearRange, selectGenreIds],
+  (currentPage, sortType, searchQuery, yearRange, genreIds) => ({
+    currentPage,
+    sortType,
+    searchQuery,
+    yearRange,
+    genreIdsString: genreIds.join(','),
+  })
+);
+
+const selectGenresValues = createAppSelector(
+  [selectSortType, selectSearchQuery, selectGenreIds],
+  (sortType, searchQuery, genreIds) => ({
+    sortType,
+    searchQuery,
+    genreIds,
+  })
+);
+
+const selectPaginationValues = createAppSelector(
+  [selectCurrentPage, selectMaxPages],
+  (currentPage, maxPages) => ({
+    currentPage,
+    totalPages: Math.min(maxPages, POSSIBLE_PAGES),
+  })
+);
+
+const selectSortAndSearchValues = createAppSelector(
+  [selectSortType, selectSearchQuery],
+  (sortType, searchQuery) => ({
+    sortType,
+    searchQuery,
+  })
 );
 
 export {
-  selectCurrentPage,
+  selectMoviesValues,
+  selectGenresValues,
+  selectPaginationValues,
+  selectSortAndSearchValues,
   selectSortType,
-  selectSearchQuery,
-  selectYearRange,
-  selectGenreIds,
   selectFavMoviesIds,
-  selectGenreIdsString,
-  selectTotalPages,
 };

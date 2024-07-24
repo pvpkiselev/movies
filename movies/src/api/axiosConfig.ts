@@ -1,31 +1,56 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
 import { API_URL } from './constants';
+import { ResponseError } from '@/errors/responseError';
 
-const axiosGetInstance = axios.create({
-  baseURL: API_URL,
-  method: 'get',
-  headers: {
-    accept: 'application/json',
-  },
-});
+export interface ApiRequest {
+  headers?: Record<string, string>;
+  method: 'GET' | 'POST';
+  url: string;
+  data?: unknown;
+  params?: Record<string, unknown>;
+}
 
-const axiosPostInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_URL,
-  method: 'post',
   headers: {
     accept: 'application/json',
     'Content-Type': 'application/json',
   },
 });
 
-export const setAxiosAuthToken = (token: string | null) => {
-  if (token) {
-    axiosGetInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axiosPostInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axiosGetInstance.defaults.headers.common['Authorization'];
-    delete axiosPostInstance.defaults.headers.common['Authorization'];
+const apiRequest = async <T>(props: ApiRequest): Promise<T> => {
+  const { headers, method, url, data, params } = props;
+  try {
+    const config: AxiosRequestConfig = {
+      headers,
+      method,
+      url,
+      params: method === 'GET' ? params : undefined,
+      data: method === 'POST' ? data : undefined,
+    };
+
+    const response = await axiosInstance(config);
+
+    const isSuccessResponse =
+      response.status === HttpStatusCode.Ok || response.status === HttpStatusCode.Created;
+
+    if (isSuccessResponse) {
+      return response.data;
+    } else {
+      throw new ResponseError(`Error with status code: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+    throw error;
   }
 };
 
-export { axiosGetInstance, axiosPostInstance };
+const setAxiosAuthToken = (token: string | null) => {
+  if (token) {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete axiosInstance.defaults.headers.common['Authorization'];
+  }
+};
+
+export { axiosInstance, apiRequest, setAxiosAuthToken };
