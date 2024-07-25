@@ -1,6 +1,6 @@
-import { MoviesAppState } from '../store';
+import { AppState } from '../store';
 
-const selectUserId = (state: MoviesAppState) => state.auth.userId;
-const selectIsAuth = (state: MoviesAppState) => state.auth.isAuth;
+const selectUserId = (state: AppState) => state.auth.userId;
+const selectIsAuth = (state: AppState) => state.auth.isAuth;
 
 export { selectUserId, selectIsAuth };

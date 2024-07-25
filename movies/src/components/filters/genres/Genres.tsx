@@ -4,8 +4,8 @@ import { Autocomplete, TextField } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { selectGenresValues } from '@/store/filters/filtersSelectors';
-import { toggleGenres } from '@/store/filters/filtersActions';
 import { Genre } from './types/genres.types';
+import { toggledGenres } from '@/store/filtersSlice';
 
 function Genres() {
   const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ function Genres() {
   }, [fetchGenres]);
 
   const handleGenreToggle = (_event: React.SyntheticEvent, value: number[]) => {
-    dispatch(toggleGenres(value));
+    dispatch(toggledGenres(value));
   };
 
   const optionIds = useMemo(() => {

@@ -5,8 +5,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { selectSortType } from '@/store/filters/filtersSelectors';
-import { changeSearchQuery } from '@/store/filters/filtersActions';
 import { useDebouncedCallback } from 'use-debounce';
+import { changedSearchQuery } from '@/store/filtersSlice';
 
 function Search() {
   const dispatch = useAppDispatch();
@@ -18,7 +18,7 @@ function Search() {
   const isEmptyQuery = useMemo(() => localQuery === '', [localQuery]);
 
   const handleSearchQueryDispatch = useDebouncedCallback((query: string) => {
-    dispatch(changeSearchQuery(query));
+    dispatch(changedSearchQuery(query));
   }, 300);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +29,7 @@ function Search() {
 
   const handleResetClick = () => {
     setLocalQuery('');
-    dispatch(changeSearchQuery(''));
+    dispatch(changedSearchQuery(''));
   };
 
   return (

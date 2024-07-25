@@ -1,13 +1,13 @@
 import { POSSIBLE_PAGES } from '@/components/filters/pagination/constants';
-import { createAppSelector, MoviesAppState } from '../store';
+import { createAppSelector, AppState } from '../store';
 
-const selectCurrentPage = (state: MoviesAppState) => state.filters.currentPage;
-const selectMaxPages = (state: MoviesAppState) => state.filters.maxPages;
-const selectSortType = (state: MoviesAppState) => state.filters.sortType;
-const selectSearchQuery = (state: MoviesAppState) => state.filters.searchQuery;
-const selectYearRange = (state: MoviesAppState) => state.filters.yearRange;
-const selectGenreIds = (state: MoviesAppState) => state.filters.genreIds;
-const selectFavMoviesIds = (state: MoviesAppState) => state.filters.favMoviesIds;
+const selectCurrentPage = (state: AppState) => state.filters.currentPage;
+const selectMaxPages = (state: AppState) => state.filters.maxPages;
+const selectSortType = (state: AppState) => state.filters.sortType;
+const selectSearchQuery = (state: AppState) => state.filters.searchQuery;
+const selectYearRange = (state: AppState) => state.filters.yearRange;
+const selectGenreIds = (state: AppState) => state.filters.genreIds;
+const selectFavMoviesIds = (state: AppState) => state.filters.favMoviesIds;
 
 const selectMoviesValues = createAppSelector(
   [selectCurrentPage, selectSortType, selectSearchQuery, selectYearRange, selectGenreIds],

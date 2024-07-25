@@ -3,9 +3,9 @@ import getTokenVerification from '@/api/auth/getTokenVerification';
 import getUserId from '@/api/auth/getUserId';
 import { setAxiosAuthToken } from '@/api/axiosConfig';
 import { useAppDispatch } from '@/store/store';
-import { login, logout } from '@/store/auth/authActions';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
+import { login, logout } from '@/store/authSlice';
 
 export function useAuth() {
   const dispatch = useAppDispatch();
@@ -23,7 +23,7 @@ export function useAuth() {
           Cookies.set('userId', userId);
           setAxiosAuthToken(token);
 
-          dispatch(login(token, userId));
+          dispatch(login({ token, userId }));
           return true;
         }
       } catch (error) {

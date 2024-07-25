@@ -1,7 +1,7 @@
 import fetchFavoriteMovie from '@/api/favorites/fetchFavoriteMovie';
 import { selectUserId } from '@/store/auth/authSelectors';
-import { toggleFavorite } from '@/store/filters/filtersActions';
 import { selectFavMoviesIds } from '@/store/filters/filtersSelectors';
+import { toggledFavorite } from '@/store/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useCallback, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -23,7 +23,7 @@ export function useFavorite({ id }: UseFavoriteProps) {
         const toggleFavoriteResponse = await fetchFavoriteMovie(userId, id, !isFavorite);
 
         if (toggleFavoriteResponse.success) {
-          dispatch(toggleFavorite(id));
+          dispatch(toggledFavorite(id));
           toast.success(!isFavorite ? 'Successfully added card' : 'Successfully removed card');
         } else {
           throw new Error('Failed to toggle favorite');

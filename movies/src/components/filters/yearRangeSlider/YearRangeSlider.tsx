@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { changeYearRange } from '@/store/filters/filtersActions';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectSortAndSearchValues } from '@/store/filters/filtersSelectors';
+import { changedYearRange } from '@/store/filtersSlice';
 
 const yearRangeMin = 1970;
 const yearRangeMax = 2024;
@@ -20,7 +20,7 @@ function YearRangeSlider() {
   );
 
   const handleRangeDispatch = useDebouncedCallback((range: number[]) => {
-    dispatch(changeYearRange(range));
+    dispatch(changedYearRange(range));
   }, 300);
 
   const handleYearRangeChange = (_event: Event, range: number | number[]) => {

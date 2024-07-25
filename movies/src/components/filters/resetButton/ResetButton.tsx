@@ -1,4 +1,4 @@
-import { resetFilters } from '@/store/filters/filtersActions';
+import { resetFilters } from '@/store/filtersSlice';
 import { useAppDispatch } from '@/store/store';
 import { Close } from '@mui/icons-material';
 import { Button } from '@mui/material';

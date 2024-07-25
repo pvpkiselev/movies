@@ -1,20 +1,24 @@
-import { combineReducers, createSelector, createStore } from '@reduxjs/toolkit';
-import { authReducer } from './auth/authReducer';
-import { filtersReducer } from './filters/filtersReducer';
+import { configureStore, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
+import filtersReducer from './filtersSlice';
+import authReducer from './authSlice';
 
-const moviesApp = combineReducers({
-  auth: authReducer,
-  filters: filtersReducer,
+const store = configureStore({
+  reducer: {
+    filters: filtersReducer,
+    auth: authReducer,
+  },
 });
 
-const store = createStore(moviesApp);
+export type AppState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
-export type MoviesAppState = ReturnType<typeof store.getState>;
-export type MoviesAppDispatch = typeof store.dispatch;
-
-export const useAppSelector = useSelector.withTypes<MoviesAppState>();
-export const useAppDispatch = useDispatch.withTypes<MoviesAppDispatch>();
-export const createAppSelector = createSelector.withTypes<MoviesAppState>();
+export const useAppSelector = useSelector.withTypes<AppState>();
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const createAppSelector = createSelector.withTypes<AppState>();
+export const createAppAsyncThunk = createAsyncThunk.withTypes<{
+  state: AppState;
+  dispatch: AppDispatch;
+}>();
 
 export default store;

@@ -6,11 +6,11 @@ import getSearchedMovies from '@/api/movies/getSearchedMovies';
 import getSortedMovies from '@/api/movies/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { changeMaxPages, loadFavoriteMoviesIds } from '@/store/filters/filtersActions';
 import { selectMoviesValues } from '@/store/filters/filtersSelectors';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
 import { Movie } from './types/movies.types';
+import { changedMaxPages, loadedFavoriteMoviesIds } from '@/store/filtersSlice';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +24,6 @@ function MovieList() {
   const [minYear, maxYear] = yearRange;
 
   const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
-  console.log('Render List');
 
   const fetchMovies = useCallback(async () => {
     setError(null);
@@ -51,7 +50,7 @@ function MovieList() {
       }
 
       setMovies(response.results);
-      dispatch(changeMaxPages(response.total_pages));
+      dispatch(changedMaxPages(response.total_pages));
     } catch (error) {
       setError('Failed to fetch movies. Please try again later.');
       console.error(error);
@@ -68,7 +67,7 @@ function MovieList() {
         const response = await getFavoriteMoviesList(userId, currentPage);
         const favIds = response.results.map((movie) => movie.id);
 
-        dispatch(loadFavoriteMoviesIds(favIds));
+        dispatch(loadedFavoriteMoviesIds(favIds));
       }
     } catch (error) {
       console.error('Failed to fetch Favorite Movies List:', error);
