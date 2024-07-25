@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import getTokenVerification from '@/api/auth/getTokenVerification';
 import getUserId from '@/api/auth/getUserId';
 import { setAxiosAuthToken } from '@/api/axiosConfig';
-import { useAppDispatch } from '@/store/store';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-import { login, logout } from '@/store/authSlice';
+import { login, logout } from '@/store/auth/authSlice';
+import { useAppDispatch } from '@/store/redux';
 
 export function useAuth() {
   const dispatch = useAppDispatch();

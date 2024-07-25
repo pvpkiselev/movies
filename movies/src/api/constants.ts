@@ -9,3 +9,5 @@ export const IMAGE_ORIGINAL = env.VITE_IMAGE_ORIGINAL as string;
 
 export const TOP_RATED_PATH = env.VITE_TOP_RATED as string;
 export const POPULAR_PATH = env.VITE_POPULAR as string;
+
+export const DEFAULT_ERROR_MESSAGE = 'Unknown error occurred';

@@ -1,5 +1,5 @@
 import { MoviesResponse } from '@/components/movieList/types/movies.types';
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { resources } from '../resources';
 
 const getFavoriteMoviesList = async (
@@ -10,13 +10,14 @@ const getFavoriteMoviesList = async (
   const url = `${account}/${userId}/${favorite}/${movies}`;
   const params = { language: 'en', page: currentPage };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url,
     params,
   };
 
-  return apiRequest<MoviesResponse>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getFavoriteMoviesList;

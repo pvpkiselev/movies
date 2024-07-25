@@ -1,24 +1,16 @@
-import { configureStore, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux';
-import filtersReducer from './filtersSlice';
-import authReducer from './authSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import filtersReducer from './filters/filtersSlice';
+import authReducer from './auth/authSlice';
+import api from '@/api/api';
 
-const store = configureStore({
+export const extraArgument = {
+  api,
+};
+
+export const store = configureStore({
   reducer: {
     filters: filtersReducer,
     auth: authReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: { extraArgument } }),
 });
-
-export type AppState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-
-export const useAppSelector = useSelector.withTypes<AppState>();
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-export const createAppSelector = createSelector.withTypes<AppState>();
-export const createAppAsyncThunk = createAsyncThunk.withTypes<{
-  state: AppState;
-  dispatch: AppDispatch;
-}>();
-
-export default store;

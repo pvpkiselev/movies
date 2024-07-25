@@ -3,9 +3,9 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import Header from '../components/header/Header';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAppSelector } from '@/store/store';
 import { useAuth } from '@/hooks/useAuth';
 import { selectIsAuth } from '@/store/auth/authSelectors';
+import { useAppSelector } from '@/store/redux';
 
 const Loading: React.FC = () => {
   return (

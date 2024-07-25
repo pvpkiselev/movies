@@ -1,5 +1,5 @@
 import { resources } from '../resources';
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { MovieDetailsType } from '@/components/moviePageInfo/types/movieDetails.types';
 
 const getMovieDetails = async (id: string): Promise<MovieDetailsType> => {
@@ -7,13 +7,14 @@ const getMovieDetails = async (id: string): Promise<MovieDetailsType> => {
   const url = `${movie}/${id}`;
   const params = { language: 'en' };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url,
     params,
   };
 
-  return apiRequest<MovieDetailsType>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getMovieDetails;

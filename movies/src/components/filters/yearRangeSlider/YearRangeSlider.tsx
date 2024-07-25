@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
-import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectSortAndSearchValues } from '@/store/filters/filtersSelectors';
-import { changedYearRange } from '@/store/filtersSlice';
+import { changedYearRange } from '@/store/filters/filtersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
 
 const yearRangeMin = 1970;
 const yearRangeMax = 2024;

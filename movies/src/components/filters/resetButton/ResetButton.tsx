@@ -1,5 +1,5 @@
-import { resetFilters } from '@/store/filtersSlice';
-import { useAppDispatch } from '@/store/store';
+import { resetFilters } from '@/store/filters/filtersSlice';
+import { useAppDispatch } from '@/store/redux';
 import { Close } from '@mui/icons-material';
 import { Button } from '@mui/material';
 

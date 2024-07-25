@@ -1,11 +1,11 @@
 import { resources } from '../resources';
-import { apiRequest, ApiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { ResponseStatusData } from '../types/response.types';
 
 const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
   const resource = resources.authentication;
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url: resource,
     headers: {
@@ -13,7 +13,8 @@ const getTokenVerification = async (token: string): Promise<ResponseStatusData> 
     },
   };
 
-  return apiRequest<ResponseStatusData>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getTokenVerification;

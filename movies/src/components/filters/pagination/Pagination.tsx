@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { selectPaginationValues } from '@/store/filters/filtersSelectors';
-import { useAppDispatch, useAppSelector } from '@/store/store';
 import { Pagination } from '@mui/material';
-import { pageSelected } from '@/store/filtersSlice';
+import { pageSelected } from '@/store/filters/filtersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
 
 function PaginationFilter() {
   const dispatch = useAppDispatch();

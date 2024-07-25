@@ -1,5 +1,5 @@
 import { resources } from '../resources';
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { ResponseStatusData } from '../types/response.types';
 
 const fetchFavoriteMovie = async (
@@ -11,13 +11,14 @@ const fetchFavoriteMovie = async (
   const url = `${account}/${userId}/${favorite}`;
   const data = { media_type: 'movie', media_id: movieId, favorite: isFavorite };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'POST',
     url,
     data,
   };
 
-  return apiRequest(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default fetchFavoriteMovie;

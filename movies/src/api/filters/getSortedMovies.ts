@@ -1,4 +1,4 @@
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { POPULAR_PATH, TOP_RATED_PATH } from '../constants';
 import { resources } from '../resources';
@@ -33,13 +33,14 @@ const getSortedMovies = async (props: GetSortedMovies): Promise<MoviesResponse> 
     with_genres: encodeURIComponent(genreIdsString),
   };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url,
     params,
   };
 
-  return apiRequest<MoviesResponse>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getSortedMovies;

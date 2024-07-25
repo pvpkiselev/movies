@@ -1,5 +1,5 @@
 import { resources } from '../resources';
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { MoviesResponse } from '@/components/movieList/types/movies.types';
 
 const getSearchedMovies = async (query: string, page: number): Promise<MoviesResponse> => {
@@ -12,13 +12,14 @@ const getSearchedMovies = async (query: string, page: number): Promise<MoviesRes
     page,
   };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url,
     params,
   };
 
-  return apiRequest<MoviesResponse>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getSearchedMovies;

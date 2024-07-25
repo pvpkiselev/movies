@@ -1,5 +1,5 @@
 import { POSSIBLE_PAGES } from '@/components/filters/pagination/constants';
-import { createAppSelector, AppState } from '../store';
+import { AppState, createAppSelector } from '../redux';
 
 const selectCurrentPage = (state: AppState) => state.filters.currentPage;
 const selectMaxPages = (state: AppState) => state.filters.maxPages;

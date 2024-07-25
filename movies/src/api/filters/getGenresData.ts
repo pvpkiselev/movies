@@ -1,5 +1,5 @@
 import { resources } from '../resources';
-import { ApiRequest, apiRequest } from '../axiosConfig';
+import { axiosInstance, Config } from '../axiosConfig';
 import { GenreResponse } from '@/components/filters/genres/types/genres.types';
 
 const getGenresData = async (): Promise<GenreResponse> => {
@@ -7,13 +7,14 @@ const getGenresData = async (): Promise<GenreResponse> => {
   const url = `${genre}/${movie}/${list}`;
   const params = { language: 'en' };
 
-  const requestConfig: ApiRequest = {
+  const config: Config = {
     method: 'GET',
     url,
     params,
   };
 
-  return apiRequest<GenreResponse>(requestConfig);
+  const response = await axiosInstance(config);
+  return response.data;
 };
 
 export default getGenresData;

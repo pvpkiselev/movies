@@ -9,7 +9,7 @@ import { movieInfoLoader } from '@/loaders/movieInfoLoader';
 import Login from './routes/Login';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './store/store';
+import { store } from './store/store';
 
 const router = createBrowserRouter([
   {

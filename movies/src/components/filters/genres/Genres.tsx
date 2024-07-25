@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import getGenresData from '@/api/movies/getGenresData';
+import getGenresData from '@/api/filters/getGenresData';
 import { Autocomplete, TextField } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
-import { useAppDispatch, useAppSelector } from '@/store/store';
 import { selectGenresValues } from '@/store/filters/filtersSelectors';
 import { Genre } from './types/genres.types';
-import { toggledGenres } from '@/store/filtersSlice';
+import { toggledGenres } from '@/store/filters/filtersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
 
 function Genres() {
   const dispatch = useAppDispatch();

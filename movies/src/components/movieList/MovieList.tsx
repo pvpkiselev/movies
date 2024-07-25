@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
-import getFavoriteMoviesList from '@/api/favorites/getFavoriteMoviesList';
-import getSearchedMovies from '@/api/movies/getSearchedMovies';
-import getSortedMovies from '@/api/movies/getSortedMovies';
+import getFavoriteMoviesList from '@/api/filters/getFavoriteMoviesList';
+import getSearchedMovies from '@/api/filters/getSearchedMovies';
+import getSortedMovies from '@/api/filters/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
-import { useAppDispatch, useAppSelector } from '@/store/store';
 import { selectMoviesValues } from '@/store/filters/filtersSelectors';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
 import { Movie } from './types/movies.types';
-import { changedMaxPages, loadedFavoriteMoviesIds } from '@/store/filtersSlice';
+import { changedMaxPages, loadedFavoriteMoviesIds } from '@/store/filters/filtersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);

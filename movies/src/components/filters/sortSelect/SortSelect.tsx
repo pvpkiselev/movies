@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/store';
 import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { selectSortAndSearchValues } from '@/store/filters/filtersSelectors';
-import { changedSortType } from '@/store/filtersSlice';
+import { changedSortType } from '@/store/filters/filtersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
 
 const sortOptions = [
   { id: 0, value: POPULAR_OPTION },

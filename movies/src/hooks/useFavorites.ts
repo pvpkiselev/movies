@@ -1,10 +1,9 @@
-import fetchFavoriteMovie from '@/api/favorites/fetchFavoriteMovie';
+import { useCallback } from 'react';
+import toast from 'react-hot-toast';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { selectFavMoviesIds } from '@/store/filters/filtersSelectors';
-import { toggledFavorite } from '@/store/filtersSlice';
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { useCallback, useMemo } from 'react';
-import toast from 'react-hot-toast';
+import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { fetchFavoriteMovieAction } from '@/store/filters/thunks/thunks';
 
 interface UseFavoriteProps {
   id: number;
@@ -15,25 +14,21 @@ export function useFavorite({ id }: UseFavoriteProps) {
   const userId = useAppSelector(selectUserId);
   const favMoviesIds = useAppSelector(selectFavMoviesIds);
 
-  const isFavorite = useMemo(() => favMoviesIds.includes(id), [favMoviesIds, id]);
+  const isFavorite = favMoviesIds.includes(id);
 
   const handleFavoriteToggle = useCallback(async () => {
-    try {
-      if (userId) {
-        const toggleFavoriteResponse = await fetchFavoriteMovie(userId, id, !isFavorite);
+    const result = await dispatch(
+      fetchFavoriteMovieAction({
+        userId,
+        movieId: id,
+        isFavorite: !isFavorite,
+      })
+    );
 
-        if (toggleFavoriteResponse.success) {
-          dispatch(toggledFavorite(id));
-          toast.success(!isFavorite ? 'Successfully added card' : 'Successfully removed card');
-        } else {
-          throw new Error('Failed to toggle favorite');
-        }
-      } else {
-        throw new Error('User not authenticated');
-      }
-    } catch (error) {
+    if (fetchFavoriteMovieAction.fulfilled.match(result)) {
+      toast.success(!isFavorite ? 'Successfully added card' : 'Successfully removed card');
+    } else {
       toast.error('Failed to toggle favorite');
-      console.error('Failed to update Favorite Movie:', error);
     }
   }, [id, isFavorite, userId, dispatch]);
 

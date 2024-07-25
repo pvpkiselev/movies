@@ -1,8 +1,7 @@
-import axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
+import axios from 'axios';
 import { API_URL } from './constants';
-import { ResponseError } from '@/errors/responseError';
 
-export interface ApiRequest {
+export interface Config {
   headers?: Record<string, string>;
   method: 'GET' | 'POST';
   url: string;
@@ -18,32 +17,20 @@ const axiosInstance = axios.create({
   },
 });
 
-const apiRequest = async <T>(props: ApiRequest): Promise<T> => {
-  const { headers, method, url, data, params } = props;
-  try {
-    const config: AxiosRequestConfig = {
-      headers,
-      method,
-      url,
-      params: method === 'GET' ? params : undefined,
-      data: method === 'POST' ? data : undefined,
-    };
+// const apiRequest = async <T>(props: ApiRequest): Promise<T> => {
+//   const { headers, method, url, data, params } = props;
 
-    const response = await axiosInstance(config);
+//   const config: AxiosRequestConfig = {
+//     headers,
+//     method,
+//     url,
+//     params: method === 'GET' ? params : undefined,
+//     data: method === 'POST' ? data : undefined,
+//   };
 
-    const isSuccessResponse =
-      response.status === HttpStatusCode.Ok || response.status === HttpStatusCode.Created;
-
-    if (isSuccessResponse) {
-      return response.data;
-    } else {
-      throw new ResponseError(`Error with status code: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('Request failed:', error);
-    throw error;
-  }
-};
+//   const response = await axiosInstance(config);
+//   return response.data;
+// };
 
 const setAxiosAuthToken = (token: string | null) => {
   if (token) {
@@ -53,4 +40,4 @@ const setAxiosAuthToken = (token: string | null) => {
   }
 };
 
-export { axiosInstance, apiRequest, setAxiosAuthToken };
+export { axiosInstance, setAxiosAuthToken };
