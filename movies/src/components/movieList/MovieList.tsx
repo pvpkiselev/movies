@@ -2,24 +2,39 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
 import MovieListSkeleton from './MovieListSkeleton';
-import { selectMoviesValues } from '@/store/filters/filtersSelectors';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
-import { fetchFavoriteMoviesListAction } from '@/store/filters/model/fetchFavoriteMoviesListAction';
-import { fetchSortedMoviesAction } from '@/store/filters/model/fetchSortedMoviesAction';
-import { fetchSearchedMoviesAction } from '@/store/filters/model/fetchSearchedMoviesAction';
+import { fetchFavoriteMoviesListAction } from '@/store/filters/actions/thunks/fetchFavoriteMoviesListAction';
+import { fetchSortedMoviesAction } from '@/store/filters/actions/thunks/fetchSortedMoviesAction';
+import { fetchSearchedMoviesAction } from '@/store/filters/actions/thunks/fetchSearchedMoviesAction';
+import {
+  selectCurrentPage,
+  selectFavMovies,
+  selectGenreIdsString,
+  selectMovies,
+  selectSearchQuery,
+  selectSortType,
+  selectYearRange,
+} from '@/store/filters/selectors/filtersSelectors';
 
 function MovieList() {
+  console.log('Render');
   const [error, setError] = useState<string | null>(null);
-  const userId = useAppSelector(selectUserId);
   const dispatch = useAppDispatch();
-  const { movies, favMovies, currentPage, sortType, searchQuery, yearRange, genreIdsString } =
-    useAppSelector(selectMoviesValues);
-  const [minYear, maxYear] = yearRange;
+  const userId = useAppSelector(selectUserId);
+  const movies = useAppSelector(selectMovies);
+  const favMovies = useAppSelector(selectFavMovies);
+  const currentPage = useAppSelector(selectCurrentPage);
+  const sortType = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
+  const yearRange = useAppSelector(selectYearRange);
+  const genreIdsString = useAppSelector(selectGenreIdsString);
 
+  const [minYear, maxYear] = yearRange;
   const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
   const moviesToShow = isFavorites ? favMovies : movies;
+  const isMovieListEmpty = moviesToShow.length === 0;
 
   const fetchMovies = useCallback(async () => {
     setError(null);
@@ -73,7 +88,7 @@ function MovieList() {
     <Box flex="1">
       {error ? (
         <Alert severity="error">{error}</Alert>
-      ) : moviesToShow.length === 0 ? (
+      ) : isMovieListEmpty ? (
         <MovieListSkeleton />
       ) : (
         <Grid container spacing={3} wrap="wrap">

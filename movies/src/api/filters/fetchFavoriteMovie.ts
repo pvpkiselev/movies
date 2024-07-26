@@ -1,8 +1,13 @@
 import { resources } from '../resources';
 import { axiosInstance, Config } from '../axiosConfig';
 import { HttpStatusCode } from 'axios';
+import { ResponseStatusData } from '../types/response.types';
 
-const fetchFavoriteMovie = async (userId: string, movieId: number, isFavorite: boolean) => {
+const fetchFavoriteMovie = async (
+  userId: string,
+  movieId: number,
+  isFavorite: boolean
+): Promise<ResponseStatusData> => {
   const { account, favorite } = resources;
   const url = `${account}/${userId}/${favorite}`;
   const data = { media_type: 'movie', media_id: movieId, favorite: isFavorite };

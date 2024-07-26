@@ -3,10 +3,10 @@ import { FormControl, InputAdornment, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
-import { selectSortType } from '@/store/filters/filtersSelectors';
 import { useDebouncedCallback } from 'use-debounce';
-import { changedSearchQuery } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { changedSearchQuery } from '@/store/filters/slices/moviesSlice';
+import { selectSortType } from '@/store/filters/selectors/filtersSelectors';
 
 function Search() {
   const dispatch = useAppDispatch();

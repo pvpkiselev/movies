@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { API_URL } from './constants';
 
 export interface Config {
@@ -16,6 +16,21 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+export const fetchData = async <T>(config: Config): Promise<T> => {
+  try {
+    const response = await axiosInstance(config);
+    const isSuccess = response.status === HttpStatusCode.Ok || HttpStatusCode.Created;
+    if (isSuccess) {
+      return response.data;
+    } else {
+      throw new Error('Error fetching data');
+    }
+  } catch (error) {
+    console.error('Fetch data error:', error);
+    throw error;
+  }
+};
 
 const setAxiosAuthToken = (token: string | null) => {
   if (token) {

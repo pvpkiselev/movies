@@ -1,8 +1,8 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { User } from '../types/user.types';
 
-const getUserId = async (token: string) => {
+const getUserId = async (token: string): Promise<User> => {
   const { account, account_id } = resources;
   const resource = `${account}/${account_id}`;
 
@@ -14,15 +14,7 @@ const getUserId = async (token: string) => {
     },
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting User Id:', error);
-  }
+  return fetchData<User>(config);
 };
 
 export default getUserId;

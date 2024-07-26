@@ -1,8 +1,8 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { GenreResponse } from '@/components/filters/genres/types/genres.types';
 
-const getGenresData = async () => {
+const getGenresData = async (): Promise<GenreResponse> => {
   const { genre, movie, list } = resources;
   const url = `${genre}/${movie}/${list}`;
   const params = { language: 'en' };
@@ -13,15 +13,7 @@ const getGenresData = async () => {
     params,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting Genres Data:', error);
-  }
+  return fetchData<GenreResponse>(config);
 };
 
 export default getGenresData;

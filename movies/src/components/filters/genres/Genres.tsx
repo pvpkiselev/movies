@@ -1,16 +1,25 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
-import { selectGenresValues } from '@/store/filters/filtersSelectors';
 import { Genre } from './types/genres.types';
-import { toggledGenres } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
-import { fetchGenresDataAction } from '@/store/filters/model/fetchGenresDataAction';
+import { fetchGenresDataAction } from '@/store/filters/actions/thunks/fetchGenresDataAction';
+import { toggledGenres } from '@/store/filters/slices/genresSlice';
+import {
+  selectCheckedGenres,
+  selectGenreIds,
+  selectGenres,
+  selectSearchQuery,
+  selectSortType,
+} from '@/store/filters/selectors/filtersSelectors';
 
 function Genres() {
   const dispatch = useAppDispatch();
-  const { sortType, searchQuery, genres, genreIds, checkedGenres } =
-    useAppSelector(selectGenresValues);
+  const sortType = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
+  const genres = useAppSelector(selectGenres);
+  const genreIds = useAppSelector(selectGenreIds);
+  const checkedGenres = useAppSelector(selectCheckedGenres);
 
   const isDisabled = useMemo(
     () => Boolean(searchQuery || sortType === FAVORITES_OPTION),

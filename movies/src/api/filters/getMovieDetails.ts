@@ -1,8 +1,8 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { MovieDetailsType } from '@/components/moviePageInfo/types/movieDetails.types';
 
-const getMovieDetails = async (id: string) => {
+const getMovieDetails = async (id: string): Promise<MovieDetailsType> => {
   const { movie } = resources;
   const url = `${movie}/${id}`;
   const params = { language: 'en' };
@@ -13,15 +13,7 @@ const getMovieDetails = async (id: string) => {
     params,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting Movie Details:', error);
-  }
+  return fetchData<MovieDetailsType>(config);
 };
 
 export default getMovieDetails;

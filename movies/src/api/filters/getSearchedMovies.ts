@@ -1,8 +1,11 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { MoviesResponse } from '@/components/movieList/types/movies.types';
 
-const getSearchedMovies = async (searchQuery: string, currentPage: number) => {
+const getSearchedMovies = async (
+  searchQuery: string,
+  currentPage: number
+): Promise<MoviesResponse> => {
   const { search, movie } = resources;
   const url = `${search}/${movie}`;
   const params = {
@@ -18,15 +21,7 @@ const getSearchedMovies = async (searchQuery: string, currentPage: number) => {
     params,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting Search Results:', error);
-  }
+  return fetchData<MoviesResponse>(config);
 };
 
 export default getSearchedMovies;

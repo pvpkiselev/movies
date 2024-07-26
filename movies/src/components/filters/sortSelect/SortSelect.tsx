@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { selectSortAndSearchValues } from '@/store/filters/filtersSelectors';
-import { changedSortType } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { changedSortType } from '@/store/filters/slices/sortSlice';
+import { selectSearchQuery, selectSortType } from '@/store/filters/selectors/filtersSelectors';
 
 const sortOptions = [
   { id: 0, value: POPULAR_OPTION },
@@ -13,7 +13,8 @@ const sortOptions = [
 
 function SortSelect() {
   const dispatch = useAppDispatch();
-  const { sortType, searchQuery } = useAppSelector(selectSortAndSearchValues);
+  const sortType = useAppSelector(selectSortType);
+  const searchQuery = useAppSelector(selectSearchQuery);
 
   const isDisabled = useMemo(() => Boolean(searchQuery), [searchQuery]);
 

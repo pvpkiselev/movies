@@ -1,8 +1,8 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { MovieCreditsType } from '@/components/moviePageInfo/types/movieCredits.types';
 
-const getMovieCredits = async (id: string) => {
+const getMovieCredits = async (id: string): Promise<MovieCreditsType> => {
   const { movie, credits } = resources;
   const url = `${movie}/${id}/${credits}`;
   const params = { language: 'en' };
@@ -13,15 +13,7 @@ const getMovieCredits = async (id: string) => {
     params,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting Movie Credits:', error);
-  }
+  return fetchData<MovieCreditsType>(config);
 };
 
 export default getMovieCredits;

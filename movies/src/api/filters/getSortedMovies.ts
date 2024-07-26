@@ -1,8 +1,8 @@
-import { axiosInstance, Config } from '../axiosConfig';
+import { Config, fetchData } from '../axiosConfig';
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { POPULAR_PATH, TOP_RATED_PATH } from '../constants';
 import { resources } from '../resources';
-import { HttpStatusCode } from 'axios';
+import { MoviesResponse } from '@/components/movieList/types/movies.types';
 
 export interface GetSortedMovies {
   currentPage: number;
@@ -12,7 +12,7 @@ export interface GetSortedMovies {
   genreIdsString: string;
 }
 
-const getSortedMovies = async (props: GetSortedMovies) => {
+const getSortedMovies = async (props: GetSortedMovies): Promise<MoviesResponse> => {
   const { currentPage, minYear, maxYear, sortType, genreIdsString } = props;
   const startDate = `${minYear}-01-01`;
   const endDate = `${maxYear}-12-31`;
@@ -39,15 +39,7 @@ const getSortedMovies = async (props: GetSortedMovies) => {
     params,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error getting Sorted Movies:', error);
-  }
+  return fetchData<MoviesResponse>(config);
 };
 
 export default getSortedMovies;

@@ -1,8 +1,8 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
+import { ResponseStatusData } from '../types/response.types';
 
-const getTokenVerification = async (token: string) => {
+const getTokenVerification = async (token: string): Promise<ResponseStatusData> => {
   const resource = resources.authentication;
 
   const config: Config = {
@@ -13,15 +13,7 @@ const getTokenVerification = async (token: string) => {
     },
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Token verification error:', error);
-  }
+  return fetchData<ResponseStatusData>(config);
 };
 
 export default getTokenVerification;

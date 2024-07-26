@@ -1,4 +1,4 @@
-import { resetFilters } from '@/store/filters/filtersSlice';
+import { resetFiltersAction } from '@/store/filters/actions/resetFiltersAction';
 import { useAppDispatch } from '@/store/redux';
 import { Close } from '@mui/icons-material';
 import { Button } from '@mui/material';
@@ -7,7 +7,7 @@ function ResetButton() {
   const dispatch = useAppDispatch();
 
   const handleResetFilters = () => {
-    dispatch(resetFilters());
+    dispatch(resetFiltersAction());
   };
 
   return (

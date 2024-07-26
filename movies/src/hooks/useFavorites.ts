@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { selectUserId } from '@/store/auth/authSelectors';
-import { selectFavMoviesIds } from '@/store/filters/filtersSelectors';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
-import { fetchFavoriteMovieAction } from '@/store/filters/model/fetchFavoriteMovieAction';
+import { fetchFavoriteMovieAction } from '@/store/filters/actions/thunks/fetchFavoriteMovieAction';
+import { selectFavMoviesIds } from '@/store/filters/selectors/filtersSelectors';
 
 interface UseFavoriteProps {
   id: number;
