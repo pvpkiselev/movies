@@ -1,29 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Alert } from '@mui/material';
 import MovieCard from './movieCard/MovieCard';
-import getFavoriteMoviesList from '@/api/filters/getFavoriteMoviesList';
-import getSearchedMovies from '@/api/filters/getSearchedMovies';
-import getSortedMovies from '@/api/filters/getSortedMovies';
 import MovieListSkeleton from './MovieListSkeleton';
 import { selectMoviesValues } from '@/store/filters/filtersSelectors';
 import { selectUserId } from '@/store/auth/authSelectors';
 import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
-import { Movie } from './types/movies.types';
-import { changedMaxPages, loadedFavoriteMoviesIds } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { fetchFavoriteMoviesListAction } from '@/store/filters/model/fetchFavoriteMoviesListAction';
+import { fetchSortedMoviesAction } from '@/store/filters/model/fetchSortedMoviesAction';
+import { fetchSearchedMoviesAction } from '@/store/filters/model/fetchSearchedMoviesAction';
 
 function MovieList() {
   const [error, setError] = useState<string | null>(null);
-  const [movies, setMovies] = useState<Movie[]>([]);
-
   const userId = useAppSelector(selectUserId);
-
   const dispatch = useAppDispatch();
-  const { currentPage, sortType, searchQuery, yearRange, genreIdsString } =
+  const { movies, favMovies, currentPage, sortType, searchQuery, yearRange, genreIdsString } =
     useAppSelector(selectMoviesValues);
   const [minYear, maxYear] = yearRange;
 
   const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
+  const moviesToShow = isFavorites ? favMovies : movies;
 
   const fetchMovies = useCallback(async () => {
     setError(null);
@@ -32,25 +28,17 @@ function MovieList() {
     }
 
     const sortedOptions = { currentPage, minYear, maxYear, sortType, genreIdsString };
+    const favoriteOptions = { userId, currentPage };
+    const searchOptions = { searchQuery, currentPage };
 
     try {
-      let response;
-
       if (!searchQuery && !isFavorites) {
-        response = await getSortedMovies(sortedOptions);
+        dispatch(fetchSortedMoviesAction(sortedOptions));
       } else if (isFavorites) {
-        response = await getFavoriteMoviesList(userId, currentPage);
+        dispatch(fetchFavoriteMoviesListAction(favoriteOptions));
       } else if (searchQuery) {
-        response = await getSearchedMovies(searchQuery, currentPage);
+        dispatch(fetchSearchedMoviesAction(searchOptions));
       }
-
-      if (!response) {
-        setError('Movies Not Found');
-        return null;
-      }
-
-      setMovies(response.results);
-      dispatch(changedMaxPages(response.total_pages));
     } catch (error) {
       setError('Failed to fetch movies. Please try again later.');
       console.error(error);
@@ -61,38 +49,31 @@ function MovieList() {
     fetchMovies();
   }, [fetchMovies]);
 
-  const loadFavorites = async () => {
-    try {
-      if (userId) {
-        const response = await getFavoriteMoviesList(userId, currentPage);
-        const favIds = response.results.map((movie) => movie.id);
-
-        dispatch(loadedFavoriteMoviesIds(favIds));
-      }
-    } catch (error) {
-      console.error('Failed to fetch Favorite Movies List:', error);
-    }
-  };
-
   useEffect(() => {
-    loadFavorites();
+    if (userId) {
+      dispatch(
+        fetchFavoriteMoviesListAction({
+          userId,
+        })
+      );
+    }
   }, []);
 
   const memoMovieCards = useMemo(
     () =>
-      movies.map((movie) => (
+      moviesToShow.map((movie) => (
         <Grid item xs={12} md={6} lg={3} key={movie.id} display="flex" flexDirection="column">
           <MovieCard movie={movie} />
         </Grid>
       )),
-    [movies]
+    [moviesToShow]
   );
 
   return (
     <Box flex="1">
       {error ? (
         <Alert severity="error">{error}</Alert>
-      ) : movies.length === 0 ? (
+      ) : moviesToShow.length === 0 ? (
         <MovieListSkeleton />
       ) : (
         <Grid container spacing={3} wrap="wrap">

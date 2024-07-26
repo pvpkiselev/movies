@@ -17,21 +17,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// const apiRequest = async <T>(props: ApiRequest): Promise<T> => {
-//   const { headers, method, url, data, params } = props;
-
-//   const config: AxiosRequestConfig = {
-//     headers,
-//     method,
-//     url,
-//     params: method === 'GET' ? params : undefined,
-//     data: method === 'POST' ? data : undefined,
-//   };
-
-//   const response = await axiosInstance(config);
-//   return response.data;
-// };
-
 const setAxiosAuthToken = (token: string | null) => {
   if (token) {
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;

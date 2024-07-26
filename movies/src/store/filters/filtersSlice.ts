@@ -1,18 +1,29 @@
 /* eslint-disable max-lines */
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchFavoriteMovieAction } from './thunks/thunks';
 import { DEFAULT_ERROR_MESSAGE } from '@/api/constants';
+import { fetchFavoriteMovieAction } from './model/fetchFavoriteMovieAction';
+import { fetchFavoriteMoviesListAction } from './model/fetchFavoriteMoviesListAction';
+import { fetchGenresDataAction } from './model/fetchGenresDataAction';
+import { Genre } from '@/components/filters/genres/types/genres.types';
+import { fetchMovieCreditsAction } from './model/fetchMovieCreditsAction';
+import { fetchMovieDetailsAction } from './model/fetchMovieDetailsAction';
+import { Movie } from '@/components/movieList/types/movies.types';
+import { fetchSearchedMoviesAction } from './model/fetchSearchedMoviesAction';
+import { fetchSortedMoviesAction } from './model/fetchSortedMoviesAction';
 
 type Statuses = 'pending' | 'fulfilled' | 'rejected';
 
 type FiltersState = {
-  genreIds: number[];
+  genres: Genre[];
   sortType: string;
   yearRange: number[];
-  favMoviesIds: number[];
-  currentPage: number;
+  movies: Movie[];
   maxPages: number;
+  favMovies: Movie[];
+  favMoviesIds: number[];
+  favMaxPages: number;
+  currentPage: number;
   searchQuery: string;
   status: Statuses;
   error: string | null;
@@ -22,131 +33,34 @@ const initialSort = POPULAR_OPTION;
 const initialYearRange = [1970, 2024];
 
 const initialState: FiltersState = {
-  genreIds: [],
+  genres: [],
   sortType: initialSort,
   yearRange: initialYearRange,
+  movies: [],
+  maxPages: 500,
+  favMovies: [],
+  favMaxPages: 1,
   favMoviesIds: [],
   currentPage: 1,
-  maxPages: 500,
   searchQuery: '',
   status: 'fulfilled',
   error: null,
 };
-
-// export const fetchFavoriteMovieAction = createAppAsyncThunk(
-//   'filters/fetchFavoriteMovie',
-//   async (
-//     {
-//       userId,
-//       movieId,
-//       isFavorite,
-//     }: {
-//       userId: string;
-//       movieId: number;
-//       isFavorite: boolean;
-//     },
-//     { rejectWithValue }
-//   ) => {
-//     try {
-//       const response = await api.filters.fetchFavoriteMovie(userId, movieId, isFavorite);
-//       return { movieId, isFavorite };
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchFavoriteMoviesListAction = createAppAsyncThunk(
-//   'filters/fetchFavoriteMoviesList',
-//   async (
-//     { userId, currentPage }: { userId: string; currentPage?: number },
-//     { rejectWithValue }
-//   ) => {
-//     try {
-//       const data = await api.filters.getFavoriteMoviesList(userId, currentPage);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchGenresDataAction = createAppAsyncThunk(
-//   'filters/fetchGenresData',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const data = await api.filters.getGenresData();
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchMovieCreditsAction = createAppAsyncThunk(
-//   'filters/fetchMovieCredits',
-//   async (id: string, { rejectWithValue }) => {
-//     try {
-//       const data = await api.filters.getMovieCredits(id);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchMovieDetailsAction = createAppAsyncThunk(
-//   'filters/fetchMovieDetails',
-//   async (id: string, { rejectWithValue }) => {
-//     try {
-//       const data = await api.filters.getMovieDetails(id);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchSearchedMoviesAction = createAppAsyncThunk(
-//   'filters/fetchSearchedMovies',
-//   async ({ query, page }: { query: string; page: number }, { rejectWithValue }) => {
-//     try {
-//       const data = await api.filters.getSearchedMovies(query, page);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
-
-// const fetchSortedMoviesAction = createAppAsyncThunk(
-//   'filters/fetchSortedMovies',
-//   async (
-//     props: {
-//       currentPage: number;
-//       minYear: number;
-//       maxYear: number;
-//       sortType: string;
-//       genreIdsString: string;
-//     },
-//     { rejectWithValue }
-//   ) => {
-//     try {
-//       const data = await api.filters.getSortedMovies(props);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
 
 const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
     toggledGenres(state, action: PayloadAction<number[]>) {
-      state.genreIds = action.payload;
-      state.currentPage = 1;
+      const selectedGenresSet = new Set(action.payload);
+      const updatedGenres = state.genres.map((genre) => ({
+        ...genre,
+        checked: selectedGenresSet.has(genre.id),
+      }));
+      return {
+        ...state,
+        genres: updatedGenres,
+      };
     },
     changedSortType(state, action: PayloadAction<string>) {
       if (state.sortType !== action.payload) {
@@ -158,27 +72,23 @@ const filtersSlice = createSlice({
       state.yearRange = action.payload;
       state.currentPage = 1;
     },
-    changedMaxPages(state, action: PayloadAction<number>) {
-      state.maxPages = action.payload;
-    },
     pageSelected(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
-    },
-    loadedFavoriteMoviesIds(state, action: PayloadAction<number[]>) {
-      state.favMoviesIds = action.payload;
-    },
-    toggledFavorite(state, action: PayloadAction<number>) {
-      const favId = action.payload;
-      state.favMoviesIds = state.favMoviesIds.includes(favId)
-        ? state.favMoviesIds.filter((id) => id !== favId)
-        : [...state.favMoviesIds, favId];
     },
     changedSearchQuery(state, action: PayloadAction<string>) {
       state.searchQuery = action.payload;
       state.currentPage = 1;
     },
     resetFilters(state) {
-      return { ...initialState, favMoviesIds: state.favMoviesIds };
+      return {
+        ...initialState,
+        movies: state.movies,
+        favMovies: state.favMovies,
+        favMoviesIds: state.favMoviesIds,
+        genres: state.genres.map((genre) => {
+          return { ...genre, checked: false };
+        }),
+      };
     },
   },
   extraReducers: (builder) => {
@@ -189,89 +99,99 @@ const filtersSlice = createSlice({
       })
       .addCase(fetchFavoriteMovieAction.fulfilled, (state, action) => {
         state.status = 'fulfilled';
-
-        const favId = action.payload.movieId;
-        state.favMoviesIds = state.favMoviesIds.includes(favId)
-          ? state.favMoviesIds.filter((id) => id !== favId)
-          : [...state.favMoviesIds, favId];
+        const { movieId } = action.payload;
+        if (state.favMoviesIds.includes(movieId)) {
+          state.favMoviesIds = state.favMoviesIds.filter((id) => id !== movieId);
+        } else {
+          state.favMoviesIds.push(movieId);
+        }
       })
       .addCase(fetchFavoriteMovieAction.rejected, (state, action) => {
         state.status = 'rejected';
         state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchFavoriteMoviesListAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchFavoriteMoviesListAction.fulfilled, (state, action) => {
+        state.status = 'fulfilled';
+        const favIds = action.payload.movies.results.map((movie) => movie.id);
+        state.favMoviesIds = favIds;
+        state.favMovies = action.payload.movies.results;
+        state.favMaxPages = action.payload.movies.total_pages;
+      })
+      .addCase(fetchFavoriteMoviesListAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchGenresDataAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchGenresDataAction.fulfilled, (state, action) => {
+        state.status = 'fulfilled';
+        const genres = action.payload.genres.map((genre) => ({ ...genre, checked: false }));
+        state.genres = genres;
+      })
+      .addCase(fetchGenresDataAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchMovieCreditsAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchMovieCreditsAction.fulfilled, (state) => {
+        state.status = 'fulfilled';
+      })
+      .addCase(fetchMovieCreditsAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchMovieDetailsAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchMovieDetailsAction.fulfilled, (state) => {
+        state.status = 'fulfilled';
+      })
+      .addCase(fetchMovieDetailsAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchSearchedMoviesAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchSearchedMoviesAction.fulfilled, (state, action) => {
+        state.status = 'fulfilled';
+        state.movies = action.payload.movies.results;
+        state.maxPages = action.payload.movies.total_pages;
+      })
+      .addCase(fetchSearchedMoviesAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
+      })
+
+      .addCase(fetchSortedMoviesAction.pending, (state) => {
+        state.status = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchSortedMoviesAction.fulfilled, (state, action) => {
+        state.status = 'fulfilled';
+        state.movies = action.payload.movies.results;
+        state.maxPages = action.payload.movies.total_pages;
+      })
+      .addCase(fetchSortedMoviesAction.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
       });
-    // // Add thunks here
-    // .addCase(fetchFavoriteMoviesListAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchFavoriteMoviesListAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with fetched favorite movies
-    // })
-    // .addCase(fetchFavoriteMoviesListAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // })
-    // .addCase(fetchGenresDataAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchGenresDataAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with fetched genres
-    // })
-    // .addCase(fetchGenresDataAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // })
-    // .addCase(fetchMovieCreditsAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchMovieCreditsAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with fetched movie credits
-    // })
-    // .addCase(fetchMovieCreditsAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // })
-    // .addCase(fetchMovieDetailsAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchMovieDetailsAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with fetched movie details
-    // })
-    // .addCase(fetchMovieDetailsAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // })
-    // .addCase(fetchSearchedMoviesAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchSearchedMoviesAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with searched movies
-    // })
-    // .addCase(fetchSearchedMoviesAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // })
-    // .addCase(fetchSortedMoviesAction.pending, (state) => {
-    //   state.status = 'pending';
-    //   state.error = null;
-    // })
-    // .addCase(fetchSortedMoviesAction.fulfilled, (state, action) => {
-    //   state.status = 'fulfilled';
-    //   // Update state with sorted movies
-    // })
-    // .addCase(fetchSortedMoviesAction.rejected, (state, action) => {
-    //   state.status = 'rejected';
-    //   state.error = action.payload as string;
-    // });
   },
 });
 
@@ -279,10 +199,7 @@ export const {
   toggledGenres,
   changedSortType,
   changedYearRange,
-  changedMaxPages,
   pageSelected,
-  loadedFavoriteMoviesIds,
-  toggledFavorite,
   changedSearchQuery,
   resetFilters,
 } = filtersSlice.actions;

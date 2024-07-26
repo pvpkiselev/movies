@@ -3,12 +3,16 @@ import { selectPaginationValues } from '@/store/filters/filtersSelectors';
 import { Pagination } from '@mui/material';
 import { pageSelected } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { FAVORITES_OPTION } from '../sortSelect/constants';
 
 function PaginationFilter() {
   const dispatch = useAppDispatch();
-  const { currentPage, totalPages } = useAppSelector(selectPaginationValues);
+  const { currentPage, sortType, maxPages, favMaxPages } = useAppSelector(selectPaginationValues);
 
-  const isDisabled = useMemo(() => totalPages < 2, [totalPages]);
+  const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
+  const isDisabled = useMemo(() => maxPages < 2, [maxPages]);
+
+  const pages = isFavorites ? favMaxPages : maxPages;
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
     dispatch(pageSelected(page));
@@ -20,7 +24,7 @@ function PaginationFilter() {
         page={currentPage}
         size="medium"
         siblingCount={1}
-        count={totalPages}
+        count={pages}
         onChange={handlePageChange}
         color="primary"
       />

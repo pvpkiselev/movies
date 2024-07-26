@@ -46,7 +46,8 @@ export function useAuth() {
       const token = Cookies.get('token');
       const userId = Cookies.get('userId');
       if (token && userId) {
-        await handleLogin(token);
+        setAxiosAuthToken(token);
+        dispatch(login({ token, userId }));
       } else {
         dispatch(logout());
       }

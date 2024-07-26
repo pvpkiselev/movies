@@ -1,4 +1,4 @@
-import { AppState } from '../store';
+import { AppState } from '../redux';
 
 const selectUserId = (state: AppState) => state.auth.userId;
 const selectIsAuth = (state: AppState) => state.auth.isAuth;

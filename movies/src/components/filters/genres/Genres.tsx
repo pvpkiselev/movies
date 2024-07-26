@@ -1,48 +1,29 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import getGenresData from '@/api/filters/getGenresData';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { selectGenresValues } from '@/store/filters/filtersSelectors';
 import { Genre } from './types/genres.types';
 import { toggledGenres } from '@/store/filters/filtersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
+import { fetchGenresDataAction } from '@/store/filters/model/fetchGenresDataAction';
 
 function Genres() {
   const dispatch = useAppDispatch();
-  const { sortType, searchQuery, genreIds } = useAppSelector(selectGenresValues);
-  const [genres, setGenres] = useState<Genre[]>([]);
+  const { sortType, searchQuery, genres, genreIds, checkedGenres } =
+    useAppSelector(selectGenresValues);
 
   const isDisabled = useMemo(
     () => Boolean(searchQuery || sortType === FAVORITES_OPTION),
     [searchQuery, sortType]
   );
 
-  const fetchGenres = useCallback(async () => {
-    try {
-      const response = await getGenresData();
-      const genres = response.genres;
-
-      setGenres(genres);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchGenres();
-  }, [fetchGenres]);
+    dispatch(fetchGenresDataAction());
+  }, []);
 
   const handleGenreToggle = (_event: React.SyntheticEvent, value: number[]) => {
     dispatch(toggledGenres(value));
   };
-
-  const optionIds = useMemo(() => {
-    return genres.map((genre) => genre.id);
-  }, [genres]);
-
-  const selectedGenres = useMemo(() => {
-    return genres.filter((genre) => genreIds.includes(genre.id)).map((genre) => genre.id);
-  }, [genreIds, genres]);
 
   const getOptionLabel = useCallback(
     (option: Genre['id']): string => {
@@ -59,9 +40,9 @@ function Genres() {
         limitTags={2}
         disableCloseOnSelect
         id="genres"
-        options={optionIds}
+        options={genreIds}
         getOptionLabel={getOptionLabel}
-        value={selectedGenres}
+        value={checkedGenres}
         onChange={handleGenreToggle}
         renderInput={(params) => <TextField {...params} variant="standard" label="Genres" />}
         fullWidth
