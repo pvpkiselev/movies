@@ -1,6 +1,5 @@
 import { resources } from '../resources';
-import { axiosInstance, Config } from '../axiosConfig';
-import { HttpStatusCode } from 'axios';
+import { Config, fetchData } from '../axiosConfig';
 import { ResponseStatusData } from '../types/response.types';
 
 const fetchFavoriteMovie = async (
@@ -18,15 +17,7 @@ const fetchFavoriteMovie = async (
     data,
   };
 
-  try {
-    const response = await axiosInstance(config);
-    const isSuccess = response.status === HttpStatusCode.Ok || HttpStatusCode.Created;
-    if (isSuccess) {
-      return response.data;
-    }
-  } catch (error) {
-    console.error('Error fetching Favorite Movie:', error);
-  }
+  return fetchData<ResponseStatusData>(config);
 };
 
 export default fetchFavoriteMovie;
