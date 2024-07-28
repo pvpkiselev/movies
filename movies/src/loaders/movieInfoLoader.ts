@@ -2,6 +2,7 @@ import { redirect, LoaderFunctionArgs } from 'react-router-dom';
 import getMovieDetails from '@/api/filters/getMovieDetails';
 import getMovieCredits from '@/api/filters/getMovieCredits';
 import { MovieInfoLoaderData } from './types/movieInfoLoader.types';
+import { loaderErrors } from '@/helpers/constants';
 
 export async function movieInfoLoader({
   params,
@@ -19,7 +20,7 @@ export async function movieInfoLoader({
     ]);
 
     if (!movieDetails || !movieCredits) {
-      throw new Error('Movie details or credits not found');
+      throw new Error(loaderErrors.info_loader);
     }
 
     return {

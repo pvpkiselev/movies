@@ -4,6 +4,7 @@ import { selectUserId } from '@/store/auth/authSelectors';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
 import { fetchFavoriteMovieAction } from '@/store/filters/actions/thunks/fetchFavoriteMovieAction';
 import { selectFavMoviesIds } from '@/store/filters/selectors/filtersSelectors';
+import { toastMessages } from '@/helpers/constants';
 
 interface UseFavoriteProps {
   id: number;
@@ -26,10 +27,12 @@ export function useFavorite({ id }: UseFavoriteProps) {
         })
       );
       if (fetchFavoriteMovieAction.fulfilled.match(response)) {
-        toast.success(!isFavorite ? 'Successfully added card' : 'Successfully removed card');
+        toast.success(
+          !isFavorite ? toastMessages.favorites.success_add : toastMessages.favorites.success_delete
+        );
       }
     } else {
-      toast.error('Failed to toggle favorite');
+      toast.error(toastMessages.favorites.failed);
     }
   }, [id, isFavorite, userId, dispatch]);
 

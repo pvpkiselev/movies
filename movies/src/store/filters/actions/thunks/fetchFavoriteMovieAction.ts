@@ -1,3 +1,4 @@
+import { thunkErrors } from '@/helpers/constants';
 import { createAppAsyncThunk } from '@/store/redux';
 
 interface FetchFavoriteMoviePayload {
@@ -19,7 +20,7 @@ export const fetchFavoriteMovieAction = createAppAsyncThunk<
     return { movieId, success: response.success };
   } else {
     return thunkAPI.rejectWithValue({
-      message: 'Failed to fetch favorite movie status',
+      message: thunkErrors.filters.favorite_movie,
     });
   }
 });

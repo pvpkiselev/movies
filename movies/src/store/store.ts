@@ -6,7 +6,6 @@ import sortReducer from './filters/slices/sortSlice';
 import genresReducer from './filters/slices/genresSlice';
 import moviesReducer from './filters/slices/moviesSlice';
 import favMoviesReducer from './filters/slices/favMoviesSlice';
-import movieDetailsReducer from './filters/slices/movieDetailsSlice';
 
 export const extraArgument = {
   api,
@@ -18,7 +17,6 @@ const filtersReducer = combineReducers({
   yearRangeSlice: yearRangeReducer,
   moviesSlice: moviesReducer,
   favMoviesSlice: favMoviesReducer,
-  movieDetailsSlice: movieDetailsReducer,
 });
 
 export const store = configureStore({

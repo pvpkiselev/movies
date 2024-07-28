@@ -1,4 +1,5 @@
 import { Genre } from '@/components/filters/genres/types/genres.types';
+import { thunkErrors } from '@/helpers/constants';
 import { createAppAsyncThunk } from '@/store/redux';
 
 interface FetchGenresDataPayload {
@@ -19,7 +20,7 @@ export const fetchGenresDataAction = createAppAsyncThunk<
     return response;
   } else {
     return thunkAPI.rejectWithValue({
-      message: 'Error getting Genres Data',
+      message: thunkErrors.filters.genres,
     });
   }
 });

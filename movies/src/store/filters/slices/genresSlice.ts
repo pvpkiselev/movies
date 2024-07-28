@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Genre } from '@/components/filters/genres/types/genres.types';
 import { fetchGenresDataAction } from '../actions/thunks/fetchGenresDataAction';
-import { DEFAULT_ERROR_MESSAGE } from '@/api/constants';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
+import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 
 type GenresState = {
   genres: Genre[];

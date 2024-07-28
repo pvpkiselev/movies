@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { login, logout } from '@/store/auth/authSlice';
 import { useAppDispatch } from '@/store/redux';
+import { toastMessages } from '@/helpers/constants';
 
 export function useAuth() {
   const dispatch = useAppDispatch();
@@ -27,8 +28,8 @@ export function useAuth() {
           return true;
         }
       } catch (error) {
-        toast.error('Login failed: Incorrect token');
-        console.error('Login failed:', error);
+        toast.error(toastMessages.auth.login_failed);
+        console.error(toastMessages.auth.login_failed, error);
       }
     },
     [dispatch]
@@ -52,7 +53,7 @@ export function useAuth() {
         dispatch(logout());
       }
     } catch (error) {
-      console.error(`Storage get token error, ${error}`);
+      console.error(toastMessages.auth.storage_failed, error);
       dispatch(logout());
     }
   }, [dispatch, handleLogin]);

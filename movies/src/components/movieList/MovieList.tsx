@@ -17,9 +17,9 @@ import {
   selectSortType,
   selectYearRange,
 } from '@/store/filters/selectors/filtersSelectors';
+import { movieListErrors } from '@/helpers/constants';
 
 function MovieList() {
-  console.log('Render');
   const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const userId = useAppSelector(selectUserId);
@@ -55,7 +55,7 @@ function MovieList() {
         dispatch(fetchSearchedMoviesAction(searchOptions));
       }
     } catch (error) {
-      setError('Failed to fetch movies. Please try again later.');
+      setError(movieListErrors.fetch_failed);
       console.error(error);
     }
   }, [sortType, currentPage, searchQuery, isFavorites, minYear, maxYear, genreIdsString, dispatch]);

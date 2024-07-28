@@ -1,4 +1,5 @@
 import { MoviesResponse } from '@/components/movieList/types/movies.types';
+import { thunkErrors } from '@/helpers/constants';
 import { createAppAsyncThunk } from '@/store/redux';
 
 interface FetchSearchedMoviesPayload {
@@ -19,7 +20,7 @@ export const fetchSearchedMoviesAction = createAppAsyncThunk<
     return { movies: response };
   } else {
     return thunkAPI.rejectWithValue({
-      message: 'Error getting Search Results',
+      message: thunkErrors.filters.search,
     });
   }
 });

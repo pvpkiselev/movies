@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Movie } from '@/components/movieList/types/movies.types';
 import { fetchFavoriteMovieAction } from '../actions/thunks/fetchFavoriteMovieAction';
 import { fetchFavoriteMoviesListAction } from '../actions/thunks/fetchFavoriteMoviesListAction';
-import { DEFAULT_ERROR_MESSAGE } from '@/api/constants';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
+import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 
 type FavoriteMoviesState = {
   favMovies: Movie[];

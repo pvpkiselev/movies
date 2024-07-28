@@ -1,4 +1,5 @@
 import { MoviesResponse } from '@/components/movieList/types/movies.types';
+import { thunkErrors } from '@/helpers/constants';
 import { createAppAsyncThunk } from '@/store/redux';
 
 interface FetchFavoriteMoviesListPayload {
@@ -19,7 +20,7 @@ export const fetchFavoriteMoviesListAction = createAppAsyncThunk<
     return { movies: response };
   } else {
     return thunkAPI.rejectWithValue({
-      message: 'Error getting Favorite Movie List',
+      message: thunkErrors.filters.favorite_list,
     });
   }
 });

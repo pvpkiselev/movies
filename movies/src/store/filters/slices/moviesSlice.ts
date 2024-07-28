@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Movie } from '@/components/movieList/types/movies.types';
 import { fetchSearchedMoviesAction } from '../actions/thunks/fetchSearchedMoviesAction';
 import { fetchSortedMoviesAction } from '../actions/thunks/fetchSortedMoviesAction';
-import { DEFAULT_ERROR_MESSAGE } from '@/api/constants';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
+import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 
 type MoviesState = {
   movies: Movie[];

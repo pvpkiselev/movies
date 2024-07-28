@@ -1,5 +1,6 @@
 import { GetSortedMovies } from '@/api/filters/getSortedMovies';
 import { MoviesResponse } from '@/components/movieList/types/movies.types';
+import { thunkErrors } from '@/helpers/constants';
 import { createAppAsyncThunk } from '@/store/redux';
 
 interface FetchSortedMoviesPayload {
@@ -28,7 +29,7 @@ export const fetchSortedMoviesAction = createAppAsyncThunk<
       return { movies: response };
     } else {
       return thunkAPI.rejectWithValue({
-        message: 'Error getting Sorted Movies',
+        message: thunkErrors.filters.sorted_movies,
       });
     }
   }

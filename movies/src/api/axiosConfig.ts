@@ -1,5 +1,6 @@
 import axios, { HttpStatusCode } from 'axios';
 import { API_URL } from './constants';
+import { FETCH_DATA_ERROR } from '@/helpers/constants';
 
 export interface Config {
   headers?: Record<string, string>;
@@ -24,10 +25,10 @@ export const fetchData = async <T>(config: Config): Promise<T> => {
     if (isSuccess) {
       return response.data;
     } else {
-      throw new Error('Error fetching data');
+      throw new Error(FETCH_DATA_ERROR);
     }
   } catch (error) {
-    console.error('Fetch data error:', error);
+    console.error(FETCH_DATA_ERROR, error);
     throw error;
   }
 };
