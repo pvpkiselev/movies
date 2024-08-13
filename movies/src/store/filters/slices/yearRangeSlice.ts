@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
+import { yearRangeMax, yearRangeMin } from '@/helpers/constants';
 
 type YearRangeState = {
   yearRange: number[];
 };
 
 const initialState: YearRangeState = {
-  yearRange: [1970, 2024],
+  yearRange: [yearRangeMin, yearRangeMax],
 };
 
 const yearRangeSlice = createSlice({

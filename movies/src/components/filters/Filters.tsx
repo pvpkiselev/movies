@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { theme } from '@/theme/theme';
 import { Box, Button, IconButton, Paper, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Close } from '@mui/icons-material';
+
+import { theme } from '@/theme/theme';
+
 import SortSelect from './sortSelect/SortSelect';
 import YearRangeSlider from './yearRangeSlider/YearRangeSlider';
 import Genres from './genres/Genres';
 import ResetButton from './resetButton/ResetButton';
 import PaginationFilter from './pagination/Pagination';
-import { Close } from '@mui/icons-material';
 import Search from './search/Search';
 
 function Filters() {

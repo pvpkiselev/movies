@@ -1,5 +1,5 @@
 import { POSSIBLE_PAGES } from '@/components/filters/pagination/constants';
-import { AppState, createAppSelector } from '../../redux';
+import { AppState, createAppSelector } from '@/store/redux';
 
 const selectMovies = (state: AppState) => state.filters.moviesSlice.movies;
 const selectFavMovies = (state: AppState) => state.filters.favMoviesSlice.favMovies;
@@ -12,16 +12,8 @@ const selectSearchQuery = (state: AppState) => state.filters.moviesSlice.searchQ
 const selectYearRange = (state: AppState) => state.filters.yearRangeSlice.yearRange;
 const selectFavMoviesIds = (state: AppState) => state.filters.favMoviesSlice.favMoviesIds;
 
-const selectGenreIds = createAppSelector([selectGenres], (genres) =>
-  genres.map((genre) => genre.id)
-);
-
-const selectCheckedGenres = createAppSelector([selectGenres], (genres) =>
-  genres.filter((genre) => genre.checked).map((genre) => genre.id)
-);
-
-const selectGenreIdsString = createAppSelector([selectCheckedGenres], (genreIds) =>
-  genreIds.join(',')
+const selectGenreIdsString = createAppSelector([selectGenres], (genres) =>
+  genres.map((genre) => genre.id).join(',')
 );
 
 const selectCurrentMaxPages = createAppSelector([selectMaxPages], (maxPages) =>
@@ -33,11 +25,9 @@ const selectCurrentFavMaxPages = createAppSelector([selectFavMaxPages], (favMaxP
 );
 
 export {
-  selectGenreIds,
   selectCurrentMaxPages,
   selectCurrentFavMaxPages,
   selectGenreIdsString,
-  selectCheckedGenres,
   selectCurrentPage,
   selectFavMovies,
   selectYearRange,

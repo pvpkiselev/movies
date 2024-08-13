@@ -1,3 +1,8 @@
+export const callbackTime = 300;
+
+export const yearRangeMin = 1970;
+export const yearRangeMax = 2030;
+
 export const toastMessages = {
   favorites: {
     success_add: 'Successfully added card',
@@ -26,6 +31,7 @@ export const thunkErrors = {
 
 export const movieListErrors = {
   fetch_failed: 'Failed to fetch movies. Please try again later.',
+  invalid_option: 'Failed to fetch movies. Option not found.',
 };
 
 export const DEFAULT_ERROR_MESSAGE = 'Unknown error occurred';

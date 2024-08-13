@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
+
 import { selectUserId } from '@/store/auth/authSelectors';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
-import { fetchFavoriteMovieAction } from '@/store/filters/actions/thunks/fetchFavoriteMovieAction';
 import { selectFavMoviesIds } from '@/store/filters/selectors/filtersSelectors';
 import { toastMessages } from '@/helpers/constants';
+import fetchFavoriteMovie from '@/api/filters/fetchFavoriteMovie';
+import { toggledFavMovie } from '@/store/filters/slices/favMoviesSlice';
 
 interface UseFavoriteProps {
   id: number;
@@ -19,22 +21,18 @@ export function useFavorite({ id }: UseFavoriteProps) {
 
   const handleFavoriteToggle = useCallback(async () => {
     if (userId) {
-      const response = await dispatch(
-        fetchFavoriteMovieAction({
-          userId,
-          movieId: id,
-          isFavorite: !isFavorite,
-        })
-      );
-      if (fetchFavoriteMovieAction.fulfilled.match(response)) {
+      try {
+        await fetchFavoriteMovie(userId, id, isFavorite);
+        dispatch(toggledFavMovie(id));
         toast.success(
           !isFavorite ? toastMessages.favorites.success_add : toastMessages.favorites.success_delete
         );
+      } catch (error) {
+        console.error(toastMessages.favorites.failed, error);
+        toast.error(toastMessages.favorites.failed);
       }
-    } else {
-      toast.error(toastMessages.favorites.failed);
     }
-  }, [id, isFavorite, userId, dispatch]);
+  }, [id, isFavorite, userId]);
 
   return {
     isFavorite,

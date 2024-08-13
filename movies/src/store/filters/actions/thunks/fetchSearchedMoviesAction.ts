@@ -1,26 +1,10 @@
-import { MoviesResponse } from '@/components/movieList/types/movies.types';
-import { thunkErrors } from '@/helpers/constants';
+import getSearchedMovies from '@/api/filters/getSearchedMovies';
 import { createAppAsyncThunk } from '@/store/redux';
 
-interface FetchSearchedMoviesPayload {
-  movies: MoviesResponse;
-}
-
-interface FetchSearchedMoviesError {
-  message: string;
-}
-
-export const fetchSearchedMoviesAction = createAppAsyncThunk<
-  FetchSearchedMoviesPayload,
-  { searchQuery: string; currentPage: number },
-  { rejectValue: FetchSearchedMoviesError }
->('filters/fetchSearchedMovies', async ({ searchQuery, currentPage }, thunkAPI) => {
-  const response = await thunkAPI.extra.api.filters.getSearchedMovies(searchQuery, currentPage);
-  if (response) {
+export const fetchSearchedMoviesAction = createAppAsyncThunk(
+  'filters/fetchSearchedMovies',
+  async ({ searchQuery, currentPage }: { searchQuery: string; currentPage: number }) => {
+    const response = await getSearchedMovies(searchQuery, currentPage);
     return { movies: response };
-  } else {
-    return thunkAPI.rejectWithValue({
-      message: thunkErrors.filters.search,
-    });
   }
-});
+);

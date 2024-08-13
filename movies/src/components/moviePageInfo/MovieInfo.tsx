@@ -1,9 +1,10 @@
+import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, CardContent, Stack, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
+
 import MovieCast from './MovieCast';
 import MovieDetails from './movieDetails/MovieDetails';
-import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom';
 import FavoriteButton from '../common/favoriteButton/FavoriteButton';
-import { ArrowBack } from '@mui/icons-material';
 import { MovieInfoLoaderData } from '@/loaders/types/movieInfoLoader.types';
 
 function MovieInfo() {

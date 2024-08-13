@@ -1,4 +1,5 @@
 import { Container, Card, Grid } from '@mui/material';
+
 import MoviePoster from '@/components/moviePageInfo/MoviePoster';
 import MovieInfo from '@/components/moviePageInfo/MovieInfo';
 

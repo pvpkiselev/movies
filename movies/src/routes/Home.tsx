@@ -1,4 +1,5 @@
 import { Box, Stack } from '@mui/material';
+
 import Filters from '../components/filters/Filters';
 import MovieList from '../components/movieList/MovieList';
 

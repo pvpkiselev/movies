@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { POPULAR_OPTION } from '@/components/filters/sortSelect/constants';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
 

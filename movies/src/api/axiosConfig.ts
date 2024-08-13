@@ -1,4 +1,5 @@
 import axios, { HttpStatusCode } from 'axios';
+
 import { API_URL } from './constants';
 import { FETCH_DATA_ERROR } from '@/helpers/constants';
 

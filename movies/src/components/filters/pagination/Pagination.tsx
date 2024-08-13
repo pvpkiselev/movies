@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
 import { Pagination } from '@mui/material';
+
 import { useAppDispatch, useAppSelector } from '@/store/redux';
 import { FAVORITES_OPTION } from '../sortSelect/constants';
 import { pageSelected } from '@/store/filters/slices/moviesSlice';
@@ -17,8 +17,9 @@ function PaginationFilter() {
   const maxPages = useAppSelector(selectCurrentMaxPages);
   const favMaxPages = useAppSelector(selectCurrentFavMaxPages);
 
-  const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
-  const isDisabled = useMemo(() => maxPages < 2, [maxPages]);
+  const minPagesCount = 2;
+  const isFavorites = sortType === FAVORITES_OPTION;
+  const isDisabled = maxPages < minPagesCount;
 
   const pages = isFavorites ? favMaxPages : maxPages;
 

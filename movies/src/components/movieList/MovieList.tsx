@@ -1,13 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Alert } from '@mui/material';
-import MovieCard from './movieCard/MovieCard';
-import MovieListSkeleton from './MovieListSkeleton';
-import { selectUserId } from '@/store/auth/authSelectors';
-import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
+
 import { useAppDispatch, useAppSelector } from '@/store/redux';
-import { fetchFavoriteMoviesListAction } from '@/store/filters/actions/thunks/fetchFavoriteMoviesListAction';
-import { fetchSortedMoviesAction } from '@/store/filters/actions/thunks/fetchSortedMoviesAction';
-import { fetchSearchedMoviesAction } from '@/store/filters/actions/thunks/fetchSearchedMoviesAction';
 import {
   selectCurrentPage,
   selectFavMovies,
@@ -17,6 +11,13 @@ import {
   selectSortType,
   selectYearRange,
 } from '@/store/filters/selectors/filtersSelectors';
+import { selectUserId } from '@/store/auth/authSelectors';
+import { fetchFavoriteMoviesListAction } from '@/store/filters/actions/thunks/fetchFavoriteMoviesListAction';
+import { fetchSortedMoviesAction } from '@/store/filters/actions/thunks/fetchSortedMoviesAction';
+import { fetchSearchedMoviesAction } from '@/store/filters/actions/thunks/fetchSearchedMoviesAction';
+import MovieCard from './movieCard/MovieCard';
+import MovieListSkeleton from './MovieListSkeleton';
+import { FAVORITES_OPTION } from '../filters/sortSelect/constants';
 import { movieListErrors } from '@/helpers/constants';
 
 function MovieList() {
@@ -32,9 +33,10 @@ function MovieList() {
   const genreIdsString = useAppSelector(selectGenreIdsString);
 
   const [minYear, maxYear] = yearRange;
-  const isFavorites = useMemo(() => sortType === FAVORITES_OPTION, [sortType]);
+  const isFavorites = sortType === FAVORITES_OPTION;
   const moviesToShow = isFavorites ? favMovies : movies;
   const isMovieListEmpty = moviesToShow.length === 0;
+  const isSortedFetch = !searchQuery && !isFavorites;
 
   const fetchMovies = useCallback(async () => {
     setError(null);
@@ -47,18 +49,28 @@ function MovieList() {
     const searchOptions = { searchQuery, currentPage };
 
     try {
-      if (!searchQuery && !isFavorites) {
-        dispatch(fetchSortedMoviesAction(sortedOptions));
-      } else if (isFavorites) {
-        dispatch(fetchFavoriteMoviesListAction(favoriteOptions));
-      } else if (searchQuery) {
-        dispatch(fetchSearchedMoviesAction(searchOptions));
+      switch (true) {
+        case isSortedFetch:
+          await dispatch(fetchSortedMoviesAction(sortedOptions));
+          break;
+
+        case isFavorites:
+          await dispatch(fetchFavoriteMoviesListAction(favoriteOptions));
+          break;
+
+        case !!searchQuery:
+          await dispatch(fetchSearchedMoviesAction(searchOptions));
+          break;
+
+        default:
+          setError(movieListErrors.invalid_option);
+          break;
       }
     } catch (error) {
       setError(movieListErrors.fetch_failed);
       console.error(error);
     }
-  }, [sortType, currentPage, searchQuery, isFavorites, minYear, maxYear, genreIdsString, dispatch]);
+  }, [sortType, currentPage, searchQuery, isFavorites, minYear, maxYear, genreIdsString]);
 
   useEffect(() => {
     fetchMovies();

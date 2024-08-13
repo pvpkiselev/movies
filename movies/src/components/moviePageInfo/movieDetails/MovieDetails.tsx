@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+
 import MovieDetailItem from './MovieDetailItem';
 import { MovieDetailsType } from '../types/movieDetails.types';
 import { CrewMember } from '../types/movieCredits.types';

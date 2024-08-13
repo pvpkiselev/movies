@@ -1,6 +1,6 @@
 import { resources } from '../resources';
 import { Config, fetchData } from '../axiosConfig';
-import { User } from '../types/user.types';
+import { User } from '../types/userResponse.types';
 
 const getUserId = async (token: string): Promise<User> => {
   const { account, account_id } = resources;

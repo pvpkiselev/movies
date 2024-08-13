@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { Movie } from '@/components/movieList/types/movies.types';
 import { fetchSearchedMoviesAction } from '../actions/thunks/fetchSearchedMoviesAction';
 import { fetchSortedMoviesAction } from '../actions/thunks/fetchSortedMoviesAction';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
-import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 
 type MoviesState = {
   movies: Movie[];
@@ -11,7 +11,6 @@ type MoviesState = {
   currentPage: number;
   searchQuery: string;
   status: 'pending' | 'fulfilled' | 'rejected';
-  error: string | null;
 };
 
 const initialState: MoviesState = {
@@ -20,7 +19,6 @@ const initialState: MoviesState = {
   currentPage: 1,
   searchQuery: '',
   status: 'fulfilled',
-  error: null,
 };
 
 const moviesSlice = createSlice({
@@ -39,29 +37,25 @@ const moviesSlice = createSlice({
     builder
       .addCase(fetchSearchedMoviesAction.pending, (state) => {
         state.status = 'pending';
-        state.error = null;
       })
       .addCase(fetchSearchedMoviesAction.fulfilled, (state, action) => {
         state.status = 'fulfilled';
         state.movies = action.payload.movies.results;
         state.maxPages = action.payload.movies.total_pages;
       })
-      .addCase(fetchSearchedMoviesAction.rejected, (state, action) => {
+      .addCase(fetchSearchedMoviesAction.rejected, (state) => {
         state.status = 'rejected';
-        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
       })
       .addCase(fetchSortedMoviesAction.pending, (state) => {
         state.status = 'pending';
-        state.error = null;
       })
       .addCase(fetchSortedMoviesAction.fulfilled, (state, action) => {
         state.status = 'fulfilled';
         state.movies = action.payload.movies.results;
         state.maxPages = action.payload.movies.total_pages;
       })
-      .addCase(fetchSortedMoviesAction.rejected, (state, action) => {
+      .addCase(fetchSortedMoviesAction.rejected, (state) => {
         state.status = 'rejected';
-        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
       })
       .addCase(resetFiltersAction, (state) => {
         return {

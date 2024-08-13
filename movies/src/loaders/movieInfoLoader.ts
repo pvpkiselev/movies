@@ -1,4 +1,5 @@
 import { redirect, LoaderFunctionArgs } from 'react-router-dom';
+
 import getMovieDetails from '@/api/filters/getMovieDetails';
 import getMovieCredits from '@/api/filters/getMovieCredits';
 import { MovieInfoLoaderData } from './types/movieInfoLoader.types';

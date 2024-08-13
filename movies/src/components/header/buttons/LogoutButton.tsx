@@ -1,4 +1,5 @@
 import { Button } from '@mui/material';
+
 import { useAuth } from '@/hooks/useAuth';
 
 const LogoutButton = () => {

@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+
+import { FAVORITES_OPTION, POPULAR_OPTION, TOP_RATED_OPTION } from './constants';
 import { useAppDispatch, useAppSelector } from '@/store/redux';
 import { changedSortType } from '@/store/filters/slices/sortSlice';
 import { selectSearchQuery, selectSortType } from '@/store/filters/selectors/filtersSelectors';
@@ -16,7 +16,7 @@ function SortSelect() {
   const sortType = useAppSelector(selectSortType);
   const searchQuery = useAppSelector(selectSearchQuery);
 
-  const isDisabled = useMemo(() => Boolean(searchQuery), [searchQuery]);
+  const isDisabled = Boolean(searchQuery);
 
   const handleSortChange = (event: SelectChangeEvent) => {
     const sortType = event.target.value;

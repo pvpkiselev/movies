@@ -1,19 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { Genre } from '@/components/filters/genres/types/genres.types';
 import { fetchGenresDataAction } from '../actions/thunks/fetchGenresDataAction';
 import { resetFiltersAction } from '../actions/resetFiltersAction';
-import { DEFAULT_ERROR_MESSAGE } from '@/helpers/constants';
 
 type GenresState = {
   genres: Genre[];
   status: 'pending' | 'fulfilled' | 'rejected';
-  error: string | null;
 };
 
 const initialState: GenresState = {
   genres: [],
   status: 'fulfilled',
-  error: null,
 };
 
 const genresSlice = createSlice({
@@ -36,16 +34,14 @@ const genresSlice = createSlice({
     builder
       .addCase(fetchGenresDataAction.pending, (state) => {
         state.status = 'pending';
-        state.error = null;
       })
       .addCase(fetchGenresDataAction.fulfilled, (state, action) => {
         state.status = 'fulfilled';
         const genres = action.payload.genres.map((genre) => ({ ...genre, checked: false }));
         state.genres = genres;
       })
-      .addCase(fetchGenresDataAction.rejected, (state, action) => {
+      .addCase(fetchGenresDataAction.rejected, (state) => {
         state.status = 'rejected';
-        state.error = action.payload?.message ?? DEFAULT_ERROR_MESSAGE;
       })
       .addCase(resetFiltersAction, (state) => {
         const areAllGenresUnchecked = state.genres.every((genre) => !genre.checked);

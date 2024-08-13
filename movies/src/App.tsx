@@ -1,14 +1,16 @@
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '@/theme/theme';
 import { CssBaseline } from '@mui/material';
+
+import { theme } from '@/theme/theme';
+
 import ErrorPage from '@/routes/ErrorPage';
 import Root from '@/routes/Root';
 import Home from '@/routes/Home';
 import MoviePage from '@/routes/MoviePage';
 import { movieInfoLoader } from '@/loaders/movieInfoLoader';
 import Login from './routes/Login';
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import { Provider } from 'react-redux';
 import { store } from './store/store';
 
 const router = createBrowserRouter([

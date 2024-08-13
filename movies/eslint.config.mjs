@@ -7,7 +7,6 @@ import eslintReactRefresh from 'eslint-plugin-react-refresh';
 import prettierPlugin from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
 export default tseslint.config(
   {
     plugins: {

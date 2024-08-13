@@ -1,6 +1,7 @@
-import { useFavorite } from '@/hooks/useFavorites';
 import { Favorite } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
+
+import { useFavorite } from '@/hooks/useFavorites';
 
 interface FavoriteButtonProps {
   id: number;

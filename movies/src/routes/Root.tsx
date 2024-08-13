@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import Header from '../components/header/Header';
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Box, CircularProgress, Typography } from '@mui/material';
+
+import Header from '../components/header/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { selectIsAuth } from '@/store/auth/authSelectors';
 import { useAppSelector } from '@/store/redux';

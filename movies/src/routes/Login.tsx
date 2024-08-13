@@ -1,9 +1,11 @@
-import AuthModal from '@/components/modals/AuthModal';
-import { useAuth } from '@/hooks/useAuth';
-import { Box } from '@mui/material';
 import { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { Box } from '@mui/material';
+
+import AuthModal from '@/components/modals/AuthModal';
+import { toastMessages } from '@/helpers/constants';
+import { useAuth } from '@/hooks/useAuth';
 
 type LoginSteps = 'email' | 'token' | null;
 
@@ -33,7 +35,7 @@ const Login = () => {
         setStep(null);
       }
     } catch (error) {
-      toast.error('Incorrect Token');
+      toast.error(toastMessages.auth.login_failed);
       console.error(error);
     } finally {
       form.reset();
